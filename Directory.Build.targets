@@ -1,0 +1,25 @@
+<Project>
+
+  <!-- Start of custom properties used by pipelines -->
+  <!-- Dynamic runtime identifier property, used when publishing several "app" type project in self contained configuration -->
+  <PropertyGroup Condition=" '$(PUBLISH_INTEGRATION_TESTS)'=='true'">
+    <RuntimeIdentifier>$(PUBLISH_INTEGRATION_TESTS_RUNTIME)</RuntimeIdentifier>
+  </PropertyGroup>
+  <!--
+    Workaround for dotnet build bug (https://github.com/dotnet/sdk/issues/3871), which overwrites files
+    (but not always, depends on msbuild race conditions) when publishing several "app" type projects.
+    This bug should be fixed in dotnet 5 ... once project is switched to dotnet 6 LTS, revisit this workaround.
+  -->
+  <ItemGroup Condition=" '$(PUBLISH_INTEGRATION_TESTS)'=='true'">
+      <Content Update="appsettings.Development.json" CopyToPublishDirectory="Never" />
+      <Content Update="appsettings.json" CopyToPublishDirectory="Never" Condition=" '$(MSBuildProjectName.Contains(`IntegrationTests`))'=='false' " />
+  </ItemGroup>
+  <!-- End of custom properties used by pipelines -->
+
+  <PropertyGroup>
+    <!-- Workaround https://github.com/dotnet/wpf/issues/1718 -->
+    <EmbedUntrackedSources Condition=" '$(UseWPF)' == 'true' ">false</EmbedUntrackedSources>
+  </PropertyGroup>
+
+  <Import Project="$(_WpfTempProjectNuGetFilePathNoExt).targets" Condition="'$(_WpfTempProjectNuGetFilePathNoExt)' != '' and Exists('$(_WpfTempProjectNuGetFilePathNoExt).targets')"/>
+</Project>

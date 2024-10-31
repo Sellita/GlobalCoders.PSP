@@ -1,0 +1,6 @@
+@GlobalCoders.PSP.BackendApi_HostAddress = http://localhost:9001
+
+GET {{GlobalCoders.PSP.BackendApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
