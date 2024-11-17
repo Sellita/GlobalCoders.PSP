@@ -1,4 +1,6 @@
+using GlobalCoders.PSP.BackendApi.Data.Configurations;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities;
+using GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace GlobalCoders.PSP.BackendApi.Data;
@@ -13,6 +15,13 @@ public sealed class BackendContext : BaseDbContext
     [ActivatorUtilitiesConstructor]
     public BackendContext()
     {
+    }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+        
+        builder.ApplyConfiguration(new MerhantEntityConfiguration());
     }
 
     //Empoloee Managment

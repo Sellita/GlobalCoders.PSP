@@ -6,10 +6,46 @@ namespace GlobalCoders.PSP.BackendApi.EmployeeManagment.Controllers;
 
 public class EmployeeController : BaseApiController
 { 
-    [HttpGet]
-    [Route("{employeeId}")]
-    public IActionResult Index(int employeeId)
+    
+    [HttpGet("[action]/{employeeId}")]
+    public IActionResult Id(int employeeId)
     {
-        return Ok("Employee Managment");
+        throw new NotImplementedException();
+    }  
+    
+    [HttpGet("[action]/{organizationId}")]
+    public IActionResult Organization(int organizationId)
+    {
+        throw new NotImplementedException();
+    }  
+    
+    [HttpGet("[action]/{isActive}")]
+    public IActionResult Active(bool isActive)
+    {
+        throw new NotImplementedException();
+    }
+    
+    [HttpDelete("[action]/{employeeId}")]
+    public IActionResult Delete(int employeeId)
+    {
+        throw new NotImplementedException();
+    }
+    
+    [HttpPost("[action]")]
+    public IActionResult Create()
+    {
+        throw new NotImplementedException();
+    }
+    
+    [HttpPut("[action]")]
+    public IActionResult Update()
+    {
+        throw new NotImplementedException();
+    }
+    
+    [HttpGet("[action]")]
+    public IActionResult All()
+    {
+        throw new NotImplementedException();
     }
 }

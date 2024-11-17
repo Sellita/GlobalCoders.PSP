@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using GlobalCoders.PSP.BackendApi.Base.Enums;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Constants;
+using GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

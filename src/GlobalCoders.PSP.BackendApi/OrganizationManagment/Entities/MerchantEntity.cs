@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Constants;
 
-namespace GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities;
+namespace GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities;
 
 public class MerchantEntity
 {
@@ -22,7 +22,9 @@ public class MerchantEntity
     public string MainPhoneNr { get; set; }= string.Empty;
     [StringLength(EmployeeConstants.DefaultStringLimitation)]
     public string SecondaryPhoneNr { get; set; }= string.Empty;
-    public TimeSpan OperatingHour { get; set; }
+    public TimeSpan OpeningHour { get; set; }
     public TimeSpan ClosingHour { get; set; }
     public TimeSpan BatchOutTime { get; set; }
+    
+    public bool IsDeleted { get; set; }
 }
