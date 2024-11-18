@@ -2,6 +2,7 @@
 using GlobalCoders.PSP.BackendApi.Base.Extensions;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities;
 using GlobalCoders.PSP.BackendApi.Identity.Constants;
+using GlobalCoders.PSP.BackendApi.Identity.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +22,69 @@ public sealed class AuthorizationService : IAuthorizationService
         _logger = logger;
         _userManager = userManager;
         _roleManager = roleManager;
+    }
+    
+     public async Task<bool> HasPermissionsAsync(
+        ClaimsPrincipal user,
+        IEnumerable<Permissions> permissions,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var appUser = await _userManager.GetUserAsync(user);
+
+            if (appUser == null)
+            {
+                _logger.LogWarning("User not found");
+
+                return false;
+            }
+
+            var userRoles = await _userManager.GetRolesAsync(appUser);
+
+            if (userRoles.Count == 0)
+            {
+                _logger.LogInformation("The user {Id} has no roles", appUser.Id);
+
+                return false;
+            }
+
+            var appRoles = await _roleManager.Roles
+                .Where(x => !string.IsNullOrWhiteSpace(x.Name) && userRoles.Contains(x.Name))
+                .ToListAsync(cancellationToken);
+
+            if (appRoles.Exists(
+                    x => string.Equals(x.Name, RoleConstants.AdminRole, StringComparison.OrdinalIgnoreCase)))
+            {
+                _logger.LogInformation("The user {Id} has {Role} role", appUser.Id, RoleConstants.AdminRole);
+
+                return true;
+            }
+
+            var roleClaims = new List<string>();
+
+            foreach (var appRole in appRoles)
+            {
+                var claims = await _roleManager.GetClaimsAsync(appRole);
+
+                roleClaims.AddRange(claims.Where(t => t.Type == RoleConstants.ScopeType).Select(x => x.Value));
+            }
+
+            var roleScopes = roleClaims.Distinct()
+                .ToList();
+
+            var scopeStatus = GetScopesWithAccessStatus(
+                permissions.Select(x => x.ToString().ToLower()),
+                scope => roleScopes.Contains(scope, StringComparer.OrdinalIgnoreCase));
+
+            return scopeStatus.Count != 0 && scopeStatus.Values.All(x => x);
+        }
+        catch (Exception exception)
+        {
+            _logger.LogExceptionError(exception, nameof(HasPermissionsAsync));
+        }
+
+        return false;
     }
 
     public async Task<Dictionary<string, bool>> CheckUserAccessAsync(

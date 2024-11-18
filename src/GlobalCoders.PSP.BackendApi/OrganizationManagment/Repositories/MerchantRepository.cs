@@ -53,9 +53,17 @@ public class MerchantRepository : IMerchantRepository
     {
         await using var context = await _contextFactory.CreateDbContextAsync();
 
-        var totalItems = await context.Merchant.CountAsync();
+        var query = context.Merchant.AsQueryable();
+        
+        if (!string.IsNullOrWhiteSpace(filter.DisplayName))
+        {
+            query = query.Where(x => x.DisplayName.Contains(filter.DisplayName));
+        }
+        
+        var totalItems = await query.CountAsync();
 
-        var items = await context.Merchant
+        var items = await query
+            .OrderBy(x=>x.DisplayName)
             .Skip((filter.Page - 1) * filter.ItemsPerPage)
             .Take(filter.ItemsPerPage)
             .ToListAsync();
@@ -66,23 +74,23 @@ public class MerchantRepository : IMerchantRepository
     public async Task<MerchantEntity?> GetAsync(Guid organizationId)
     {
         await using var context = await _contextFactory.CreateDbContextAsync();
-        
+
         return await context.Merchant.FirstOrDefaultAsync(x => x.Id == organizationId);
     }
 
     public async Task<bool> DeleteAsync(Guid organizationId)
     {
         await using var context = await _contextFactory.CreateDbContextAsync();
-        
+
         var entity = await context.Merchant.FirstOrDefaultAsync(x => x.Id == organizationId);
 
         if (entity == null)
         {
             return false;
         }
-        
+
         entity.IsDeleted = true;
-        
+
         return await context.SaveChangesAsync() > 0;
     }
 }

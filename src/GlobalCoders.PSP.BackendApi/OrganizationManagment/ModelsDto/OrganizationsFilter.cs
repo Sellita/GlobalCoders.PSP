@@ -4,5 +4,5 @@ namespace GlobalCoders.PSP.BackendApi.OrganizationManagment.ModelsDto;
 
 public class OrganizationsFilter : BaseFilter
 {
-    //todo implement me
+    public string DisplayName { get; set; } = string.Empty;
 }

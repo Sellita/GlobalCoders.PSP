@@ -3,6 +3,7 @@ using GlobalCoders.PSP.BackendApi.Base.Extensions;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities;
 using GlobalCoders.PSP.BackendApi.Identity.Configuration;
 using GlobalCoders.PSP.BackendApi.Identity.Constants;
+using GlobalCoders.PSP.BackendApi.Identity.Enums;
 using GlobalCoders.PSP.BackendApi.Identity.Factories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -108,7 +109,8 @@ public sealed class RoleSetupService : IRoleSetupService
     {
         foreach (var scope in _rolesConfiguration.SelectMany(x => x.Value).Distinct())
         {
-            if (!RoleConstants.ActionRequiredPermissions.ContainsKey(scope.ToLower()))
+            if (!RoleConstants.ActionRequiredPermissions.ContainsKey(scope.ToLower())
+                && !Enum.GetNames<Permissions>().Contains(scope, StringComparer.OrdinalIgnoreCase))
             {
                 throw new InvalidOperationException($"Invalid scope {scope} in {nameof(_rolesConfiguration)}");
             }

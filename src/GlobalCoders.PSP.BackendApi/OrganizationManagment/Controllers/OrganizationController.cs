@@ -1,5 +1,8 @@
 using GlobalCoders.PSP.BackendApi.Base.Controller;
 using GlobalCoders.PSP.BackendApi.Base.ModelsDto;
+using GlobalCoders.PSP.BackendApi.Identity.Enums;
+using GlobalCoders.PSP.BackendApi.Identity.Extensions;
+using GlobalCoders.PSP.BackendApi.Identity.Services;
 using GlobalCoders.PSP.BackendApi.OrganizationManagment.Factories;
 using GlobalCoders.PSP.BackendApi.OrganizationManagment.ModelsDto;
 using GlobalCoders.PSP.BackendApi.OrganizationManagment.Repositories;
@@ -8,23 +11,36 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GlobalCoders.PSP.BackendApi.OrganizationManagment.Controllers;
 
-public class OrganizationController : BaseApiController
+public class OrganizationController : BaseApiController//todo we need to check access
 {
     private readonly ILogger<OrganizationController> _logger;
+    private readonly IAuthorizationService _authorizationService;
     private readonly IMerchantService _merchantRepository;
 
-    public OrganizationController(ILogger<OrganizationController> logger, IMerchantService merchantRepository)
+    public OrganizationController(ILogger<OrganizationController> logger, IAuthorizationService authorizationService, IMerchantService merchantRepository)
     {
         _logger = logger;
+        _authorizationService = authorizationService;
         _merchantRepository = merchantRepository;
     }
     
     [HttpGet("[action]/{organizationId}")]
-    public async Task<ActionResult<OrganizationResponseModel>> Id(Guid organizationId)
+    public async Task<ActionResult<OrganizationResponseModel>> Id(Guid organizationId,
+        CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
             return ValidationProblem();
+        }
+        
+        if (!await _authorizationService.HasPermissionsAsync(
+                User,
+                [Permissions.CanViewAllOrganizations],
+                cancellationToken))
+        {
+            _logger.LogWarning("User ({UserId}) has no permissions to create confirm hashTag", User.GetUserId());
+
+            return NotFound();
         }
         
         var result = await _merchantRepository.GetAsync(organizationId);
