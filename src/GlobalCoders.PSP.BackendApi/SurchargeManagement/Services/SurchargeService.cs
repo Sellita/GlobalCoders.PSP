@@ -1,6 +1,5 @@
 using GlobalCoders.PSP.BackendApi.Base.Factories;
 using GlobalCoders.PSP.BackendApi.Base.ModelsDto;
-using GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities;
 using GlobalCoders.PSP.BackendApi.SurchargeManagement.Entities;
 using GlobalCoders.PSP.BackendApi.SurchargeManagement.Factories;
 using GlobalCoders.PSP.BackendApi.SurchargeManagement.ModelsDto;

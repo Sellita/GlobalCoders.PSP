@@ -90,7 +90,7 @@ public class SurchargeController : BaseApiController
             return Ok();
         }
         
-        return Problem("Failed to update organization");
+        return Problem("Failed to update surcharge");
     }
 
     /// <summary>
@@ -113,7 +113,7 @@ public class SurchargeController : BaseApiController
             return Ok();
         }
         
-        return Problem("Failed to update organization");
+        return Problem("Failed to update surcharge");
     }
 
     /// <summary>

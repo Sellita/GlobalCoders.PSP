@@ -1,6 +1,5 @@
 using GlobalCoders.PSP.BackendApi.Base.Extensions;
 using GlobalCoders.PSP.BackendApi.Data;
-using GlobalCoders.PSP.BackendApi.OrganizationManagment.ModelsDto;
 using GlobalCoders.PSP.BackendApi.SurchargeManagement.Entities;
 using GlobalCoders.PSP.BackendApi.SurchargeManagement.ModelsDto;
 using Microsoft.EntityFrameworkCore;
@@ -72,18 +71,18 @@ public class SurchargeRepository : ISurchargeRepository
         return (items, totalItems);
     }
 
-    public async Task<SurchargeEntity?> GetAsync(Guid organizationId)
+    public async Task<SurchargeEntity?> GetAsync(Guid surchargeId)
     {
         await using var context = await _contextFactory.CreateDbContextAsync();
 
-        return await context.Surcharge.FirstOrDefaultAsync(x => x.Id == organizationId);
+        return await context.Surcharge.FirstOrDefaultAsync(x => x.Id == surchargeId);
     }
 
-    public async Task<bool> DeleteAsync(Guid organizationId)
+    public async Task<bool> DeleteAsync(Guid surchargeId)
     {
         await using var context = await _contextFactory.CreateDbContextAsync();
 
-        var entity = await context.Surcharge.FirstOrDefaultAsync(x => x.Id == organizationId);
+        var entity = await context.Surcharge.FirstOrDefaultAsync(x => x.Id == surchargeId);
 
         if (entity == null)
         {
