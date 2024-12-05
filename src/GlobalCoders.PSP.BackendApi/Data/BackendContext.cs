@@ -1,6 +1,7 @@
 using GlobalCoders.PSP.BackendApi.Data.Configurations;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities;
 using GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities;
+using GlobalCoders.PSP.BackendApi.SurchargeManagement.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace GlobalCoders.PSP.BackendApi.Data;
@@ -22,8 +23,10 @@ public sealed class BackendContext : BaseDbContext
         base.OnModelCreating(builder);
         
         builder.ApplyConfiguration(new MerhantEntityConfiguration());
+        
+        builder.ApplyConfiguration(new SurchargeEntityConfiguration());
     }
-
+    
     //Empoloee Managment
 
     #region Employee Managment
@@ -32,4 +35,13 @@ public sealed class BackendContext : BaseDbContext
     public DbSet<PermisionEntity> Permission => Set<PermisionEntity>();
 
     #endregion
+    
+    //Surcharge Management
+    
+    #region Surcharge Management
+    
+    public DbSet<SurchargeEntity> Surcharge => Set<SurchargeEntity>();
+    
+    #endregion
+    
 }
