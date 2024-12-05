@@ -11,7 +11,7 @@ public class SurchargeEntity
     [StringLength(SurchargeConstants.DefaultStringLimitation)]
     public string Name { get; set; } = String.Empty; // Name of the surcharge
 
-    public SurchargeEnums.SurchargeValue Value { get; set; } // "Percentage" or "Value"
+    public SurchargeValue Value { get; set; } // "Percentage" or "Value"
 
     [StringLength(SurchargeConstants.DefaultStringLimitation)]
     public string Type { get; set; } = String.Empty; // "Percentage" or "Value"
@@ -19,7 +19,7 @@ public class SurchargeEntity
     public DateTime CreationDateTime { get; set; } // When it was created
 
     [StringLength(SurchargeConstants.DefaultStringLimitation)]
-    public SurchargeEnums.SurchargeStatus Status { get; set; } = SurchargeEnums.SurchargeStatus.Active; // "Active" or "Inactive"
+    public SurchargeStatus Status { get; set; } = SurchargeStatus.Active; // "Active" or "Inactive"
 
     [StringLength(SurchargeConstants.DefaultStringLimitation)]
     public string Minute { get; set; } = String.Empty;
