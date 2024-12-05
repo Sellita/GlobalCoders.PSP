@@ -1,6 +1,5 @@
 using GlobalCoders.PSP.BackendApi.SurchargeManagement.Entities;
 using GlobalCoders.PSP.BackendApi.SurchargeManagement.ModelsDto;
-
 namespace GlobalCoders.PSP.BackendApi.SurchargeManagement.Factories;
 
 public class SurchargeListModelFactory
