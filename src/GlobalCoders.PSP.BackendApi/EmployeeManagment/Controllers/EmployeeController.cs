@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GlobalCoders.PSP.BackendApi.EmployeeManagment.Controllers;
 
-
 public class EmployeeController : BaseApiController
 { 
     [HttpGet]
