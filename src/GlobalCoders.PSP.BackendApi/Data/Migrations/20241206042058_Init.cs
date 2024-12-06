@@ -38,9 +38,10 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                     Email = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     MainPhoneNr = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     SecondaryPhoneNr = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    OperatingHour = table.Column<TimeSpan>(type: "interval", nullable: false),
+                    OpeningHour = table.Column<TimeSpan>(type: "interval", nullable: false),
                     ClosingHour = table.Column<TimeSpan>(type: "interval", nullable: false),
-                    BatchOutTime = table.Column<TimeSpan>(type: "interval", nullable: false)
+                    BatchOutTime = table.Column<TimeSpan>(type: "interval", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -74,15 +75,14 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    Role = table.Column<int>(type: "integer", nullable: false),
                     CreationDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    Minute = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    Hour = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    DayMounth = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    Mounth = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    DayWeek = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    MerchantId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Minute = table.Column<int>(type: "integer", nullable: false),
+                    Hour = table.Column<int>(type: "integer", nullable: false),
+                    DayMounth = table.Column<int>(type: "integer", nullable: false),
+                    Mounth = table.Column<int>(type: "integer", nullable: false),
+                    DayWeek = table.Column<int>(type: "integer", nullable: false),
+                    MerchantId = table.Column<Guid>(type: "uuid", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -104,6 +104,34 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                     table.ForeignKey(
                         name: "FK_AspNetUsers_Merchant_MerchantId",
+                        column: x => x.MerchantId,
+                        principalTable: "Merchant",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Surcharge",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    Type = table.Column<int>(type: "integer", nullable: false),
+                    Value = table.Column<decimal>(type: "numeric", nullable: false),
+                    CreationDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Status = table.Column<int>(type: "integer", maxLength: 255, nullable: false),
+                    Minute = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    Hour = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    DayOfMonth = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    Month = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    DayOfWeek = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    MerchantId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Surcharge", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Surcharge_Merchant_MerchantId",
                         column: x => x.MerchantId,
                         principalTable: "Merchant",
                         principalColumn: "Id",
@@ -279,6 +307,11 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Surcharge_MerchantId",
+                table: "Surcharge",
+                column: "MerchantId");
         }
 
         /// <inheritdoc />
@@ -298,6 +331,9 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Surcharge");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

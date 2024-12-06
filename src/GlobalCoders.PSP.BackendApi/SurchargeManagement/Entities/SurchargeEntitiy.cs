@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities;
 using GlobalCoders.PSP.BackendApi.SurchargeManagement.Constants;
 using GlobalCoders.PSP.BackendApi.SurchargeManagement.Enums;
 
@@ -11,11 +12,9 @@ public class SurchargeEntity
     [StringLength(SurchargeConstants.DefaultStringLimitation)]
     public string Name { get; set; } = String.Empty; // Name of the surcharge
 
-    public SurchargeValue Value { get; set; } // "Percentage" or "Value"
+    public SurchargeType Type { get; set; } 
 
-    [StringLength(SurchargeConstants.DefaultStringLimitation)]
-    public string Type { get; set; } = String.Empty; // "Percentage" or "Value"
-
+    public decimal Value { get; set; } // Value of the surcharge
     public DateTime CreationDateTime { get; set; } // When it was created
 
     [StringLength(SurchargeConstants.DefaultStringLimitation)]
@@ -36,4 +35,7 @@ public class SurchargeEntity
     [StringLength(SurchargeConstants.DefaultStringLimitation)]
     public string DayOfWeek { get; set; } = String.Empty;
     public bool IsDeleted { get; set; }
+    
+    public Guid MerchantId { get; set; }
+    public virtual MerchantEntity Merchant { get; set; }
 }

@@ -39,7 +39,7 @@ public class SurchargeController : BaseApiController
                 [Permissions.CanViewAllOrganizations],
                 cancellationToken))
         {
-            _logger.LogWarning("User ({UserId}) has no permissions to create confirm hashTag", User.GetUserId());
+            _logger.LogWarning("User ({UserId}) has no permissions to get organization by id", User.GetUserId());
 
             return NotFound();
         }

@@ -13,4 +13,13 @@ public static class OrganizationsListModelFactory
             DisplayName = merchantEntity.DisplayName
         };
     }
+
+    public static OrganizationsListModel Create (OrganizationResponseModel organization)
+    {
+        return new OrganizationsListModel
+        {
+            Id = organization.Id,
+            DisplayName = organization.DisplayName
+        };
+    }
 }

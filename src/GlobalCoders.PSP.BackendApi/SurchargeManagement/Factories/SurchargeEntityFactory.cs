@@ -5,13 +5,14 @@ namespace GlobalCoders.PSP.BackendApi.SurchargeManagement.Factories;
 
 public static class SurchargeEntityFactory
 {
-    public static SurchargeEntity Create(SurchargeCreateModel surchargeEntity)
+    public static SurchargeEntity Create(SurchargeCreateModel surchargeEntity, Guid? organizationId = null)
     {
         return new SurchargeEntity
         {
+            MerchantId = surchargeEntity.OrganizationId ?? organizationId ?? throw new ArgumentNullException(nameof(organizationId)),
             Name = surchargeEntity.Name,
-            Value = surchargeEntity.Value,
             Type = surchargeEntity.Type,
+            Value = surchargeEntity.Value,
             CreationDateTime = surchargeEntity.CreationDateTime,
             Status = surchargeEntity.Status,
             Minute = surchargeEntity.Minute,

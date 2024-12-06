@@ -5,8 +5,8 @@ public class SurchargeResponseModel
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = String.Empty;
-    public SurchargeValue Value { get; set; }
-    public string Type { get; set; } = String.Empty;
+    public SurchargeType Type { get; set; }
+    public decimal Value { get; set; }
     public DateTime CreationDateTime { get; set; }
     public SurchargeStatus Status { get; set; }
     public string Minute { get; set; } = String.Empty;

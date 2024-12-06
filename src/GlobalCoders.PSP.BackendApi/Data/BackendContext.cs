@@ -23,10 +23,10 @@ public sealed class BackendContext : BaseDbContext
         base.OnModelCreating(builder);
         
         builder.ApplyConfiguration(new MerhantEntityConfiguration());
-        
+        builder.ApplyConfiguration(new EmployeeEntityConfiguration());
         builder.ApplyConfiguration(new SurchargeEntityConfiguration());
     }
-    
+
     //Empoloee Managment
 
     #region Employee Managment

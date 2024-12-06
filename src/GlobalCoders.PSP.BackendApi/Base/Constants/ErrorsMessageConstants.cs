@@ -38,16 +38,4 @@ public static class ErrorsMessageConstants
     public const string FailedDeleteFileItemFromFileStorage = "Failed to delete file from file storage";
 
     public const string SystemError = "An error occurred while processing the request";
-
-
-
-    //Authors
-    public const string AuthorDuplicateError = "An Author with the same details already exists";
-    public const string AuthorFailSaveError = "Sorry, we couldn't save author. Please try again";
-    public const string AuthorNotFound = "An Author is not found";
-
-    //HashTags
-    public const string HashTagNotFound = "A HashTag is not found";
-    public const string HashTagDuplicateError = "A HashTag with the same details already exists";
-    public const string HashTagFailSaveError = "Sorry, we couldn't save hashTag. Please try again";
 }

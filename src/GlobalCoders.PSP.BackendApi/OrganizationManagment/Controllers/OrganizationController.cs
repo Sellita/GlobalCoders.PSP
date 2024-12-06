@@ -1,13 +1,13 @@
 using GlobalCoders.PSP.BackendApi.Base.Controller;
+using GlobalCoders.PSP.BackendApi.Base.Factories;
 using GlobalCoders.PSP.BackendApi.Base.ModelsDto;
 using GlobalCoders.PSP.BackendApi.Identity.Enums;
 using GlobalCoders.PSP.BackendApi.Identity.Extensions;
-using GlobalCoders.PSP.BackendApi.Identity.Services;
 using GlobalCoders.PSP.BackendApi.OrganizationManagment.Factories;
 using GlobalCoders.PSP.BackendApi.OrganizationManagment.ModelsDto;
-using GlobalCoders.PSP.BackendApi.OrganizationManagment.Repositories;
 using GlobalCoders.PSP.BackendApi.OrganizationManagment.Services;
 using Microsoft.AspNetCore.Mvc;
+using IAuthorizationService = GlobalCoders.PSP.BackendApi.Identity.Services.IAuthorizationService;
 
 namespace GlobalCoders.PSP.BackendApi.OrganizationManagment.Controllers;
 
@@ -15,13 +15,13 @@ public class OrganizationController : BaseApiController//todo we need to check a
 {
     private readonly ILogger<OrganizationController> _logger;
     private readonly IAuthorizationService _authorizationService;
-    private readonly IMerchantService _merchantRepository;
+    private readonly IMerchantService _merchantService;
 
-    public OrganizationController(ILogger<OrganizationController> logger, IAuthorizationService authorizationService, IMerchantService merchantRepository)
+    public OrganizationController(ILogger<OrganizationController> logger, IAuthorizationService authorizationService, IMerchantService merchantService)
     {
         _logger = logger;
         _authorizationService = authorizationService;
-        _merchantRepository = merchantRepository;
+        _merchantService = merchantService;
     }
     
     [HttpGet("[action]/{organizationId}")]
@@ -32,18 +32,21 @@ public class OrganizationController : BaseApiController//todo we need to check a
         {
             return ValidationProblem();
         }
+
+        var user = await _authorizationService.GetUserAsync(User);
         
-        if (!await _authorizationService.HasPermissionsAsync(
+        if (user?.Merchant.Id != organizationId && !await _authorizationService.HasPermissionsAsync(
                 User,
                 [Permissions.CanViewAllOrganizations],
                 cancellationToken))
         {
-            _logger.LogWarning("User ({UserId}) has no permissions to create confirm hashTag", User.GetUserId());
+            
+             _logger.LogWarning("User ({UserId}) has no permissions to view organization {OrganizaitonId}", User.GetUserId(), organizationId);
 
             return NotFound();
         }
         
-        var result = await _merchantRepository.GetAsync(organizationId);
+        var result = await _merchantService.GetAsync(organizationId);
         
         if(result == null)
         {
@@ -54,14 +57,38 @@ public class OrganizationController : BaseApiController//todo we need to check a
     }
     
     [HttpPost("[action]")]
-    public async Task<ActionResult<BasePagedResponse<OrganizationsListModel>>> All(OrganizationsFilter filter)
+    public async Task<ActionResult<BasePagedResponse<OrganizationsListModel>>> All(OrganizationsFilter filter, CancellationToken cancellationToken)
     {
         if(!ModelState.IsValid)
         {
             return ValidationProblem();
         }
         
-        var result = await _merchantRepository.GetAllAsync(filter);
+        var user = await _authorizationService.GetUserAsync(User);
+        
+        if (!await _authorizationService.HasPermissionsAsync(
+                User,
+                [Permissions.CanViewAllOrganizations],
+                cancellationToken))
+        {
+            _logger.LogWarning("User ({UserId}) has no permissions to view all organization", User.GetUserId());
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+            
+            var userOrganization = await _merchantService.GetAsync(user.Merchant.Id);
+
+            if (userOrganization == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(BasePagedResopnseFactory.CreateSingle(OrganizationsListModelFactory.Create(userOrganization)));
+        }
+        
+        var result = await _merchantService.GetAllAsync(filter);
         
         return Ok(result);
     }
@@ -76,7 +103,7 @@ public class OrganizationController : BaseApiController//todo we need to check a
         
         var createModel = MerchantEntityFactory.Create(organizationCreateModel);
         
-        var result = await _merchantRepository.CreateAsync(createModel);
+        var result = await _merchantService.CreateAsync(createModel);
 
         if (result)
         {
@@ -96,7 +123,7 @@ public class OrganizationController : BaseApiController//todo we need to check a
         
         var updateModel = MerchantEntityFactory.CreateUpdate(organizationUpdateModel);
         
-        var result = await _merchantRepository.UpdateAsync(updateModel);
+        var result = await _merchantService.UpdateAsync(updateModel);
 
         if (result)
         {
@@ -109,7 +136,7 @@ public class OrganizationController : BaseApiController//todo we need to check a
     [HttpDelete("[action]/{organizationId}")]
     public async Task<IActionResult> Delete(Guid organizationId)
     {
-        var result = await _merchantRepository.DeleteAsync(organizationId);
+        var result = await _merchantService.DeleteAsync(organizationId);
 
         if (result)
         {

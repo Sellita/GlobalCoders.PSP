@@ -39,6 +39,19 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+  
+  mailhog:
+    container_name: mail
+    image: mailhog/mailhog
+    restart: always
+    logging:
+      driver: "none"  # disable saving logs
+    ports:
+      - "1025:1025" # smtp server
+      - "8025:8025" # web ui
+    networks:
+      global_coders_backend_network:
+        ipv4_address: 174.30.0.113
 
 networks:
   global_coders_backend_network:

@@ -38,15 +38,11 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                     b.Property<DateTime>("CreationDateTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("DayMounth")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                    b.Property<int>("DayMounth")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("DayWeek")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                    b.Property<int>("DayWeek")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -55,10 +51,8 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("Hour")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                    b.Property<int>("Hour")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
@@ -72,18 +66,14 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("MerchantId")
+                    b.Property<Guid?>("MerchantId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Minute")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                    b.Property<int>("Minute")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("Mounth")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                    b.Property<int>("Mounth")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -106,9 +96,6 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
-
-                    b.Property<int>("Role")
-                        .HasColumnType("integer");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
@@ -253,6 +240,68 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                     b.ToTable("Merchant");
                 });
 
+            modelBuilder.Entity("GlobalCoders.PSP.BackendApi.SurchargeManagement.Entities.SurchargeEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationDateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DayOfMonth")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("DayOfWeek")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("Hour")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("MerchantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Minute")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("Month")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<int>("Status")
+                        .HasMaxLength(255)
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Value")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MerchantId");
+
+                    b.ToTable("Surcharge");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
@@ -345,9 +394,7 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                 {
                     b.HasOne("GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities.MerchantEntity", "Merchant")
                         .WithMany()
-                        .HasForeignKey("MerchantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MerchantId");
 
                     b.Navigation("Merchant");
                 });
@@ -377,6 +424,17 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                     b.Navigation("AppRole");
 
                     b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("GlobalCoders.PSP.BackendApi.SurchargeManagement.Entities.SurchargeEntity", b =>
+                {
+                    b.HasOne("GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities.MerchantEntity", "Merchant")
+                        .WithMany()
+                        .HasForeignKey("MerchantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Merchant");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
