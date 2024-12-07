@@ -1,5 +1,6 @@
 using GlobalCoders.PSP.BackendApi.Data.Configurations;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities;
+using GlobalCoders.PSP.BackendApi.Inventory.Entities;
 using GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities;
 using GlobalCoders.PSP.BackendApi.ProductsManagment.Entities;
 using GlobalCoders.PSP.BackendApi.SurchargeManagement.Entities;
@@ -49,4 +50,9 @@ public sealed class BackendContext : BaseDbContext
     
     public DbSet<ProductTypeEntity> ProductType => Set<ProductTypeEntity>();
     public DbSet<ProductEntity> Product => Set<ProductEntity>();
+    
+    
+    public DbSet<InventoryTransactionEntity> InventoryTransactions => Set<InventoryTransactionEntity>();
+    
+    
 }
