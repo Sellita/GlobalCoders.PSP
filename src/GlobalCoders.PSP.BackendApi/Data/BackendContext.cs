@@ -27,6 +27,7 @@ public sealed class BackendContext : BaseDbContext
         builder.ApplyConfiguration(new EmployeeEntityConfiguration());
         builder.ApplyConfiguration(new SurchargeEntityConfiguration());
         builder.ApplyConfiguration(new ProductTypeEntityConfiguration());
+        builder.ApplyConfiguration(new ProductEntityConfiguration());
     }
 
     //Empoloee Managment
@@ -47,4 +48,5 @@ public sealed class BackendContext : BaseDbContext
     #endregion
     
     public DbSet<ProductTypeEntity> ProductType => Set<ProductTypeEntity>();
+    public DbSet<ProductEntity> Product => Set<ProductEntity>();
 }
