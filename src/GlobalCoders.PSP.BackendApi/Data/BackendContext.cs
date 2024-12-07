@@ -1,6 +1,7 @@
 using GlobalCoders.PSP.BackendApi.Data.Configurations;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities;
 using GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities;
+using GlobalCoders.PSP.BackendApi.ProductsManagment.Entities;
 using GlobalCoders.PSP.BackendApi.SurchargeManagement.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,6 +26,7 @@ public sealed class BackendContext : BaseDbContext
         builder.ApplyConfiguration(new MerhantEntityConfiguration());
         builder.ApplyConfiguration(new EmployeeEntityConfiguration());
         builder.ApplyConfiguration(new SurchargeEntityConfiguration());
+        builder.ApplyConfiguration(new ProductTypeEntityConfiguration());
     }
 
     //Empoloee Managment
@@ -44,4 +46,5 @@ public sealed class BackendContext : BaseDbContext
     
     #endregion
     
+    public DbSet<ProductTypeEntity> ProductType => Set<ProductTypeEntity>();
 }
