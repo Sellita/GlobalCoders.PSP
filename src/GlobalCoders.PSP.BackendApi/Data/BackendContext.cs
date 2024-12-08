@@ -1,6 +1,8 @@
 using GlobalCoders.PSP.BackendApi.Data.Configurations;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities;
 using GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities;
+using GlobalCoders.PSP.BackendApi.TaxManagement.Entities;
+using GlobalCoders.PSP.BackendApi.TaxManagement.Entitites;
 using Microsoft.EntityFrameworkCore;
 
 namespace GlobalCoders.PSP.BackendApi.Data;
@@ -22,6 +24,7 @@ public sealed class BackendContext : BaseDbContext
         base.OnModelCreating(builder);
         
         builder.ApplyConfiguration(new MerhantEntityConfiguration());
+        builder.ApplyConfiguration(new TaxEntityConfiguration());
     }
 
     //Empoloee Managment
@@ -31,5 +34,12 @@ public sealed class BackendContext : BaseDbContext
     public DbSet<MerchantEntity> Merchant => Set<MerchantEntity>();
     public DbSet<PermisionEntity> Permission => Set<PermisionEntity>();
 
+    #endregion
+    
+    // Tax Management
+    #region Tax Management
+    
+    public DbSet<TaxEntity> Tax => Set<TaxEntity>();
+    
     #endregion
 }
