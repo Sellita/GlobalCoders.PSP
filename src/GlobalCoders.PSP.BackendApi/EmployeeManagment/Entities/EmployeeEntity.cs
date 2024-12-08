@@ -14,28 +14,22 @@ public class EmployeeEntity : IdentityUser<Guid>
 {
     [StringLength(EmployeeConstants.DefaultStringLimitation)]
     public string Name { get; set; } = string.Empty;
-
-    public Roles Role { get; set; }
-
+    
     public DateTime CreationDateTime { get; set; }
-    public bool IsActive { get; set; } //todo in doc this is enum
+    public bool IsActive { get; set; } 
 
-    [StringLength(EmployeeConstants.DefaultStringLimitation)]
-    public string Minute { get; set; } = string.Empty;
+    public int Minute { get; set; } 
 
-    [StringLength(EmployeeConstants.DefaultStringLimitation)]
-    public string Hour { get; set; } = string.Empty;
+    public int Hour { get; set; } 
 
-    [StringLength(EmployeeConstants.DefaultStringLimitation)]
-    public string DayMounth { get; set; } = string.Empty;
+    public int DayMounth { get; set; }
 
-    [StringLength(EmployeeConstants.DefaultStringLimitation)]
-    public string Mounth { get; set; } = string.Empty;
+    public Mounths Mounth { get; set; } 
 
-    [StringLength(EmployeeConstants.DefaultStringLimitation)]
-    public string DayWeek { get; set; } = string.Empty;
+    public DayOfWeek DayWeek { get; set; }
 
-    public virtual MerchantEntity Merchant { get; set; } = new();
+    public Guid? MerchantId { get; set; }
+    public virtual MerchantEntity? Merchant { get; set; }
     public virtual ICollection<PermisionEntity> UserPermissions { get; set; } = [];
 
     public bool IsDeleted { get; set; }

@@ -139,6 +139,12 @@ public sealed class AuthorizationService : IAuthorizationService
         return new Dictionary<string, bool>();
     }
 
+    public async Task<EmployeeEntity?> GetUserAsync(ClaimsPrincipal user)
+    {
+        return await _userManager.GetUserAsync(user);
+
+    }
+
     private Dictionary<string, bool> GetScopesWithAccessStatus(
         IEnumerable<string> scopes,
         Func<string, bool> accessChecker)

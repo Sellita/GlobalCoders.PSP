@@ -15,4 +15,6 @@ public interface IAuthorizationService
         EmployeeEntity appUser,
         IEnumerable<string> scopes,
         CancellationToken cancellationToken);
+
+    Task<EmployeeEntity?> GetUserAsync(ClaimsPrincipal user);
 }

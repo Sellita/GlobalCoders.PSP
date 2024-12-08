@@ -78,6 +78,7 @@ public sealed class MailService : IMailService
                     IdentityConstants.HtmlAnchorTemplate,
                     redirectUrl,
                     IdentityConstants.PasswordResetContentMessage),
+                email,
                 true);
 
             return await _mailMessageSendService.SendAsync(mailMessageEntity, cancellationToken);
@@ -119,7 +120,9 @@ public sealed class MailService : IMailService
                     string.Format(
                         IdentityConstants.HtmlAnchorTemplate,
                         redirectUrl,
-                        IdentityConstants.EmailConfirmationContentMessage), true);
+                        IdentityConstants.EmailConfirmationContentMessage), 
+                    email,
+                    true);
 
             return await _mailMessageSendService.SendAsync(mailMessageEntity, cancellationToken);
         }

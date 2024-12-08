@@ -9,13 +9,16 @@ namespace GlobalCoders.PSP.BackendApi.Email.Services;
 public sealed class SmtpMailProvider : IMailProvider, IDisposable
 {
     private readonly ILogger<SmtpMailProvider> _logger;
+    private readonly MailConfiguration _mailOptions;
     private readonly SmtpConfiguration _smtpConfiguration;
 
     public SmtpMailProvider(
         ILogger<SmtpMailProvider> logger,
-        IOptions<SmtpConfiguration> options)
+        IOptions<SmtpConfiguration> options,
+        IOptions<MailConfiguration> mailOptions)
     {
         _logger = logger;
+        _mailOptions = mailOptions.Value;
         _smtpConfiguration = options.Value;
     }
 
@@ -25,6 +28,9 @@ public sealed class SmtpMailProvider : IMailProvider, IDisposable
 
         try
         {
+            FillMailMessageModel(mailMessageModel);
+            _logger.LogInformation("Sending filled {@Mail}", mailMessageModel);
+
             using var smtpClient = new SmtpClient(_smtpConfiguration.SmtpServer);
 
             smtpClient.Port = _smtpConfiguration.Port;
@@ -43,15 +49,16 @@ public sealed class SmtpMailProvider : IMailProvider, IDisposable
                 smtpClient.UseDefaultCredentials = true;
             }
 
-            var emmailToSend = new MailMessage
+            var emailToSend = new MailMessage
             {
                 From = new MailAddress(mailMessageModel.From),
                 Subject = mailMessageModel.Subject,
                 Body = mailMessageModel.Content,
-                IsBodyHtml = true
+                IsBodyHtml = true,
+                To =  { new MailAddress(mailMessageModel.To)}
             };
 
-            await smtpClient.SendMailAsync(emmailToSend, cancellationToken);
+            await smtpClient.SendMailAsync(emailToSend, cancellationToken);
 
             _logger.LogInformation("Send completed {@Mail}", mailMessageModel);
 
@@ -67,6 +74,14 @@ public sealed class SmtpMailProvider : IMailProvider, IDisposable
         }
 
         return false;
+    }
+
+    private void FillMailMessageModel(MailMessageModel mailMessageModel)
+    {
+        mailMessageModel.From = _mailOptions.From;
+        mailMessageModel.FromName = _mailOptions.FromName;
+        mailMessageModel.Replay = _mailOptions.ReplayTo;
+        mailMessageModel.ReplayName = _mailOptions.ReplayToName;
     }
 
     public void Dispose()

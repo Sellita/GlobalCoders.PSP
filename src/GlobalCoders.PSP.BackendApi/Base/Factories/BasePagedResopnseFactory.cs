@@ -13,5 +13,16 @@ public static class BasePagedResopnseFactory
             TotalPages = (int)Math.Ceiling((double)totalItems / filter.ItemsPerPage),
             TotalItems = totalItems
         };
+    }   
+    
+    public static BasePagedResponse<TModel> CreateSingle<TModel>(TModel item)
+    {
+        return new BasePagedResponse<TModel>
+        {
+            Items = [item],
+            Page = 1,
+            TotalPages = 1,
+            TotalItems = 1
+        };
     }
 }

@@ -1,5 +1,6 @@
 using GlobalCoders.PSP.BackendApi.Base.Services;
 using GlobalCoders.PSP.BackendApi.Data;
+using GlobalCoders.PSP.BackendApi.Email.Configuration;
 using GlobalCoders.PSP.BackendApi.Email.Services;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities;
 using GlobalCoders.PSP.BackendApi.Identity.Configuration;
@@ -20,6 +21,7 @@ public static class IdentityServicesExtension
         bool isDevelopment)
     {
         services.Configure<IdentityConfiguration>(configuration.GetSection(IdentityConfiguration.SectionName));
+        services.Configure<RolesConfiguration>(configuration.GetSection(RolesConfiguration.SectionName));
 
         var identityConfiguration = configuration.GetSection(IdentityConfiguration.SectionName).Get<IdentityConfiguration>();
 
@@ -55,6 +57,10 @@ public static class IdentityServicesExtension
         services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
         
         services.AddScoped<IAuthorizationService, AuthorizationService>();
+        
+        //todo move next to mail extensions
+        services.Configure<MailConfiguration>(configuration.GetSection(MailConfiguration.SectionName));
+        services.Configure<SmtpConfiguration>(configuration.GetSection(SmtpConfiguration.SectionName));
         services.AddScoped<IMailService, MailService>();
         services.AddScoped<IMailProvider, SmtpMailProvider>();
         

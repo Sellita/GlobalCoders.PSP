@@ -3,5 +3,6 @@
 public enum Permissions
 {
     None = 0,
-    CanViewAllOrganizations = 1
+    CanViewAllOrganizations = 1,
+    CanViewAllEmployees = 2
 }
