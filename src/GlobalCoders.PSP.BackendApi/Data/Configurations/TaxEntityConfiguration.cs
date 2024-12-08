@@ -1,4 +1,4 @@
-using GlobalCoders.PSP.BackendApi.TaxManagement.Entitites;
+using GlobalCoders.PSP.BackendApi.TaxManagement.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

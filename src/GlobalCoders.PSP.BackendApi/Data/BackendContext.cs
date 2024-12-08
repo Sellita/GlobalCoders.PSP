@@ -2,7 +2,6 @@ using GlobalCoders.PSP.BackendApi.Data.Configurations;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities;
 using GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities;
 using GlobalCoders.PSP.BackendApi.TaxManagement.Entities;
-using GlobalCoders.PSP.BackendApi.TaxManagement.Entitites;
 using Microsoft.EntityFrameworkCore;
 
 namespace GlobalCoders.PSP.BackendApi.Data;
