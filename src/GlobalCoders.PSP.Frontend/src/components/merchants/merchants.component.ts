@@ -8,5 +8,22 @@ import { Component } from '@angular/core';
   styleUrl: './merchants.component.css'
 })
 export class MerchantsComponent {
+  ngOnInit(): void {
+  }
 
+  addOrder() {
+    console.log('Add order');
+  }
+
+  editOrder() {
+    console.log('Edit order');
+  }
+
+  deleteOrder() {
+    console.log('Delete order');
+  }
+
+  filterOrders() {
+    console.log('Filter orders');
+  }
 }

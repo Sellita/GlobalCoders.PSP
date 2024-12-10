@@ -2,4 +2,6 @@
 .content{
     margin-left: 140px;
     height: auto;
+    position:fixed;
+    width: calc(100% - 140px);
 }

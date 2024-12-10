@@ -7,3 +7,102 @@
     padding: 0;
     box-sizing: border-box;
 }
+
+
+.add-button{
+    background-color: #00cc1b;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.add-button:hover{
+    background-color: #00b316;
+}
+
+.edit-button{
+    background-color: #0496FF;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    height: 50px;
+}
+
+.edit-button:hover{
+    background-color: #0077cc;
+}
+
+.delete-button{
+    background-color: #d90007;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    height: 50px;
+
+}
+
+.delete-button:hover{
+    background-color: #a60006;
+}
+
+.filter-button{
+    background-color: #999999;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    height: 50px;
+}
+
+.filter-button:hover{
+    background-color: #666666;
+}
+
+.buttons{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 20px;
+    margin-top: 40px;
+}
+
+.title{
+    font-size: 20px;
+    height: 80px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    padding-top: 20px;
+    margin: 20px 0 20px 20px;
+}

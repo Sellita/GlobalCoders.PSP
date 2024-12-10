@@ -6,6 +6,7 @@ header{
     font-weight: bold;
     display: flex;
     justify-content: space-between;
+    height: 110px;
 }
 
 header section{
@@ -30,11 +31,11 @@ header section{
     border-radius: 5px;
 }
 
-.container {  
+.container { 
+    width: 100%;
     display: grid;
-    grid-template-columns: 370px 370px 370px 370px;
+    grid-template-columns: repeat(4, 370px); /* 4 columnas de 370px */
     grid-template-rows: 180px 80px 450px;
-    gap: 0px 0px;
     grid-auto-flow: row;
     grid-template-areas:
       "total revenue refunded out"
@@ -44,7 +45,7 @@ header section{
     justify-items: center;
     align-items: center;
     justify-content: center;
-    margin: 20px;
+    margin-top: 20px;
 }
 
 .container div {
@@ -63,12 +64,13 @@ header section{
 
 .revenue { 
     grid-area: revenue;
-    background-color: #E9ECEF;
+    background-color: #ff006e;
     display: flex;
     flex-direction: column;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    color: white;
 }
 
 .revenue h2{
@@ -88,12 +90,13 @@ header section{
 
 .refunded { 
     grid-area: refunded;
-    background-color: #E9ECEF;
+    background-color: #8338ec;
     display: flex;
     flex-direction: column;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    color: white;
 }
 
 .refunded h2{
@@ -113,12 +116,13 @@ header section{
 
 .total { 
     grid-area: total;
-    background-color: #E9ECEF;
+    background-color: #fb5607;
     display: flex;
     flex-direction: column;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    color: white;
 }
 
 .total h2{
@@ -138,7 +142,7 @@ header section{
 
 .out { 
     grid-area: out;
-    background-color: #E9ECEF;
+    background-color: #3a86ff;
     display: flex;
     flex-direction: column;
     display: flex;
@@ -151,6 +155,7 @@ header section{
     font-weight: normal;
     margin: 20px;
     padding: 0;
+    color: white;
 }
 
 .out p{
@@ -159,6 +164,7 @@ header section{
     margin: 20px;
     padding: 0;
     align-self: flex-end;
+    color: white;
 }
 
 

@@ -1,0 +1,76 @@
+<div class="popup-backdrop" *ngIf="isPopupVisible" (click)="closePopup()"></div>
+<div class="popup" *ngIf="isPopupVisible">
+    <div class="container">
+        <div class="state">
+          <label for="stateInput">State:</label>
+          <input id="stateInput" type="text" placeholder="Enter state">
+        </div>
+      
+        <div class="img">
+          <img src="" alt="">
+          <p>{{selectedProduct}}</p>
+        </div>
+      
+        <div class="merchant">
+          <label for="merchantInput">Merchant:</label>
+          <select id="merchantSelect" class="selector">
+            <option *ngFor="let merchant of merchants" [value]="merchant">{{ merchant }}</option>
+          </select>
+        </div>
+      
+        <div class="service">
+          <label for="serviceSelect">Service:</label>
+          <select id="serviceSelect" class="selector">
+            <option *ngFor="let service of services" [value]="service">{{ service }}</option>
+          </select>
+        </div>
+      
+        <div class="people">
+          <label for="peopleInput">People:</label>
+          <input id="peopleInput" type="number" placeholder="Enter number of people">
+        </div>
+      
+        <div class="discount">
+          <label for="discountInput">Discount:</label>
+          <input id="discountInput" type="text" placeholder="Enter discount details">
+          <button onclick="validateDiscount()">Apply</button>
+        </div>
+      
+        <div class="employee">
+          <label for="employeeInput">Employee:</label>
+          <input id="employeeInput" type="text" placeholder="Enter employee name">
+        </div>
+      
+        <div class="name">
+          <label for="nameInput">Name:</label>
+          <input id="nameInput" type="text" placeholder="Enter your name">
+        </div>
+      
+        <div class="products">
+          <label for="productsInput">Products:</label>
+          <select id="productSelect" class="selector">
+            <option *ngFor="let product of products" [value]="product">{{ product }}</option>
+          </select>
+        </div>
+      
+        <div class="add">
+          <button onclick="addProduct()">Add</button>
+        </div>
+      
+        <div class="resume">
+          <div *ngFor="let product of selectedProducts">
+            <p>Product: {{ product.name }}</p>
+            <p>Quantity: {{ product.quantity }}</p>
+            <p>Price: {{ product.price }}</p>
+            <p>Taxes: {{ product.taxes }}</p>
+          </div>
+        </div>
+      
+        <div class="price">
+          <label for="priceInput">Price:</label>
+          <input id="priceInput" type="number" placeholder="Enter price">
+        </div>
+      </div>
+      
+    <button (click)="closePopup()">Close</button>
+</div>
