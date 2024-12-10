@@ -15,7 +15,7 @@ public sealed class BackendContext : BaseDbContext
     {
     }
 
-    //Empoloee Managment
+    //Employee Managment
 
     #region Employee Managment
 
