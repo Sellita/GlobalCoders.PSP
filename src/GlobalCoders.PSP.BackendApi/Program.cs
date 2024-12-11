@@ -4,9 +4,11 @@ using GlobalCoders.PSP.BackendApi.Base.Filters;
 using GlobalCoders.PSP.BackendApi.Base.Services;
 using GlobalCoders.PSP.BackendApi.Data;
 using GlobalCoders.PSP.BackendApi.Data.Initialization;
+using GlobalCoders.PSP.BackendApi.DiscountManagment.Extensions;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Extensions;
 using GlobalCoders.PSP.BackendApi.Identity.Extensions;
 using GlobalCoders.PSP.BackendApi.OrganizationManagment.Extensions;
+using GlobalCoders.PSP.BackendApi.DiscountManagment.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
@@ -17,11 +19,11 @@ using Swashbuckle.AspNetCore.Filters;
 const string BearerScheme = "Bearer";
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Host.UseSerilog(
     (hostBuilder, loggerConfiguration) => loggerConfiguration.ReadFrom.Configuration(hostBuilder.Configuration));
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 RegisterSwagger(builder);
 
 builder.Services.AddControllers()
@@ -33,6 +35,10 @@ builder.Services.AddControllers()
 
             options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Ignore;
         });
+
+builder.Services.AddDbContextFactory<BaseDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("YourDatabaseConnection")));
+
 
 RegisterServices(builder.Services, builder.Configuration, builder.Environment.IsDevelopment());
 
@@ -51,12 +57,11 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-
+app.UseSerilogRequestLogging();
 app.MapControllers()
     .WithOpenApi();
 app.RegisterEmployees();
 
-app.UseSerilogRequestLogging();
 
 
 await app.RunAsync();
@@ -68,6 +73,10 @@ void RegisterServices(IServiceCollection services, ConfigurationManager configur
     services.RegisterIdentityServices(configuration, isDevelopment);
     services.RegisterEmployeeServices();
     services.RegisterOrganizationServices();
+    services.RegisterDiscountServices();
+
+    
+    
 }
 
 void RegisterDataBaseServices(IServiceCollection services, ConfigurationManager configuration)

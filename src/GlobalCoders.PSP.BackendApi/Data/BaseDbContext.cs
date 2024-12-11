@@ -1,3 +1,4 @@
+using GlobalCoders.PSP.BackendApi.DiscountManagment.Entities;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -29,4 +30,5 @@ public abstract class BaseDbContext : IdentityDbContext<EmployeeEntity, Permisio
             optionsBuilder.UseNpgsql(_connectionString);
         }
     }
+    public DbSet<DiscountEntity> Discounts { get; set; }
 }

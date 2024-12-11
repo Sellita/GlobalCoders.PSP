@@ -1,4 +1,6 @@
+using GlobalCoders.PSP.BackendApi.Base.Models;
 using GlobalCoders.PSP.BackendApi.Data.Configurations;
+using GlobalCoders.PSP.BackendApi.DiscountManagment.Entities;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities;
 using GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +24,7 @@ public sealed class BackendContext : BaseDbContext
         base.OnModelCreating(builder);
         
         builder.ApplyConfiguration(new MerhantEntityConfiguration());
+        builder.ApplyConfiguration(new DiscountEntityConfiguration()); 
     }
 
     //Empoloee Managment
@@ -32,4 +35,12 @@ public sealed class BackendContext : BaseDbContext
     public DbSet<PermisionEntity> Permission => Set<PermisionEntity>();
 
     #endregion
+    
+    #region
+    
+    public DbSet<DiscountEntity> Discounts => Set<DiscountEntity>();
+    
+    #endregion
+    
+    
 }
