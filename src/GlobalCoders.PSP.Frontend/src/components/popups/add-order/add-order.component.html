@@ -2,8 +2,12 @@
 <div class="popup" *ngIf="isPopupVisible">
     <div class="container">
         <div class="state">
-          <label for="stateInput">State:</label>
-          <input id="stateInput" type="text" placeholder="Enter state">
+          <label for="stateInput">State</label>
+          <div>
+            <button class="open">Open</button>
+            <button class="closed">Closed</button>
+            <button class="refunded">Refunded</button>
+          </div>
         </div>
       
         <div class="img">
@@ -12,65 +16,75 @@
         </div>
       
         <div class="merchant">
-          <label for="merchantInput">Merchant:</label>
+          <label for="merchantInput">Merchant</label>
           <select id="merchantSelect" class="selector">
             <option *ngFor="let merchant of merchants" [value]="merchant">{{ merchant }}</option>
           </select>
         </div>
       
         <div class="service">
-          <label for="serviceSelect">Service:</label>
+          <label for="serviceSelect">Service</label>
           <select id="serviceSelect" class="selector">
             <option *ngFor="let service of services" [value]="service">{{ service }}</option>
           </select>
         </div>
       
         <div class="people">
-          <label for="peopleInput">People:</label>
+          <label for="peopleInput">Nº of people</label>
           <input id="peopleInput" type="number" placeholder="Enter number of people">
         </div>
       
-        <div class="discount">
-          <label for="discountInput">Discount:</label>
-          <input id="discountInput" type="text" placeholder="Enter discount details">
-          <button onclick="validateDiscount()">Apply</button>
-        </div>
       
         <div class="employee">
-          <label for="employeeInput">Employee:</label>
+          <label for="employeeInput">Employee</label>
           <input id="employeeInput" type="text" placeholder="Enter employee name">
         </div>
       
         <div class="name">
-          <label for="nameInput">Name:</label>
-          <input id="nameInput" type="text" placeholder="Enter your name">
+          <label for="nameInput">Name</label>
+          <input id="nameInput" type="text" placeholder="Enter client's name">
         </div>
       
         <div class="products">
-          <label for="productsInput">Products:</label>
+          <label for="productsInput">Products</label>
           <select id="productSelect" class="selector">
-            <option *ngFor="let product of products" [value]="product">{{ product }}</option>
+            <option *ngFor="let product of products" [value]="product">{{ product.name }}</option>
           </select>
         </div>
       
-        <div class="add">
-          <button onclick="addProduct()">Add</button>
+        <div class="counter">
+          <div>
+            <button (click)="decrement()"><img src="./minus.png" alt=""></button>
+            <p>{{quantity}}</p>
+            <button (click)="increment()"><img src="./plus.png" alt=""></button>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="add"><img src="./check.png" alt=""></button>
+          <button class="remove"><img src="./trash.png" alt=""></button>
         </div>
       
         <div class="resume">
           <div *ngFor="let product of selectedProducts">
             <p>Product: {{ product.name }}</p>
-            <p>Quantity: {{ product.quantity }}</p>
+            <p>Category: {{ product.category }}</p>
+            <p>Description: {{ product.description }}</p>
+            <p>Quantity: {{ quantity }}</p>
             <p>Price: {{ product.price }}</p>
             <p>Taxes: {{ product.taxes }}</p>
           </div>
         </div>
       
         <div class="price">
-          <label for="priceInput">Price:</label>
-          <input id="priceInput" type="number" placeholder="Enter price">
+          <label for="productsInput">Price</label>
+          <div>
+            <p>{{totalprice}}</p>
+            <button (click)="addOrder()">Create</button>
+          </div>
         </div>
-      </div>
-      
-    <button (click)="closePopup()">Close</button>
+    </div>
+    <!--    <button (click)="closePopup()">Close</button>
+ -->
 </div>
+

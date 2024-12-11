@@ -1,4 +1,6 @@
 <app-add-order #popup></app-add-order>
+<app-edit-order #popupedit></app-edit-order>
+
 <header class="title">
     <h1>Ordering</h1>
 </header>
@@ -11,3 +13,4 @@
         <img src="./filter.png" alt="">
     </button>
 </div>
+<app-ordering-table [columns]="columns" [data]="data"></app-ordering-table>

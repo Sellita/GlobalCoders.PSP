@@ -1,0 +1,346 @@
+/* Fondo opaco detrás del popup */
+.popup-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+  
+  /* Contenedor del popup */
+  .popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    width: auto;
+    height: auto;
+    text-align: center;
+    background-color: #212529;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+  }
+  
+  /* Botón de cierre */
+  .popup button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100px;
+  }
+  
+  .popup button:hover {
+    background: #0056b3;
+  }
+  
+  .container {
+    display: grid;
+    grid-template-columns: 200px 200px 200px 150px 50px;
+    grid-template-rows: 80px 80px 220px 90px;
+    grid-auto-columns: 1fr;
+    gap: 10px 10px;
+    grid-auto-flow: row;
+    grid-template-areas:
+      "merchant service people state state"
+      "employee name products counter actions"
+      "img img resume resume resume"
+      "img img price price price";
+    background-color: #212529;
+    border: none;
+    column-gap: 20px;
+  }
+  
+  .container div{
+    display: flex;
+    justify-content: center;
+    border: none;
+    padding: 0%;
+  }
+
+  .container div label{
+    color: white;
+    font-size: 20px;
+    align-self: start;
+  }
+
+  .state { 
+    grid-area: state;
+    background-color: #212529;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+  }
+
+  .state div{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    min-height: 35px;
+    width: auto;
+    margin-top: 5px;
+    font-size: 16px;
+    background-color: #212529;
+  }
+
+  .state .open{
+    background-color: #ffd60a;
+    color: black;
+  }
+
+  .state .closed{
+    background-color: #f7a072;
+    color: black;
+  }
+
+  .state .refunded{
+    background-color: #fb5607;
+    color: black;
+  }
+
+  .state .open:hover,
+  .state .closed:hover,
+  .state .refunded:hover {
+    background-color: #ffffff;
+  }
+
+  .state div button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: auto;
+    margin: 0%;
+    padding: 5px;
+    font-size: 16px;
+  }
+
+  .img { 
+    grid-area: img;
+    background-color: #CED4DA;
+
+   }
+
+  .merchant { 
+    grid-area: merchant; 
+    background-color: #212529;
+
+  }
+
+  .service { 
+    grid-area: service;
+    background-color: #212529;
+
+  }
+
+  .people { 
+    grid-area: people;
+    background-color: #212529;
+
+  }
+
+  .discount { 
+    grid-area: discount;
+    display: flex;
+    justify-content: space-between;
+    background-color: #212529;
+
+
+  }
+
+  .employee { 
+    grid-area: employee;
+    background-color: #212529;
+  }
+
+  .name { 
+    grid-area: name; 
+    background-color: #212529;
+
+  }
+
+  .products { 
+    grid-area: products;
+    background-color: #212529;
+
+  }
+
+  .counter { 
+    grid-area: counter;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    background-color: #ADB5BD;
+    height: auto;
+  }
+
+  .counter div{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    min-height: 35px;
+    width: 120px;
+    font-size: 16px;
+    background-color: #DEE2E6;
+    padding: 5px;
+    gap: 10px;
+  }
+
+  .counter button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    width: auto;
+    margin: 0%;
+    padding: 5px;
+    font-size: 16px;
+    background-color: #F8F9FA;
+  }
+
+  .counter button:hover{
+    background-color: #ffffff;
+  }
+
+  .actions { 
+    grid-area: actions;
+    background-color: #ADB5BD;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+    gap: 5px;
+  }
+
+  .actions button{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: auto;
+    width: auto;
+    margin: 0%;
+    padding: 3px;
+    font-size: 16px;
+    background-color: #F8F9FA;
+  }
+
+  .actions button:hover{
+    background-color: #ffffff;
+  }
+
+  .resume { 
+    grid-area: resume;
+    background-color: white;
+ 
+  }
+
+  .price {
+    margin-top: 23px;
+    grid-area: price;
+    background-color: #212529;
+  }
+  
+  .price p{
+    color: black;
+    background-color: white;
+    width: 180px;
+    padding: 5px;
+    font-size: 16px;
+    margin-top: 5px;
+    border-radius: 5px;
+  }
+
+  .price div{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    min-height: 35px;
+    width: 250px;
+    font-size: 16px;
+    background-color: #212529;
+    gap: 10px;
+  }
+
+  .price div button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    width: 80px;
+    margin-top: 5px;
+    padding: 6px;
+    font-size: 16px;
+    background-color: #a5abb1;
+    color: white;
+    font-weight: bold;
+  }
+
+  .price div button:hover{
+    background-color: #DEE2E6;
+  }
+  
+  div {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+  }
+  
+  input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #fff;
+  }
+
+  .selector{
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #fff;
+  }
+  
+  input:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+  
+  input::placeholder {
+    color: #aaa;
+  }
+  

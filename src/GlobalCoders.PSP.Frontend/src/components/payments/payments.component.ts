@@ -8,22 +8,5 @@ import { Component } from '@angular/core';
   styleUrl: './payments.component.css'
 })
 export class PaymentsComponent {
-  ngOnInit(): void {
-  }
 
-  addOrder() {
-    console.log('Add order');
-  }
-
-  editOrder() {
-    console.log('Edit order');
-  }
-
-  deleteOrder() {
-    console.log('Delete order');
-  }
-
-  filterOrders() {
-    console.log('Filter orders');
-  }
 }
