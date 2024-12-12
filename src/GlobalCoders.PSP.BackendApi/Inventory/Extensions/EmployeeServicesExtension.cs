@@ -6,13 +6,13 @@ namespace GlobalCoders.PSP.BackendApi.Inventory.Extensions;
 
 public static class InventoryServicesExtension
 {
-    public static void RegisterOrganizationServices(this IServiceCollection services)
+    public static void RegisterInventoryServices(this IServiceCollection services)
     {
         services.AddScoped<IInventoryRepository, InventoryRepository>();
         services.AddScoped<IInventoryService, InventoryService>();
     }
     
-    public static void RegisterOrganizatio(this WebApplication app)
+    public static void RegisterInventory(this WebApplication app)
     {
 
         //todo implement me
