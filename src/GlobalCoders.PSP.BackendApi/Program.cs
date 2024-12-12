@@ -6,6 +6,7 @@ using GlobalCoders.PSP.BackendApi.Data;
 using GlobalCoders.PSP.BackendApi.Data.Initialization;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Extensions;
 using GlobalCoders.PSP.BackendApi.Identity.Extensions;
+using GlobalCoders.PSP.BackendApi.Inventory.Extensions;
 using GlobalCoders.PSP.BackendApi.OrganizationManagment.Extensions;
 using GlobalCoders.PSP.BackendApi.ProductsManagment.Extensions;
 using GlobalCoders.PSP.BackendApi.SurchargeManagement.Extensions;
@@ -65,6 +66,8 @@ await app.RunAsync();
 
 void RegisterServices(IServiceCollection services, ConfigurationManager configuration, bool isDevelopment)
 {
+    services.RegisterCors(configuration);
+    
     RegisterDataBaseServices(services, configuration);
     
     services.RegisterIdentityServices(configuration, isDevelopment);
@@ -72,6 +75,7 @@ void RegisterServices(IServiceCollection services, ConfigurationManager configur
     services.RegisterOrganizationServices();
     services.RegisterSurChargeManagementServices();
     services.RegisterProductsManagmentServices();
+    services.RegisterInventoryServices();
 }
 
 void RegisterDataBaseServices(IServiceCollection services, ConfigurationManager configuration)
