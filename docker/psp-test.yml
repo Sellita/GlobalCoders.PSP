@@ -11,6 +11,11 @@ services:
       ASPNETCORE_ENVIRONMENT: "Development"
       ASPNETCORE_URLS: "http://+"
       DbSettings__ConnectionString: ${w_connection_string}
+      SmtpProvider__SmtpServer: "mail"
+      Cors__Origins__0: "http://localhost:4200"
+      Cors__Origins__1: "https://localhost:4200"
+      Cors__Origins__2: "http://localhost:9001"
+      Cors__Origins__3: "https://localhost:9001"
     ports:
       - "9001:80"
     depends_on:
