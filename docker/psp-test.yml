@@ -15,7 +15,9 @@ services:
       Cors__Origins__0: "http://localhost:4200"
       Cors__Origins__1: "https://localhost:4200"
       Cors__Origins__2: "http://localhost:9001"
-      Cors__Origins__3: "https://localhost:9001"
+      Cors__Origins__3: "https://localhost:9001"   
+      Cors__Origins__4: "http://localhost:5141"
+      Cors__Origins__5: "https://localhost:5141"
     ports:
       - "9001:80"
     depends_on:
