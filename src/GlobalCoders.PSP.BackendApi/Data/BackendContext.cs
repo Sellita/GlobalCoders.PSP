@@ -4,6 +4,7 @@ using GlobalCoders.PSP.BackendApi.Inventory.Entities;
 using GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities;
 using GlobalCoders.PSP.BackendApi.ProductsManagment.Entities;
 using GlobalCoders.PSP.BackendApi.SurchargeManagement.Entities;
+using GlobalCoders.PSP.BackendApi.TaxManagement.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace GlobalCoders.PSP.BackendApi.Data;
@@ -25,10 +26,12 @@ public sealed class BackendContext : BaseDbContext
         base.OnModelCreating(builder);
         
         builder.ApplyConfiguration(new MerhantEntityConfiguration());
+
         builder.ApplyConfiguration(new EmployeeEntityConfiguration());
         builder.ApplyConfiguration(new SurchargeEntityConfiguration());
         builder.ApplyConfiguration(new ProductTypeEntityConfiguration());
         builder.ApplyConfiguration(new ProductEntityConfiguration());
+        builder.ApplyConfiguration(new TaxEntityConfiguration());
     }
 
     //Empoloee Managment
@@ -54,5 +57,11 @@ public sealed class BackendContext : BaseDbContext
     
     public DbSet<InventoryTransactionEntity> InventoryTransactions => Set<InventoryTransactionEntity>();
     
+    // Tax Management
+    #region Tax Management
+    
+    public DbSet<TaxEntity> Tax => Set<TaxEntity>();
+    
+    #endregion
     
 }
