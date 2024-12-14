@@ -16,6 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{4BBB68
 		docker\psp-test.yml = docker\psp-test.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobalCoders.PSP.FrontExmple2", "src\GlobalCoders.PSP.FrontExmple2\GlobalCoders.PSP.FrontExmple2.csproj", "{31D43E26-D71C-4BE4-A132-2D2251B91D01}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +26,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{B9C615B7-C27A-4397-B8DC-571099534FCF} = {A4372B2E-4E13-485B-AD98-8800F0DB3A80}
 		{4D429522-1B30-49FF-86F8-85E33E413D46} = {F4356FC5-2219-442E-95B4-7174C566C4B8}
+		{31D43E26-D71C-4BE4-A132-2D2251B91D01} = {F4356FC5-2219-442E-95B4-7174C566C4B8}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B9C615B7-C27A-4397-B8DC-571099534FCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -34,5 +37,9 @@ Global
 		{4D429522-1B30-49FF-86F8-85E33E413D46}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D429522-1B30-49FF-86F8-85E33E413D46}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D429522-1B30-49FF-86F8-85E33E413D46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31D43E26-D71C-4BE4-A132-2D2251B91D01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31D43E26-D71C-4BE4-A132-2D2251B91D01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31D43E26-D71C-4BE4-A132-2D2251B91D01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31D43E26-D71C-4BE4-A132-2D2251B91D01}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

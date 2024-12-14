@@ -54,7 +54,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-
+app.UseCors();
 app.MapControllers()
     .WithOpenApi();
 app.RegisterEmployees();
