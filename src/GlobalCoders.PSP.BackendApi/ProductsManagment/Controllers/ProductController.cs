@@ -15,13 +15,13 @@ public class ProductController : BaseApiController
 {
     private readonly ILogger<ProductController> _logger;
     private readonly IAuthorizationService _authorizationService;
-    private readonly IProductService _produyctTypeService;
+    private readonly IProductService _productService;
 
-    public ProductController(ILogger<ProductController> logger, IAuthorizationService authorizationService, IProductService produyctTypeService)
+    public ProductController(ILogger<ProductController> logger, IAuthorizationService authorizationService, IProductService productService)
     {
         _logger = logger;
         _authorizationService = authorizationService;
-        _produyctTypeService = produyctTypeService;
+        _productService = productService;
     }
     
     [HttpGet("[action]/{organizationId}")]
@@ -46,7 +46,7 @@ public class ProductController : BaseApiController
             return NotFound();
         }
         
-        var result = await _produyctTypeService.GetAsync(organizationId);
+        var result = await _productService.GetAsync(organizationId);
         
         if(result == null)
         {
@@ -78,7 +78,7 @@ public class ProductController : BaseApiController
                 return NotFound();
             }
             
-            var userOrganization = await _produyctTypeService.GetAsync(user.Merchant.Id);
+            var userOrganization = await _productService.GetAsync(user.Merchant.Id);
             
             filter.MerchantId = userOrganization?.MerchantId;
             
@@ -88,7 +88,7 @@ public class ProductController : BaseApiController
             }
         }
         
-        var result = await _produyctTypeService.GetAllAsync(filter);
+        var result = await _productService.GetAllAsync(filter);
         
         return Ok(result);
     }
@@ -122,14 +122,14 @@ public class ProductController : BaseApiController
         
         var createModel = ProductEntityFactory.Create(organizationCreateModel);
         
-        var result = await _produyctTypeService.CreateAsync(createModel);
+        var result = await _productService.CreateAsync(createModel);
 
         if (result)
         {
             return Ok();
         }
         
-        return Problem("Failed to update organization");
+        return Problem("Failed to create product");
     }
     
     [HttpPut("[action]")]
@@ -142,20 +142,20 @@ public class ProductController : BaseApiController
         
         var updateModel = ProductEntityFactory.CreateUpdate(organizationUpdateModel);
         
-        var result = await _produyctTypeService.UpdateAsync(updateModel);
+        var result = await _productService.UpdateAsync(updateModel);
 
         if (result)
         {
             return Ok();
         }
         
-        return Problem("Failed to update organization");
+        return Problem("Failed to update Product");
     }
     
     [HttpDelete("[action]/{organizationId}")]
     public async Task<IActionResult> Delete(Guid organizationId)
     {
-        var result = await _produyctTypeService.DeleteAsync(organizationId);
+        var result = await _productService.DeleteAsync(organizationId);
 
         if (result)
         {

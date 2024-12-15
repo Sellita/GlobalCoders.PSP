@@ -39,7 +39,7 @@ public class TaxEntity
     public bool IsDeleted { get; set; } 
     
     public Guid MerchantId { get; set; }
-    public virtual MerchantEntity Merchant { get; set; }
+    public virtual MerchantEntity? Merchant { get; set; }
     
     
     

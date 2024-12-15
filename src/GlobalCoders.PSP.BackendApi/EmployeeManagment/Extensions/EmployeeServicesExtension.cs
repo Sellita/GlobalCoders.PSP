@@ -1,3 +1,4 @@
+using GlobalCoders.PSP.BackendApi.EmployeeManagment.Controllers;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Repositories;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -11,6 +12,7 @@ public static class EmployeeServicesExtension
         //todo implement me
         services.AddScoped<IEmployeeService, EmployeeService>();
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+        services.AddScoped<EmployeeController>();
     }
     
     public static void RegisterEmployees(this WebApplication app)

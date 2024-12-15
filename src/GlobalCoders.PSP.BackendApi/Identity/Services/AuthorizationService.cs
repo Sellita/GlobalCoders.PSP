@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using GlobalCoders.PSP.BackendApi.Base.Extensions;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities;
+using GlobalCoders.PSP.BackendApi.EmployeeManagment.Repositories;
 using GlobalCoders.PSP.BackendApi.Identity.Constants;
 using GlobalCoders.PSP.BackendApi.Identity.Enums;
 using Microsoft.AspNetCore.Identity;
@@ -13,15 +14,18 @@ public sealed class AuthorizationService : IAuthorizationService
     private readonly ILogger<AuthorizationService> _logger;
     private readonly UserManager<EmployeeEntity> _userManager;
     private readonly RoleManager<PermisionTemplateEntity> _roleManager;
+    private readonly IEmployeeRepository _employeeRepository;
 
     public AuthorizationService(
         ILogger<AuthorizationService> logger,
         UserManager<EmployeeEntity> userManager,
-        RoleManager<PermisionTemplateEntity> roleManager)
+        RoleManager<PermisionTemplateEntity> roleManager,
+        IEmployeeRepository employeeRepository)
     {
         _logger = logger;
         _userManager = userManager;
         _roleManager = roleManager;
+        _employeeRepository = employeeRepository;
     }
     
      public async Task<bool> HasPermissionsAsync(
@@ -141,7 +145,13 @@ public sealed class AuthorizationService : IAuthorizationService
 
     public async Task<EmployeeEntity?> GetUserAsync(ClaimsPrincipal user)
     {
-        return await _userManager.GetUserAsync(user);
+        var employee =  await _userManager.GetUserAsync(user);
+        if (employee == null)
+        {
+            return null;
+        }
+        
+        return await _employeeRepository.GetUserAsync(employee.Id);
 
     }
 

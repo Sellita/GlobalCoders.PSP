@@ -1,3 +1,4 @@
+using GlobalCoders.PSP.BackendApi.ProductsManagment.Controllers;
 using GlobalCoders.PSP.BackendApi.ProductsManagment.Repositories;
 using GlobalCoders.PSP.BackendApi.ProductsManagment.Services;
 
@@ -12,6 +13,8 @@ public static class ProductManagementExtension
         
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IProductService, ProductService>();
+        
+        services.AddScoped<ProductController>();
     }
     
     public static void RegisterProductsManagment(this WebApplication app)

@@ -187,6 +187,142 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
+            modelBuilder.Entity("GlobalCoders.PSP.BackendApi.InventoryManagement.Entities.InventoryTransactionEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("MerchantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MerchantId");
+
+                    b.HasIndex("ProductId", "MerchantId");
+
+                    b.ToTable("InventoryTransactions");
+                });
+
+            modelBuilder.Entity("GlobalCoders.PSP.BackendApi.OrdersManagement.Entities.OrderEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ClientName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("Discount")
+                        .HasColumnType("numeric");
+
+                    b.Property<Guid>("EmployeeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("MerchantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Tips")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("MerchantId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("GlobalCoders.PSP.BackendApi.OrdersManagement.Entities.OrderPaymentsEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<Guid?>("OrderEntityId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderEntityId");
+
+                    b.ToTable("OrderPayments");
+                });
+
+            modelBuilder.Entity("GlobalCoders.PSP.BackendApi.OrdersManagement.Entities.OrderProductEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Discount")
+                        .HasColumnType("numeric");
+
+                    b.Property<Guid?>("OrderEntityId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ProductName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("Tax")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderEntityId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderProducts");
+                });
+
             modelBuilder.Entity("GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities.MerchantEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -251,7 +387,8 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
@@ -368,6 +505,68 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                     b.HasIndex("MerchantId");
 
                     b.ToTable("Surcharge");
+                });
+
+            modelBuilder.Entity("GlobalCoders.PSP.BackendApi.TaxManagement.Entities.TaxEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationDateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DayOfMonth")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("DayOfWeek")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("Hour")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("MerchantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Minute")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("Month")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<int>("Status")
+                        .HasMaxLength(255)
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Value")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MerchantId");
+
+                    b.ToTable("Tax");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -494,6 +693,66 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                     b.Navigation("Employee");
                 });
 
+            modelBuilder.Entity("GlobalCoders.PSP.BackendApi.InventoryManagement.Entities.InventoryTransactionEntity", b =>
+                {
+                    b.HasOne("GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities.MerchantEntity", "Merchant")
+                        .WithMany()
+                        .HasForeignKey("MerchantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GlobalCoders.PSP.BackendApi.ProductsManagment.Entities.ProductEntity", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Merchant");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("GlobalCoders.PSP.BackendApi.OrdersManagement.Entities.OrderEntity", b =>
+                {
+                    b.HasOne("GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities.EmployeeEntity", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities.MerchantEntity", "Merchant")
+                        .WithMany()
+                        .HasForeignKey("MerchantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("Merchant");
+                });
+
+            modelBuilder.Entity("GlobalCoders.PSP.BackendApi.OrdersManagement.Entities.OrderPaymentsEntity", b =>
+                {
+                    b.HasOne("GlobalCoders.PSP.BackendApi.OrdersManagement.Entities.OrderEntity", null)
+                        .WithMany("OrderPayments")
+                        .HasForeignKey("OrderEntityId");
+                });
+
+            modelBuilder.Entity("GlobalCoders.PSP.BackendApi.OrdersManagement.Entities.OrderProductEntity", b =>
+                {
+                    b.HasOne("GlobalCoders.PSP.BackendApi.OrdersManagement.Entities.OrderEntity", null)
+                        .WithMany("OrderProducts")
+                        .HasForeignKey("OrderEntityId");
+
+                    b.HasOne("GlobalCoders.PSP.BackendApi.ProductsManagment.Entities.ProductEntity", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("GlobalCoders.PSP.BackendApi.ProductsManagment.Entities.ProductEntity", b =>
                 {
                     b.HasOne("GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities.MerchantEntity", "Merchant")
@@ -514,6 +773,17 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                 });
 
             modelBuilder.Entity("GlobalCoders.PSP.BackendApi.SurchargeManagement.Entities.SurchargeEntity", b =>
+                {
+                    b.HasOne("GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities.MerchantEntity", "Merchant")
+                        .WithMany()
+                        .HasForeignKey("MerchantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Merchant");
+                });
+
+            modelBuilder.Entity("GlobalCoders.PSP.BackendApi.TaxManagement.Entities.TaxEntity", b =>
                 {
                     b.HasOne("GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities.MerchantEntity", "Merchant")
                         .WithMany()
@@ -568,6 +838,13 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
             modelBuilder.Entity("GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities.PermisionTemplateEntity", b =>
                 {
                     b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("GlobalCoders.PSP.BackendApi.OrdersManagement.Entities.OrderEntity", b =>
+                {
+                    b.Navigation("OrderPayments");
+
+                    b.Navigation("OrderProducts");
                 });
 #pragma warning restore 612, 618
         }

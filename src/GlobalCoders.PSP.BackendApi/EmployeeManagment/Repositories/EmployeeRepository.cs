@@ -67,4 +67,15 @@ public class EmployeeRepository : IEmployeeRepository
             return false;
         }
     }
+
+    public Task<EmployeeEntity?> GetUserAsync(Guid user)
+    {
+        var context = _contextFactory.CreateDbContext();
+        
+        return context.Users
+            .Include(x => x.UserPermissions)
+            .Include(x=>x.Merchant)
+            .Where(x => x.Id == user)
+            .FirstOrDefaultAsync();
+    }
 }
