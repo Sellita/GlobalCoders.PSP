@@ -6,10 +6,12 @@ using GlobalCoders.PSP.BackendApi.Data;
 using GlobalCoders.PSP.BackendApi.Data.Initialization;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Extensions;
 using GlobalCoders.PSP.BackendApi.Identity.Extensions;
-using GlobalCoders.PSP.BackendApi.Inventory.Extensions;
+using GlobalCoders.PSP.BackendApi.InventoryManagement.Extensions;
+using GlobalCoders.PSP.BackendApi.OrdersManagement.Extensions;
 using GlobalCoders.PSP.BackendApi.OrganizationManagment.Extensions;
 using GlobalCoders.PSP.BackendApi.ProductsManagment.Extensions;
 using GlobalCoders.PSP.BackendApi.SurchargeManagement.Extensions;
+using GlobalCoders.PSP.BackendApi.TaxManagement.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
@@ -76,6 +78,8 @@ void RegisterServices(IServiceCollection services, ConfigurationManager configur
     services.RegisterSurChargeManagementServices();
     services.RegisterProductsManagmentServices();
     services.RegisterInventoryServices();
+    services.RegisterOrdersServices();
+    services.RegisterTaxManagementServices();
 }
 
 void RegisterDataBaseServices(IServiceCollection services, ConfigurationManager configuration)

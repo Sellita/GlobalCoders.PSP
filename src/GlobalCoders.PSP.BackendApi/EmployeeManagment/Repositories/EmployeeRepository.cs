@@ -19,9 +19,11 @@ public class EmployeeRepository : IEmployeeRepository
         try
         {
             var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
-
+            
             context.Users.Update(appUser);
-
+            var oldSchedule = context.EmployeeScheduleEntity.Where(x=>x.EmployeeEntityId == appUser.Id).ToList();
+            context.RemoveRange(oldSchedule);
+            
             var result = await context.SaveChangesAsync(cancellationToken);
 
             return result > 0;
@@ -66,5 +68,16 @@ public class EmployeeRepository : IEmployeeRepository
 
             return false;
         }
+    }
+
+    public Task<EmployeeEntity?> GetUserAsync(Guid user)
+    {
+        var context = _contextFactory.CreateDbContext();
+        
+        return context.Users
+            .Include(x => x.UserPermissions)
+            .Include(x=>x.Merchant)
+            .Where(x => x.Id == user)
+            .FirstOrDefaultAsync();
     }
 }

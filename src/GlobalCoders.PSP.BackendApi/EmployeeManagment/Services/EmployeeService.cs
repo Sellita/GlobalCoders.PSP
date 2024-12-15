@@ -46,6 +46,7 @@ public class EmployeeService : IEmployeeService
         try
         {
             var appUserEntity = await _userManager.Users
+                .Include(x => x.WorkingSchedule)
                 .Include(x => x.UserPermissions)
                 .ThenInclude(x => x.AppRole)
                 .AsNoTracking()
@@ -191,11 +192,12 @@ public class EmployeeService : IEmployeeService
             appUser.IsActive = updateRequest.IsActive;
             appUser.MerchantId = updateRequest.OrganizationId;
 
-            appUser.Minute = updateRequest.Minute;
-            appUser.Hour = updateRequest.Hour;
-            appUser.DayMounth = updateRequest.DayOfMonth;
-            appUser.Mounth = updateRequest.Month;
-            appUser.DayWeek = updateRequest.DayOfWeek;
+            appUser.WorkingSchedule = updateRequest.WorkingSchedule.Select(x=> new EmployeeScheduleEntity
+            {
+                DayOfWeek = x.DayOfWeek,
+                StartTime = x.StartTime,
+                EndTime = x.EndTime
+            }).ToList();
 
             var isUpdated = await _employeeRepository.UpdateAsync(appUser, updateRequest.Role, cancellationToken);
 

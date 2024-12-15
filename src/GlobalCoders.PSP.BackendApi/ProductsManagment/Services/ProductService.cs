@@ -34,9 +34,14 @@ public class ProductService : IProductService
         return BasePagedResopnseFactory.Create(models, filter, entities.totalItems);
     }
 
-    public async Task<ProductResponseModel?> GetAsync(Guid organizationId)
+    public async Task<ProductResponseModel?> GetAsync(Guid productId)
     {
-        var entity = await _productRepository.GetAsync(organizationId);
+        var entity = await _productRepository.GetAsync(productId);
+        
+        if(entity == null)
+        {
+            return null;
+        }
         
         return ProductResponseModelFactory.Create(entity);
     }

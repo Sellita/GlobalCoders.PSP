@@ -15,9 +15,12 @@ public static class MerchantEntityFactory
             Email = organizationCreateModel.Email,
             MainPhoneNr = organizationCreateModel.MainPhoneNumber,
             SecondaryPhoneNr = organizationCreateModel.SecondaryPhoneNumber,
-            OpeningHour = organizationCreateModel.OpeningHour,
-            ClosingHour = organizationCreateModel.ClosingHour,
-            BatchOutTime = organizationCreateModel.BatchOutTime
+            WorkingSchedule = organizationCreateModel.WorkingSchedule.Select(x => new OrganizationScheduleEntity
+            {
+                DayOfWeek = x.DayOfWeek,
+                StartTime = x.StartTime,
+                EndTime = x.EndTime
+            }).ToList()
         };
     }  
     

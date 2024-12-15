@@ -14,16 +14,17 @@ public class ProductEntity
 
     [StringLength(EmployeeConstants.DefaultStringLimitation)]
     public string DisplayName { get; set; } = string.Empty; 
+    [StringLength(EmployeeConstants.DefaultStringLimitation)]
     public string Description { get; set; } = string.Empty;
     
     public decimal Price { get; set; }
     public ProductState ProductState { get; set; } 
     
     public Guid ProductTypeId { get; set; }
-    public virtual ProductTypeEntity ProductType { get; set; } = new ();
+    public virtual ProductTypeEntity? ProductType { get; set; }
     
     public Guid MerchantId { get; set; }
-    public virtual MerchantEntity Merchant { get; set; } = new ();
+    public virtual MerchantEntity? Merchant { get; set; }
     
     public DateTime CreationDate { get; set; }
     public DateTime LastUpdateDate { get; set; }

@@ -53,7 +53,9 @@ public class ProductRepository : IProductRepository
     {
         await using var context = await _contextFactory.CreateDbContextAsync();
 
-        var query = context.Product.AsQueryable();
+        var query = context.Product
+            .Include(x=>x.Merchant)
+            .AsQueryable();
         
         if (!string.IsNullOrWhiteSpace(filter.Name))
         {
@@ -72,20 +74,25 @@ public class ProductRepository : IProductRepository
         
         var totalItems = await query.CountAsync();
 
-        var items = await query
+        var items =  query
             .OrderBy(x=>x.DisplayName)
             .Skip((filter.Page - 1) * filter.ItemsPerPage)
             .Take(filter.ItemsPerPage)
-            .ToListAsync();
+            .ToList();
 
         return (items, totalItems);
     }
 
-    public async Task<ProductEntity?> GetAsync(Guid organizationId)
+    public async Task<ProductEntity?> GetAsync(Guid productId)
     {
         await using var context = await _contextFactory.CreateDbContextAsync();
 
-        return await context.Product.FirstOrDefaultAsync(x => x.Id == organizationId);
+        var product =  await context.Product
+            .Include(x=>x.Merchant)
+            .Include(x=>x.ProductType)
+            .FirstOrDefaultAsync(x => x.Id == productId);
+
+        return product;
     }
 
     public async Task<bool> DeleteAsync(Guid organizationId)

@@ -16,7 +16,13 @@ public static class EmployeeResponseModelFactory
             Role = employeeEntity.UserPermissions.FirstOrDefault()?.AppRole?.Name ?? string.Empty,
             CreateTime = employeeEntity.CreationDateTime,
             IsActive = employeeEntity.IsActive,
-            MerchantId = employeeEntity.MerchantId ?? Guid.Empty
+            MerchantId = employeeEntity.MerchantId ?? Guid.Empty,
+            WorkingSchedule = employeeEntity.WorkingSchedule.Select(x => new EmployeeScheduleRequest
+            {
+                DayOfWeek = x.DayOfWeek,
+                StartTime = x.StartTime,
+                EndTime = x.EndTime
+            }).ToList()
         };
     }
 }

@@ -1,4 +1,5 @@
 using GlobalCoders.PSP.BackendApi.ProductsManagment.Entities;
+using GlobalCoders.PSP.BackendApi.ProductsManagment.Enum;
 using GlobalCoders.PSP.BackendApi.ProductsManagment.ModelsDto;
 
 namespace GlobalCoders.PSP.BackendApi.ProductsManagment.Factories;
@@ -9,7 +10,15 @@ public static class ProductEntityFactory
     {
         return new ProductEntity
         {
-            DisplayName = organizationCreateModel.DisplayName
+            DisplayName = organizationCreateModel.DisplayName,
+            Description = organizationCreateModel.Description,
+            Price = organizationCreateModel.Price,
+            ProductState = ProductState.Active,
+            ProductTypeId = organizationCreateModel.ProductTypeId,
+            MerchantId = organizationCreateModel.MerchantId,
+            CreationDate = DateTime.UtcNow,
+            LastUpdateDate = DateTime.UtcNow,
+            Image = organizationCreateModel.Image
         };
     }  
     
@@ -18,7 +27,8 @@ public static class ProductEntityFactory
         var merchantEntity = Create(updateModel);
 
         merchantEntity.Id = updateModel.Id;
-        
+        merchantEntity.LastUpdateDate = DateTime.UtcNow;
+
         return merchantEntity;
     }
 }

@@ -19,12 +19,14 @@ public static class EmployeeEntityFactory
             IsActive = request.IsActive,
             // for employee
             Name = request.Name,
-            CreationDateTime = request.CreateTime,
-            Minute = request.Minute,
-            Hour = request.Hour,
-            DayMounth = request.DayOfMonth,
-            Mounth = request.Month,
-            DayWeek = request.DayOfWeek,
+            PhoneNumber = request.PhoneNumber,
+            CreationDateTime = DateTime.UtcNow,
+            WorkingSchedule = request.WorkingSchedule.Select(x=> new EmployeeScheduleEntity
+            {
+                DayOfWeek = x.DayOfWeek,
+                StartTime = x.StartTime,
+                EndTime = x.EndTime
+            }).ToList(),
             MerchantId = request.OrganizationId
         };
     }

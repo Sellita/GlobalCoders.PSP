@@ -1,6 +1,7 @@
 using GlobalCoders.PSP.BackendApi.Data.Configurations;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities;
-using GlobalCoders.PSP.BackendApi.Inventory.Entities;
+using GlobalCoders.PSP.BackendApi.InventoryManagement.Entities;
+using GlobalCoders.PSP.BackendApi.OrdersManagement.Entities;
 using GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities;
 using GlobalCoders.PSP.BackendApi.ProductsManagment.Entities;
 using GlobalCoders.PSP.BackendApi.SurchargeManagement.Entities;
@@ -32,13 +33,18 @@ public sealed class BackendContext : BaseDbContext
         builder.ApplyConfiguration(new ProductTypeEntityConfiguration());
         builder.ApplyConfiguration(new ProductEntityConfiguration());
         builder.ApplyConfiguration(new TaxEntityConfiguration());
+        builder.ApplyConfiguration(new OrderProductsEntityConfiguration());
+        builder.ApplyConfiguration(new OrderEntityConfiguration());
+        builder.ApplyConfiguration(new AppUserRoleConfigurations());
     }
 
     //Empoloee Managment
 
     #region Employee Managment
 
+   public DbSet<EmployeeScheduleEntity> EmployeeScheduleEntity => Set<EmployeeScheduleEntity>();
     public DbSet<MerchantEntity> Merchant => Set<MerchantEntity>();
+    public DbSet<OrganizationScheduleEntity> OrganizationScheduleEntity => Set<OrganizationScheduleEntity>();
     public DbSet<PermisionEntity> Permission => Set<PermisionEntity>();
 
     #endregion
@@ -56,6 +62,10 @@ public sealed class BackendContext : BaseDbContext
     
     
     public DbSet<InventoryTransactionEntity> InventoryTransactions => Set<InventoryTransactionEntity>();
+    
+    public DbSet<OrderEntity> Orders => Set<OrderEntity>();
+    public DbSet<OrderProductEntity> OrderProducts => Set<OrderProductEntity>();
+    public DbSet<OrderPaymentsEntity> OrderPayments => Set<OrderPaymentsEntity>();
     
     // Tax Management
     #region Tax Management

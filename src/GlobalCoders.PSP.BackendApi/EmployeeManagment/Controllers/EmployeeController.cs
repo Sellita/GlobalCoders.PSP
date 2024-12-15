@@ -22,7 +22,7 @@ public class EmployeeController : BaseApiController
     }
     
     [HttpGet("[action]/{employeeId}")]
-    public async Task<IActionResult> Id(Guid employeeId, CancellationToken cancellationToken)
+    public async Task<ActionResult<EmployeeResponseModel?>> Id(Guid employeeId, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
