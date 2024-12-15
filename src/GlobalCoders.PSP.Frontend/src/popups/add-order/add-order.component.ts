@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Product } from '../../../models/product.model';
-import { Order } from '../../../models/order.model';
+import { Product } from '../../models/product.model';
+import { Order } from '../../models/order.model';
 
 @Component({
   selector: 'app-add-order',

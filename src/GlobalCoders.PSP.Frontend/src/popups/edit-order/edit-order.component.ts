@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Product } from '../../../models/product.model';
+import { Product } from '../../models/product.model';
 
 @Component({
   selector: 'app-edit-order',

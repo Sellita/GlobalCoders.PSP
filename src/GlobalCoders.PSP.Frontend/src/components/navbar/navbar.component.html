@@ -1,3 +1,4 @@
+<app-login #login></app-login>
 <nav>
     <button routerLink="/dashboard" routerLinkActive="active"><img src="home.png" alt="xd">Dashboard</button>
     <button routerLink="/orders" routerLinkActive="active"><img src="order.png" alt="">Orders</button>
@@ -9,5 +10,5 @@
     <button routerLink="/merchants" routerLinkActive="active"><img src="merchant.png" alt="">Merchants</button>
     <button routerLink="/users" routerLinkActive="active"><img src="user.png" alt="">Users</button>
     <button routerLink="/services" routerLinkActive="active"><img src="service.png" alt="">Services</button>
-    <button routerLink="/login" routerLinkActive="active"><img src="login.png" alt="">Login</button>
+    <button (click)="showloginpopup()"><img src="login.png" alt="">Login</button>
 </nav>
