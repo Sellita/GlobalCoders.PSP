@@ -2,7 +2,10 @@
 
 public sealed class ProfileUserInfo
 {
+    public required Guid UserId { get; set; }
+    public required string UserName { get; set; }
     public required string Email { get; set; }
-    public required IReadOnlyList<string> Roles { get; set; }
-    public required bool IsEmailConfirmed { get; set; }
+    
+    public string? MerchantName {get; set;}
+    public Guid? MerchantId {get; set;}
 }

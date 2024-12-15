@@ -1,3 +1,5 @@
+using GlobalCoders.PSP.BackendApi.OrdersManagement.Factories;
+
 namespace GlobalCoders.PSP.BackendApi.OrdersManagement.ModelsDto;
 
 public class OrderProductsModel
@@ -8,6 +10,6 @@ public class OrderProductsModel
 
     public decimal Quantity { get; set; }
     public decimal Price { get; set; }
-    public decimal Tax { get; set; }
+    public OrderTaxModel[] Tax { get; set; } = Array.Empty<OrderTaxModel>();
     public decimal Discount { get; set; }
 }

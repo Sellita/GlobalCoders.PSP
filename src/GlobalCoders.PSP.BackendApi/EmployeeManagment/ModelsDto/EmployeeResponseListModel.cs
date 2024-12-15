@@ -12,4 +12,5 @@ public class EmployeeResponseListModel
     public DateTime CreateTime { get; set; }
     public bool IsActive { get; set; }
     public Guid MerchantId { get; set; }
+    public List<EmployeeScheduleRequest> WorkingSchedule { get; set; } = new ();
 }

@@ -22,9 +22,8 @@ public class MerchantEntity
     public string MainPhoneNr { get; set; }= string.Empty;
     [StringLength(EmployeeConstants.DefaultStringLimitation)]
     public string SecondaryPhoneNr { get; set; }= string.Empty;
-    public TimeSpan OpeningHour { get; set; }
-    public TimeSpan ClosingHour { get; set; }
-    public TimeSpan BatchOutTime { get; set; }
-    
+
+    public virtual ICollection<OrganizationScheduleEntity> WorkingSchedule { get; set; } = [];
+
     public bool IsDeleted { get; set; }
 }

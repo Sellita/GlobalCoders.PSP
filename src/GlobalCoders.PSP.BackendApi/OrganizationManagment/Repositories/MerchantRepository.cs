@@ -22,7 +22,11 @@ public class MerchantRepository : IMerchantRepository
         try
         {
             await using var context = await _contextFactory.CreateDbContextAsync();
+            
+            var oldSchedule = context.OrganizationScheduleEntity.Where(x=> x.MerchantEntityId == updateModel.Id).ToList();
+            context.OrganizationScheduleEntity.RemoveRange(oldSchedule);
             context.Merchant.Update(updateModel);
+            
             return await context.SaveChangesAsync() > 0;
         }
         catch (Exception e)

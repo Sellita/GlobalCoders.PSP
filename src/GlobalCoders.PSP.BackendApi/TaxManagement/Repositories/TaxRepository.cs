@@ -16,7 +16,7 @@ public class TaxRepository : ITaxRepository
         _logger = logger;
         _contextFactory = contextFactory;
     }
-        
+
     public async Task<bool> UpdateAsync(TaxEntity updateModel)
     {
         try
@@ -53,34 +53,56 @@ public class TaxRepository : ITaxRepository
     {
         await using var context = await _contextFactory.CreateDbContextAsync();
 
-        var query = context.Tax.AsQueryable();
-        
+        var query = context.Tax
+            .Include(x=>x.ProductType)
+            .Include(x=>x.Merchant)
+            .AsSplitQuery();
+
         if (!string.IsNullOrWhiteSpace(filter.DisplayName))
         {
             query = query.Where(x => x.Name.Contains(filter.DisplayName));
         }
-        
+
+        if (filter.MerchantId != null)
+        {
+            query = query.Where(x => x.MerchantId == filter.MerchantId);
+        }
+
         var totalItems = await query.CountAsync();
 
         var items = await query
-            .OrderBy(x=>x.Name)
+            .OrderBy(x => x.Name)
             .Skip((filter.Page - 1) * filter.ItemsPerPage)
             .Take(filter.ItemsPerPage)
             .ToListAsync();
 
-        return (items, totalItems);    }
+        return (items, totalItems);
+    }
 
     public async Task<TaxEntity?> GetAsync(Guid taxId)
     {
         await using var context = await _contextFactory.CreateDbContextAsync();
 
-        return await context.Tax.FirstOrDefaultAsync(x => x.Id == taxId);    }
+        return await context.Tax
+            .Include(x=>x.ProductType)
+            .Include(x=>x.Merchant)
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(x => x.Id == taxId);
+    }
 
-    public async Task<bool> DeleteAsync(Guid taxId)
+    public async Task<bool> DeleteAsync(Guid taxId, Guid? merchantId)
     {
         await using var context = await _contextFactory.CreateDbContextAsync();
 
-        var entity = await context.Tax.FirstOrDefaultAsync(x => x.Id == taxId);
+        var query = context.Tax
+            .Where(x => x.Id == taxId);
+
+        if (merchantId != null)
+        {
+            query = query.Where(x => x.MerchantId == merchantId);
+        }
+
+        var entity = await query.FirstOrDefaultAsync();
 
         if (entity == null)
         {
@@ -89,5 +111,6 @@ public class TaxRepository : ITaxRepository
 
         entity.IsDeleted = true;
 
-        return await context.SaveChangesAsync() > 0;    }
+        return await context.SaveChangesAsync() > 0;
+    }
 }

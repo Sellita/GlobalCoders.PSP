@@ -9,17 +9,14 @@ public static class TaxEntityFactory
     {
         return new TaxEntity
         {
-            MerchantId = taxEntity.OrganizationId ?? organizationId ?? throw new ArgumentNullException(nameof(organizationId)),
+            MerchantId = taxEntity.OrganizationId ??
+                         organizationId ?? throw new ArgumentNullException(nameof(organizationId)),
             Name = taxEntity.Name,
+            ProductTypeId = taxEntity.ProductTypeId,
             Type = taxEntity.Type,
             Value = taxEntity.Value,
             CreationDateTime = taxEntity.CreationDateTime,
-            Status = taxEntity.Status,
-            Minute = taxEntity.Minute,
-            Hour = taxEntity.Hour,
-            DayOfMonth = taxEntity.DayOfMonth,
-            Month = taxEntity.Month,
-            DayOfWeek = taxEntity.DayOfWeek
+            Status = taxEntity.Status
         };
     }  
     

@@ -13,7 +13,6 @@ public static class OrderProductEntityFactory
             ProductName = productValue.DisplayName,
             Quantity = quantity,
             Price = productValue.Price,
-            Tax = 0,
             Discount = 0
         };
     }

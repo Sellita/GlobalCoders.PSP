@@ -8,7 +8,5 @@ public class OrganizationCreateModel
     public string Email { get; set; } = string.Empty;
     public string MainPhoneNumber { get; set; } = string.Empty;
     public string SecondaryPhoneNumber { get; set; } = string.Empty;
-    public TimeSpan OpeningHour { get; set; }
-    public TimeSpan ClosingHour { get; set; }
-    public TimeSpan BatchOutTime { get; set; }
+    public List<OrganizationScheduleRequest> WorkingSchedule { get; set; } = new ();
 }

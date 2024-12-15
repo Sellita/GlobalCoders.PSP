@@ -5,7 +5,7 @@ namespace GlobalCoders.PSP.BackendApi.TaxManagement.Extensions;
 
 public static class TaxManagementExtension
 {
-    public static void RegisterProductsManagmentServices(this IServiceCollection services)
+    public static void RegisterTaxManagementServices(this IServiceCollection services)
     {
         services.AddScoped<ITaxService, TaxService>();
         services.AddScoped<ITaxRepository, TaxRepository>();
