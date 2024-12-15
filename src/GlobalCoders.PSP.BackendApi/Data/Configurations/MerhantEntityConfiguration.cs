@@ -8,6 +8,12 @@ public class MerhantEntityConfiguration : IEntityTypeConfiguration<MerchantEntit
 {
     public void Configure(EntityTypeBuilder<MerchantEntity> builder)
     {
+        builder
+            .HasMany(x => x.WorkingSchedule)
+            .WithOne()
+            .HasForeignKey(x => x.MerchantEntityId)
+            .IsRequired(false); 
+        
         builder.HasQueryFilter(u => !u.IsDeleted);
     }
 }

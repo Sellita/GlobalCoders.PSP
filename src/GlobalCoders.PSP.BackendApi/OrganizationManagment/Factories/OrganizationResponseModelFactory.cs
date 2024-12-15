@@ -16,9 +16,12 @@ public static class OrganizationResponseModelFactory
             Email = merchantEntity.Email,
             MainPhoneNumber = merchantEntity.MainPhoneNr,
             SecondaryPhoneNumber = merchantEntity.SecondaryPhoneNr,
-            OpeningHour = merchantEntity.OpeningHour,
-            ClosingHour = merchantEntity.ClosingHour,
-            BatchOutTime = merchantEntity.BatchOutTime,
+            WorkingSchedule = merchantEntity.WorkingSchedule.Select(x => new OrganizationScheduleRequest()
+            {
+                DayOfWeek = x.DayOfWeek,
+                StartTime = x.StartTime,
+                EndTime = x.EndTime
+            }).ToList()
 
         };
     }
