@@ -32,16 +32,28 @@ public class TaxService : ITaxService
         
         var models = entities.items.Select(TaxListModelFactory.Create).ToList();
 
-        return BasePagedResopnseFactory.Create(models, filter, entities.totalItems);    }
+        return BasePagedResopnseFactory.Create(models, filter, entities.totalItems);
+    }
 
-    public async Task<TaxResponseModel?> GetAsync(Guid taxId)
+    public async Task<TaxResponseModel?> GetAsync(Guid taxId, Guid? merchantId)
     {
         var entity = await _taxRepository.GetAsync(taxId);
         
-        return TaxResponseModelFactory.Create(entity);    }
+        if(entity == null)
+        {
+            return null;
+        }
+        
+        if(merchantId != null && entity.MerchantId != merchantId)
+        {
+            return null;
+        }
+        
+        return TaxResponseModelFactory.Create(entity);
+    }
 
-    public Task<bool> DeleteAsync(Guid taxId)
+    public Task<bool> DeleteAsync(Guid taxId, Guid? merchantId)
     {
-        return _taxRepository.DeleteAsync(taxId);
+        return _taxRepository.DeleteAsync(taxId, merchantId);
     }
 }

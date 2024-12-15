@@ -7,13 +7,13 @@ public static class CalculationHelpers
     public static decimal CalculateTotalPrice(OrderEntity orderEntity)
     {
         return orderEntity.OrderProducts.Sum(x => x.Price * x.Quantity) +
-            orderEntity.OrderProducts.Sum(x => x.Tax * x.Quantity) - orderEntity.Discount + orderEntity.Tips;
+            orderEntity.OrderProducts.Sum(x => x.OrderProductTaxes.Sum(y=>y.Value) * x.Quantity) - orderEntity.Discount + orderEntity.Tips;
     }
     
     public static decimal CalculatePriceWithTax(OrderEntity orderEntity)
     {
         return orderEntity.OrderProducts.Sum(x => x.Price * x.Quantity) +
-               orderEntity.OrderProducts.Sum(x => x.Tax * x.Quantity);
+               orderEntity.OrderProducts.Sum(x => x.OrderProductTaxes.Sum(y => y.Value) * x.Quantity);
     }
 
     public static decimal CalculateLeftToPay(OrderEntity order)
@@ -25,5 +25,10 @@ public static class CalculationHelpers
     private static decimal GetTotalPaid(OrderEntity order)
     {
         return order.OrderPayments.Sum(x => x.Amount);
+    }
+    
+    public static decimal RoundToTwoDecimalPlaces(decimal value)
+    {
+        return Math.Round(value, 2);
     }
 }

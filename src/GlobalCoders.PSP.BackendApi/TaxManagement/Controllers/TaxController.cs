@@ -33,7 +33,8 @@ public class TaxController : BaseApiController
         {
             return ValidationProblem();
         }
-        
+
+        Guid? merchantId = null;
         if (!await _authorizationService.HasPermissionsAsync(
                 User,
                 [Permissions.CanViewAllOrganizations],
@@ -41,10 +42,17 @@ public class TaxController : BaseApiController
         {
             _logger.LogWarning("User ({UserId}) has no permissions to get organization by id", User.GetUserId());
 
-            return NotFound();
+            var user  = await _authorizationService.GetUserAsync(User);
+            
+            if(user == null || user.MerchantId == null)
+            {
+                return NotFound();
+            }
+            
+            merchantId = user.MerchantId;
         }
         
-        var result = await _taxService.GetAsync(taxId);
+        var result = await _taxService.GetAsync(taxId, merchantId);
         
         if(result == null)
         {
@@ -58,11 +66,28 @@ public class TaxController : BaseApiController
     /// Get all taxes
     /// </summary>
     [HttpPost("[action]")]
-    public async Task<ActionResult<BasePagedResponse<TaxListModel>>> All(TaxFilter filter)
+    public async Task<ActionResult<BasePagedResponse<TaxListModel>>> All(TaxFilter filter, CancellationToken cancellationToken)
     {
         if(!ModelState.IsValid)
         {
             return ValidationProblem();
+        }
+        
+        if (!await _authorizationService.HasPermissionsAsync(
+                User,
+                [Permissions.CanViewAllOrganizations],
+                cancellationToken))
+        {
+            _logger.LogWarning("User ({UserId}) has no permissions to view all taxes", User.GetUserId());
+
+            var user  = await _authorizationService.GetUserAsync(User);
+            
+            if(user == null || user.MerchantId == null)
+            {
+                return NotFound();
+            }
+            
+            filter.MerchantId = user.MerchantId;
         }
         
         var result = await _taxService.GetAllAsync(filter);
@@ -120,9 +145,32 @@ public class TaxController : BaseApiController
     /// Delete a tax
     /// </summary>
     [HttpDelete("[action]/{taxId:guid}")]
-    public async Task<IActionResult> Delete(Guid taxId)
+    public async Task<IActionResult> Delete(Guid taxId, CancellationToken cancellationToken)
     {
-        var result = await _taxService.DeleteAsync(taxId);
+        if (!ModelState.IsValid)
+        {
+            return ValidationProblem();
+        }
+        Guid? merchantId = null;
+
+        if (!await _authorizationService.HasPermissionsAsync(
+                User,
+                [Permissions.CanViewAllOrganizations],
+                cancellationToken))
+        {
+            _logger.LogWarning("User ({UserId}) has no permissions to view all taxes", User.GetUserId());
+
+            var user  = await _authorizationService.GetUserAsync(User);
+            
+            if(user == null || user.MerchantId == null)
+            {
+                return NotFound();
+            }
+            
+            merchantId = user.MerchantId;
+        }
+        
+        var result = await _taxService.DeleteAsync(taxId, merchantId);
 
         if (result)
         {

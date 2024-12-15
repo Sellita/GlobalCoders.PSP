@@ -13,7 +13,7 @@ public static class OrderProductsModelFactory
             ProductName = orderProductEntity.ProductName,
             Quantity = orderProductEntity.Quantity,
             Price = orderProductEntity.Price,
-            Tax = orderProductEntity.Tax,
+            Tax = orderProductEntity.OrderProductTaxes.Select(OrderTaxModelFactory.Create).ToArray(),
             Discount = orderProductEntity.Discount
         };
     }

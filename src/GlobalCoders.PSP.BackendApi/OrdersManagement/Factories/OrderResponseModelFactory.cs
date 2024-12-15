@@ -15,7 +15,7 @@ public static class OrderResponseModelFactory
             ClientName = orderEntity.ClientName,
             Tips = orderEntity.Tips,
             Discount = orderEntity.Discount,
-            TotalTax = orderEntity.OrderProducts.Sum(x => x.Tax * x.Quantity),
+            TotalTax = orderEntity.OrderProducts.Sum(x => x.OrderProductTaxes.Sum(y=>y.Value) * x.Quantity),
             Price = orderEntity.OrderProducts.Sum(x => x.Price * x.Quantity),
             PriceWithTax = CalculationHelpers.CalculatePriceWithTax(orderEntity),
             TotalPrice = CalculationHelpers.CalculateTotalPrice(orderEntity),
@@ -24,9 +24,9 @@ public static class OrderResponseModelFactory
             Products = orderEntity.OrderProducts.Select(OrderProductsModelFactory.Create).ToList(),
             Payments = orderEntity.OrderPayments.Select(OrderPaymentsModelFactory.Create).ToList(),
             EmployeeId = orderEntity.EmployeeId,
-            EmployeeName = orderEntity.Employee.Name,
+            EmployeeName = orderEntity.Employee?.Name ?? string.Empty,
             MerchantId = orderEntity.MerchantId,
-            MerchantName = orderEntity.Merchant.DisplayName,
+            MerchantName = orderEntity.Merchant?.DisplayName?? string.Empty,
             Date = orderEntity.CreatedAt,
         };
     }

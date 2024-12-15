@@ -93,7 +93,10 @@ public class OrdersRepository : IOrdersRepository
             .Include(x=>x.Merchant)
             .Include(x=>x.OrderProducts)
             .ThenInclude(x=>x.Product)
+            .Include(x=>x.OrderProducts)
+            .ThenInclude(x=>x.OrderProductTaxes)
             .Include(x=>x.OrderPayments)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Id == organizationId);
     }
 

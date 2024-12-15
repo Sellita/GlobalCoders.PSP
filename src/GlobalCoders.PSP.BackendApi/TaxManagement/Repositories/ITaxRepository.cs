@@ -9,5 +9,5 @@ public interface ITaxRepository
     Task<bool> CreateAsync(TaxEntity createModel);
     Task<(List<TaxEntity> items, int totalItems)> GetAllAsync(TaxFilter filter);
     Task<TaxEntity?> GetAsync(Guid taxId);
-    Task<bool> DeleteAsync(Guid taxId);
+    Task<bool> DeleteAsync(Guid taxId, Guid? merchantId);
 }

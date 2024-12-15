@@ -9,6 +9,6 @@ public interface ITaxService
     Task<bool> UpdateAsync(TaxEntity updateModel);
     Task<bool> CreateAsync(TaxEntity createModel);
     Task<BasePagedResponse<TaxListModel>> GetAllAsync(TaxFilter filter);
-    Task<TaxResponseModel?> GetAsync(Guid taxId);
-    Task<bool> DeleteAsync(Guid taxId);
+    Task<TaxResponseModel?> GetAsync(Guid taxId, Guid? merchantId);
+    Task<bool> DeleteAsync(Guid taxId, Guid? merchantId);
 }

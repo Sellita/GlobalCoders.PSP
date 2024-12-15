@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace GlobalCoders.PSP.BackendApi.Data.Configurations;
 
-public class OrderEntityConfiguration : IEntityTypeConfiguration<OrderEntity>
+public class OrderProductsEntityConfiguration : IEntityTypeConfiguration<OrderEntity>
 {
     public void Configure(EntityTypeBuilder<OrderEntity> builder)
     {

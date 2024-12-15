@@ -33,6 +33,8 @@ public sealed class BackendContext : BaseDbContext
         builder.ApplyConfiguration(new ProductTypeEntityConfiguration());
         builder.ApplyConfiguration(new ProductEntityConfiguration());
         builder.ApplyConfiguration(new TaxEntityConfiguration());
+        builder.ApplyConfiguration(new OrderProductsEntityConfiguration());
+        builder.ApplyConfiguration(new OrderEntityConfiguration());
     }
 
     //Empoloee Managment

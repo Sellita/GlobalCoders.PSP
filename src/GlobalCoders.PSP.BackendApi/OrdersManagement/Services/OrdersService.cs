@@ -11,6 +11,10 @@ using GlobalCoders.PSP.BackendApi.OrdersManagement.ModelsDto;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.Repositories;
 using GlobalCoders.PSP.BackendApi.ProductsManagment.Controllers;
 using GlobalCoders.PSP.BackendApi.ProductsManagment.Services;
+using GlobalCoders.PSP.BackendApi.TaxManagement.Enums;
+using GlobalCoders.PSP.BackendApi.TaxManagement.Factories;
+using GlobalCoders.PSP.BackendApi.TaxManagement.ModelsDto;
+using GlobalCoders.PSP.BackendApi.TaxManagement.Services;
 
 namespace GlobalCoders.PSP.BackendApi.OrdersManagement.Services;
 
@@ -19,11 +23,14 @@ public class OrdersService : IOrdersService
     private readonly IOrdersRepository _ordersRepository;
     private readonly IProductService _productService;
     private readonly IEmployeeService _employeeService;
+    private readonly ITaxService _taxService;
 
     private readonly Dictionary<OrderStatus, Func<OrderEntity, Task<(bool, string)>>>
         StatusChangeMethods;
 
-    public OrdersService(IOrdersRepository ordersRepository, IProductService productService, IEmployeeService employeeService)
+    public OrdersService(IOrdersRepository ordersRepository, IProductService productService,
+        IEmployeeService employeeService,
+        ITaxService taxService)
     {
         StatusChangeMethods = new Dictionary<OrderStatus, Func<OrderEntity, Task<(bool, string)>>>
         {
@@ -36,6 +43,7 @@ public class OrdersService : IOrdersService
         _ordersRepository = ordersRepository;
         _productService = productService;
         _employeeService = employeeService;
+        _taxService = taxService;
     }
     public async Task<bool> UpdateAsync(OrderEntity updateModel)
     {
@@ -68,9 +76,14 @@ public class OrdersService : IOrdersService
         return BasePagedResopnseFactory.Create(models, filter, entities.totalItems);
     }
 
-    public async Task<OrderResponseModel?> GetAsync(Guid organizationId)
+    public async Task<OrderResponseModel?> GetAsync(Guid orderId)
     {
-        var entity = await _ordersRepository.GetAsync(organizationId);
+        var entity = await _ordersRepository.GetAsync(orderId);
+
+        if (entity == null)
+        {
+            return null;
+        }
         
         return OrderResponseModelFactory.Create(entity);
     }
@@ -158,16 +171,40 @@ public class OrdersService : IOrdersService
         }
         
         order.Status = OrderStatus.Closed;
-
+        
+        var taxes = await _taxService.GetAllAsync(TaxFilterFactory.CreateForAllItems(order.MerchantId));
+        
         foreach (var orderProduct in order.OrderProducts)
         {
-            orderProduct.Price = orderProduct.Product.Price;
+            orderProduct.Price = CalculationHelpers.RoundToTwoDecimalPlaces(orderProduct.Product.Price);
+            orderProduct.OrderProductTaxes = CalculateTaxes(taxes.Items, orderProduct);
             orderProduct.Discount = 0; // todo calculate discount
-            orderProduct.Tax = 0; // todo calculate tax
             orderProduct.ProductName = orderProduct.Product.DisplayName;
         }
         
         return (await _ordersRepository.UpdateAsync(order), "Failed to change status");
+    }
+
+    public static ICollection<OrderProductTaxEntity> CalculateTaxes(List<TaxListModel> taxes, OrderProductEntity product)
+    {
+        var productTaxes = taxes.Where(x =>
+            x.ProductTypeId == product.Product?.ProductTypeId
+            || x.ProductTypeId == null).ToList();
+       
+        var calculateTaxes = new List<OrderProductTaxEntity>();
+        
+        foreach (var tax in productTaxes)
+        {
+            var taxValue = tax.Value;
+            if(tax.Type == TaxType.Percentage)
+            {
+                taxValue = CalculationHelpers.RoundToTwoDecimalPlaces(product.Price * tax.Value / 100);
+            }
+            
+            calculateTaxes.Add(OrderProductTaxEntityFactory.Create(tax, taxValue, product.Id));
+        }
+
+        return calculateTaxes;
     }
 
     private static Task<(bool, string)> ChangeToOpen(OrderEntity order)

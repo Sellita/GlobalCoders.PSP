@@ -18,7 +18,8 @@ public class OrderProductEntity
     [StringLength(EmployeeConstants.DefaultStringLimitation)]
     public string ProductName { get; set; } = string.Empty;
     public decimal Price { get; set; }
-    public decimal Tax { get; set; }
+    
+    public virtual ICollection<OrderProductTaxEntity> OrderProductTaxes { get; set; } = [];
     public decimal Discount { get; set; }
     
     public decimal Quantity { get; set; }
