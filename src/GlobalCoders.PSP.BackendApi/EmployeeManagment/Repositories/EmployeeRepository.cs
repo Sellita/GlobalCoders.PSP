@@ -19,9 +19,11 @@ public class EmployeeRepository : IEmployeeRepository
         try
         {
             var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
-
+            
             context.Users.Update(appUser);
-
+            var oldSchedule = context.EmployeeScheduleEntity.Where(x=>x.EmployeeEntityId == appUser.Id).ToList();
+            context.RemoveRange(oldSchedule);
+            
             var result = await context.SaveChangesAsync(cancellationToken);
 
             return result > 0;

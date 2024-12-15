@@ -35,12 +35,14 @@ public sealed class BackendContext : BaseDbContext
         builder.ApplyConfiguration(new TaxEntityConfiguration());
         builder.ApplyConfiguration(new OrderProductsEntityConfiguration());
         builder.ApplyConfiguration(new OrderEntityConfiguration());
+        builder.ApplyConfiguration(new AppUserRoleConfigurations());
     }
 
     //Empoloee Managment
 
     #region Employee Managment
 
+   public DbSet<EmployeeScheduleEntity> EmployeeScheduleEntity => Set<EmployeeScheduleEntity>();
     public DbSet<MerchantEntity> Merchant => Set<MerchantEntity>();
     public DbSet<PermisionEntity> Permission => Set<PermisionEntity>();
 

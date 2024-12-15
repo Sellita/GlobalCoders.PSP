@@ -3,6 +3,7 @@ using System;
 using GlobalCoders.PSP.BackendApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GlobalCoders.PSP.BackendApi.Data.Migrations
 {
     [DbContext(typeof(BackendContext))]
-    partial class BackendContextModelSnapshot : ModelSnapshot
+    [Migration("20241215180318_UpdateEmployee")]
+    partial class UpdateEmployee
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -121,7 +124,7 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                     b.Property<int>("DayOfWeek")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("EmployeeEntityId")
+                    b.Property<Guid?>("EmployeeEntityId")
                         .HasColumnType("uuid");
 
                     b.Property<TimeSpan>("EndTime")
@@ -145,10 +148,20 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("AppRoleId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("CreationDateTime")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid?>("EmployeeId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("AppRoleId");
+
+                    b.HasIndex("EmployeeId");
 
                     b.HasIndex("RoleId");
 
@@ -665,20 +678,30 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                 {
                     b.HasOne("GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities.EmployeeEntity", null)
                         .WithMany("WorkingSchedule")
-                        .HasForeignKey("EmployeeEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EmployeeEntityId");
                 });
 
             modelBuilder.Entity("GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities.PermisionEntity", b =>
                 {
                     b.HasOne("GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities.PermisionTemplateEntity", "AppRole")
                         .WithMany("UserRoles")
-                        .HasForeignKey("RoleId");
+                        .HasForeignKey("AppRoleId");
 
                     b.HasOne("GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities.EmployeeEntity", "Employee")
                         .WithMany("UserPermissions")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("EmployeeId");
+
+                    b.HasOne("GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities.PermisionTemplateEntity", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities.EmployeeEntity", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("AppRole");
 
