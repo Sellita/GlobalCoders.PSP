@@ -56,6 +56,8 @@ public class OrdersRepository : IOrdersRepository
         var query = context.Orders
             .Include(x=>x.Merchant)
             .Include(x=>x.OrderProducts)
+            .Include(x=>x.OrderDiscounts)
+            .ThenInclude(x=>x.Discount)
             .Include(x=>x.OrderPayments).AsQueryable();
         
         if (!string.IsNullOrWhiteSpace(filter.Client))
@@ -96,6 +98,8 @@ public class OrdersRepository : IOrdersRepository
             .Include(x=>x.OrderProducts)
             .ThenInclude(x=>x.OrderProductTaxes)
             .Include(x=>x.OrderPayments)
+            .Include(x=>x.OrderDiscounts)
+            .ThenInclude(x=>x.Discount)
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Id == organizationId);
     }

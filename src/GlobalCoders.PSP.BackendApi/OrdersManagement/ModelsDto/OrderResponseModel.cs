@@ -10,10 +10,8 @@ public class OrderResponseModel
     public Guid EmployeeId { get; set; } 
     public string EmployeeName { get; set; } = string.Empty;
 
-    public string ClientName { get; set; } = string.Empty;
-
+    public string ClientName { get; set; } = string.Empty; public decimal TotalTax { get; set; }
     public decimal Discount { get; set; }
-    public decimal TotalTax { get; set; }
     public decimal Price { get; set; }
     public decimal PriceWithTax { get; set; }
     public decimal TotalPrice { get; set; }
@@ -24,6 +22,7 @@ public class OrderResponseModel
 
     public List<OrderProductsModel> Products { get; set; } = new ();
     public List<OrderPaymentsModel> Payments { get; set; } = new ();
+    public List<OrderDiscountModel> Discounts { get; set; } = new ();
     
     public DateTime Date { get; set; }
 }

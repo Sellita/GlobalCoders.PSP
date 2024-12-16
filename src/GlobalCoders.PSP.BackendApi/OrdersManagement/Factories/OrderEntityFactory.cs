@@ -13,9 +13,9 @@ public static class OrderEntityFactory
             ClientName = organizationCreateModel.ClientName,
             EmployeeId = organizationCreateModel.EmployeeId ?? throw new ArgumentException(nameof(organizationCreateModel.EmployeeId)),
             MerchantId = organizationCreateModel.MerchantId ?? throw new ArgumentException(nameof(organizationCreateModel.MerchantId)),
-            Discount = organizationCreateModel.Discount ?? 0,
             Status = OrderStatus.Open, // Default Status
             CreatedAt = DateTime.UtcNow,
+            OrderDiscounts = organizationCreateModel.Discounts.Select(OrderDiscountEntityFactory.Create).ToList()
         };
     }  
     

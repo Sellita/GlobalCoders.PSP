@@ -4,6 +4,7 @@ using GlobalCoders.PSP.BackendApi.Base.Filters;
 using GlobalCoders.PSP.BackendApi.Base.Services;
 using GlobalCoders.PSP.BackendApi.Data;
 using GlobalCoders.PSP.BackendApi.Data.Initialization;
+using GlobalCoders.PSP.BackendApi.DiscountManagement.Extensions;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Extensions;
 using GlobalCoders.PSP.BackendApi.Identity.Extensions;
 using GlobalCoders.PSP.BackendApi.InventoryManagement.Extensions;
@@ -80,6 +81,7 @@ void RegisterServices(IServiceCollection services, ConfigurationManager configur
     services.RegisterInventoryServices();
     services.RegisterOrdersServices();
     services.RegisterTaxManagementServices();
+    services.RegisterDiscountManagementServices();
 }
 
 void RegisterDataBaseServices(IServiceCollection services, ConfigurationManager configuration)
