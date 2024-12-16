@@ -269,4 +269,33 @@ public class OrdersController : BaseApiController
         
         return BadRequest(message);
     }
+    
+     
+    [HttpPost("[action]")]
+    public async Task<IActionResult> ChangeTips(TipsRequestModel tipsRequest, CancellationToken cancellationToken)
+    {
+        if (!ModelState.IsValid)
+        {
+            return ValidationProblem();
+        }
+        
+        var user = await _authorizationService.GetUserAsync(User);
+        
+        if (!(await _ordersService.HasPermissionAsync(tipsRequest.OrderId, user?.MerchantId)) && !await _authorizationService.HasPermissionsAsync(
+                User,
+                [Permissions.CanViewAllOrganizations],
+                cancellationToken))
+        {
+            return Unauthorized();
+        }
+        
+        var (result, message) = await _ordersService.ChangeTipsAsync(tipsRequest, cancellationToken);
+        
+        if (result)
+        {
+            return Ok();
+        }
+        
+        return BadRequest(message);
+    }
 }
