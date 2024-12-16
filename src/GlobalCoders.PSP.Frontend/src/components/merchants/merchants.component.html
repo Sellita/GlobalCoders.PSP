@@ -1,12 +1,13 @@
-
+<app-add-merchant #popup></app-add-merchant>
+<app-edit-merchant #popupedit></app-edit-merchant>
 
 <header class="title">
     <h1>Merchant Management</h1>
 </header>
 <div class="buttons">
-    <button class="add-button" (click)="addOrder()">Add</button>
-    <button class="delete-button" (click)="deleteOrder()">Delete</button>
-    <button class="edit-button" (click)="editOrder()">Edit</button>
+    <button class="add-button" (click)="addMerchant()">Add</button>
+    <button class="delete-button" (click)="deleteMerchant()">Delete</button>
+    <button class="edit-button" (click)="editMerchant()">Edit</button>
     <button class="filter-button" (click)="filterOrders()">
         Filter
         <img src="./filter.png" alt="">

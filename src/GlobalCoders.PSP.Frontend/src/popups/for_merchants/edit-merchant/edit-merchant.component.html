@@ -1,1 +1,6 @@
-<p>edit-merchant works!</p>
+<div class="popup-backdrop" *ngIf="isPopupVisible" (click)="closePopup()"></div>
+<div class="popup" *ngIf="isPopupVisible">
+    <div class="container">
+        <h1>Adiós</h1>
+    </div>
+</div>

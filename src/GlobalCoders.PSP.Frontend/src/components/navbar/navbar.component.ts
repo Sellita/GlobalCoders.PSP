@@ -10,7 +10,7 @@ import { UserService } from '../../services/user.service';
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, CommonModule],
+  imports: [RouterLink, RouterLinkActive, CommonModule, LoginComponent, LogoutComponent],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })

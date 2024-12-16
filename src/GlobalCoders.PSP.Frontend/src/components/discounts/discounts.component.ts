@@ -1,25 +1,32 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { AddDiscountComponent } from '../../popups/for_discounts/add-discount/add-discount.component';
+import { EditDiscountComponent } from '../../popups/for_discounts/edit-discount/edit-discount.component';
 
 @Component({
   selector: 'app-discounts',
   standalone: true,
-  imports: [],
+  imports: [AddDiscountComponent, EditDiscountComponent],
   templateUrl: './discounts.component.html',
   styleUrl: './discounts.component.css'
 })
+
 export class DiscountsComponent {
+
+  @ViewChild('popup') popup: AddDiscountComponent = new AddDiscountComponent;
+  @ViewChild('popupedit') popupedit: EditDiscountComponent = new EditDiscountComponent;
+  
   ngOnInit(): void {
   }
 
-  addOrder() {
+  addDiscount() {
     console.log('Add order');
   }
 
-  editOrder() {
+  editDiscount() {
     console.log('Edit order');
   }
 
-  deleteOrder() {
+  deleteDiscount() {
     console.log('Delete order');
   }
 

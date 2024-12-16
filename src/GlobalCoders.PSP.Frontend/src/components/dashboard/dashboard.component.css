@@ -9,6 +9,18 @@ header{
     height: 110px;
 }
 
+.center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    height: 100vh;
+    margin: 0;
+    color: white;
+    background: rgb(33,37,41);
+    background: linear-gradient(265deg, rgba(33,37,41,1) 0%, rgba(206,212,218,1) 100%);
+}
+  
+
 header section{
     display: flex;
     justify-content: end;
