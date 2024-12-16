@@ -6,14 +6,16 @@ public static class CalculationHelpers
 {
     public static decimal CalculateTotalPrice(OrderEntity orderEntity)
     {
-        return orderEntity.OrderProducts.Sum(x => x.Price * x.Quantity) +
-            orderEntity.OrderProducts.Sum(x => x.OrderProductTaxes.Sum(y=>y.Value) * x.Quantity) - orderEntity.Discount + orderEntity.Tips;
+        return CalculatePriceWithTax(orderEntity)
+               - orderEntity.Discount
+               + orderEntity.Tips;
     }
     
     public static decimal CalculatePriceWithTax(OrderEntity orderEntity)
     {
         return orderEntity.OrderProducts.Sum(x => x.Price * x.Quantity) +
-               orderEntity.OrderProducts.Sum(x => x.OrderProductTaxes.Sum(y => y.Value) * x.Quantity);
+               orderEntity.OrderProducts.Sum(x => x.OrderProductTaxes.Sum(y => y.Value) * x.Quantity)
+               - orderEntity.OrderProducts.Sum(x => x.Discount * x.Quantity);
     }
 
     public static decimal CalculateLeftToPay(OrderEntity order)

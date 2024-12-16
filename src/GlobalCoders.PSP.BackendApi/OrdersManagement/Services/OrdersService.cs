@@ -1,5 +1,9 @@
 using GlobalCoders.PSP.BackendApi.Base.Factories;
 using GlobalCoders.PSP.BackendApi.Base.ModelsDto;
+using GlobalCoders.PSP.BackendApi.DiscountManagement.Enums;
+using GlobalCoders.PSP.BackendApi.DiscountManagement.Factories;
+using GlobalCoders.PSP.BackendApi.DiscountManagement.ModelsDto;
+using GlobalCoders.PSP.BackendApi.DiscountManagement.Services;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Controllers;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Services;
 using GlobalCoders.PSP.BackendApi.Identity.Services;
@@ -20,17 +24,23 @@ namespace GlobalCoders.PSP.BackendApi.OrdersManagement.Services;
 
 public class OrdersService : IOrdersService
 {
+    private readonly ILogger<OrdersService> _logger;
     private readonly IOrdersRepository _ordersRepository;
     private readonly IProductService _productService;
     private readonly IEmployeeService _employeeService;
     private readonly ITaxService _taxService;
+    private readonly IDiscountService _discountService;
 
     private readonly Dictionary<OrderStatus, Func<OrderEntity, Task<(bool, string)>>>
         StatusChangeMethods;
 
-    public OrdersService(IOrdersRepository ordersRepository, IProductService productService,
+    public OrdersService(
+        ILogger<OrdersService> logger,
+        IOrdersRepository ordersRepository, 
+        IProductService productService,
         IEmployeeService employeeService,
-        ITaxService taxService)
+        ITaxService taxService,
+        IDiscountService discountService)
     {
         StatusChangeMethods = new Dictionary<OrderStatus, Func<OrderEntity, Task<(bool, string)>>>
         {
@@ -40,10 +50,12 @@ public class OrdersService : IOrdersService
             { OrderStatus.Cancelled, ChangeToCanceled },
             { OrderStatus.Refunded, ChangeToRefunded }
         };
+        _logger = logger;
         _ordersRepository = ordersRepository;
         _productService = productService;
         _employeeService = employeeService;
         _taxService = taxService;
+        _discountService = discountService;
     }
     public async Task<bool> UpdateAsync(OrderEntity updateModel)
     {
@@ -173,16 +185,68 @@ public class OrdersService : IOrdersService
         order.Status = OrderStatus.Closed;
         
         var taxes = await _taxService.GetAllAsync(TaxFilterFactory.CreateForAllItems(order.MerchantId));
+        var discounts = await _discountService.GetAllAsync(DiscountFilterFactory.CreateForAllItems(order.MerchantId));
         
         foreach (var orderProduct in order.OrderProducts)
         {
             orderProduct.Price = CalculationHelpers.RoundToTwoDecimalPlaces(orderProduct.Product.Price);
             orderProduct.OrderProductTaxes = CalculateTaxes(taxes.Items, orderProduct);
-            orderProduct.Discount = 0; // todo calculate discount
+            orderProduct.Discount = CalculateDiscount(discounts.Items, orderProduct);
             orderProduct.ProductName = orderProduct.Product.DisplayName;
         }
         
+        order.TotalPrice = CalculationHelpers.CalculatePriceWithTax(order);
+
+        order.Discount = CalculateOrderDiscount(discounts.Items, order);
+        order.TotalPriceWithDiscount = CalculationHelpers.CalculateTotalPrice(order);
+        
         return (await _ordersRepository.UpdateAsync(order), "Failed to change status");
+    }
+
+    private decimal CalculateOrderDiscount(List<DiscountListModel> discountsItems, OrderEntity order)
+    {
+        var discountToApply = discountsItems.Where(x =>
+            x.ProductTypeId == null
+            && x.ProductId == null).ToList();
+
+        _logger.LogInformation("Applying discounts {@Discounts} for order {orderId}", discountToApply, order.Id);
+        var calculatedDiscount = 0m;
+        foreach (var discount in discountToApply)
+        {
+            if (discount.Type == DiscountType.Percentage)
+            {
+                calculatedDiscount += order.TotalPrice * discount.Value / 100;
+            }
+            else
+            {
+                calculatedDiscount += discount.Value;
+            }
+        }
+        _logger.LogInformation("CalculatedDiscount: {CalculateDiscount}", calculatedDiscount);
+
+        return CalculationHelpers.RoundToTwoDecimalPlaces( calculatedDiscount);
+    }
+
+    private decimal CalculateDiscount(List<DiscountListModel> discountsItems, OrderProductEntity product)
+    {
+        var productDiscounts = discountsItems.Where(x =>
+            x.ProductTypeId == product.Product?.ProductTypeId
+            || x.ProductId == product.ProductId).ToList();
+       
+        var totalDiscount = 0m;
+        foreach (var discount in productDiscounts)
+        {
+            if(discount.Type == DiscountType.Percentage)
+            {
+                totalDiscount += product.Price * discount.Value / 100;
+            }
+            else
+            {
+                totalDiscount += discount.Value;
+            }
+        }
+
+        return totalDiscount;
     }
 
     public static ICollection<OrderProductTaxEntity> CalculateTaxes(List<TaxListModel> taxes, OrderProductEntity product)

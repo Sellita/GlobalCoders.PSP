@@ -1,4 +1,5 @@
 using GlobalCoders.PSP.BackendApi.Data.Configurations;
+using GlobalCoders.PSP.BackendApi.DiscountManagement.Entities;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities;
 using GlobalCoders.PSP.BackendApi.InventoryManagement.Entities;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.Entities;
@@ -67,11 +68,12 @@ public sealed class BackendContext : BaseDbContext
     public DbSet<OrderProductEntity> OrderProducts => Set<OrderProductEntity>();
     public DbSet<OrderPaymentsEntity> OrderPayments => Set<OrderPaymentsEntity>();
     
-    // Tax Management
-    #region Tax Management
-    
+    // Tax Managemet
     public DbSet<TaxEntity> Tax => Set<TaxEntity>();
     
-    #endregion
+    // Discount Management
+    public DbSet<DiscountEntity> Discount => Set<DiscountEntity>();
+    
+    
     
 }
