@@ -1,4 +1,4 @@
-using GlobalCoders.PSP.BackendApi.ProductsManagment.Entities;
+using GlobalCoders.PSP.BackendApi.ProductsManagement.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

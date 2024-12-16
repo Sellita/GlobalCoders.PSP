@@ -10,7 +10,7 @@ using GlobalCoders.PSP.BackendApi.OrdersManagement.Factories;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.Helpers;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.ModelsDto;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.Repositories;
-using GlobalCoders.PSP.BackendApi.ProductsManagment.Services;
+using GlobalCoders.PSP.BackendApi.ProductsManagement.Services;
 using GlobalCoders.PSP.BackendApi.TaxManagement.Enums;
 using GlobalCoders.PSP.BackendApi.TaxManagement.Factories;
 using GlobalCoders.PSP.BackendApi.TaxManagement.ModelsDto;

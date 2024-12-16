@@ -4,7 +4,7 @@ using GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities;
 using GlobalCoders.PSP.BackendApi.InventoryManagement.Entities;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.Entities;
 using GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities;
-using GlobalCoders.PSP.BackendApi.ProductsManagment.Entities;
+using GlobalCoders.PSP.BackendApi.ProductsManagement.Entities;
 using GlobalCoders.PSP.BackendApi.SurchargeManagement.Entities;
 using GlobalCoders.PSP.BackendApi.TaxManagement.Entities;
 using Microsoft.EntityFrameworkCore;

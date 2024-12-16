@@ -32,7 +32,7 @@ public class OrganizationStatisticController : BaseApiController
 
         var user = await _authorizationService.GetUserAsync(User);
         
-        if (user?.Merchant.Id != request.OrganizationId && !await _authorizationService.HasPermissionsAsync(
+        if (user?.MerchantId != request.OrganizationId && !await _authorizationService.HasPermissionsAsync(
                 User,
                 [Permissions.CanViewAllOrganizations],
                 cancellationToken))

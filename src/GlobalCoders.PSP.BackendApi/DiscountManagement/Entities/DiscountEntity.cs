@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using GlobalCoders.PSP.BackendApi.DiscountManagement.Constants;
 using GlobalCoders.PSP.BackendApi.DiscountManagement.Enums;
 using GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities;
-using GlobalCoders.PSP.BackendApi.ProductsManagment.Entities;
+using GlobalCoders.PSP.BackendApi.ProductsManagement.Entities;
 
 namespace GlobalCoders.PSP.BackendApi.DiscountManagement.Entities;
 

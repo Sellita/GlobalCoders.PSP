@@ -6,5 +6,5 @@ public class OrderCreateModel
     public Guid? EmployeeId { get; set; }
     public Guid? MerchantId { get; set; }
 
-    public List<OrderDiscountCreateModel> Discounts { get; set; }
+    public List<OrderDiscountCreateModel> Discounts { get; set; } = new();
 }

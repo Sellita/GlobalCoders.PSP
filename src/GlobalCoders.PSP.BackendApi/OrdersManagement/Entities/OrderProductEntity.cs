@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Constants;
-using GlobalCoders.PSP.BackendApi.ProductsManagment.Entities;
+using GlobalCoders.PSP.BackendApi.ProductsManagement.Entities;
 
 namespace GlobalCoders.PSP.BackendApi.OrdersManagement.Entities;
 

@@ -1,5 +1,5 @@
 using GlobalCoders.PSP.BackendApi.OrdersManagement.Entities;
-using GlobalCoders.PSP.BackendApi.ProductsManagment.ModelsDto;
+using GlobalCoders.PSP.BackendApi.ProductsManagement.ModelsDto;
 
 namespace GlobalCoders.PSP.BackendApi.OrdersManagement.Factories;
 
