@@ -1,19 +1,15 @@
 using GlobalCoders.PSP.BackendApi.Base.Factories;
 using GlobalCoders.PSP.BackendApi.Base.ModelsDto;
+using GlobalCoders.PSP.BackendApi.DiscountManagement.Entities;
 using GlobalCoders.PSP.BackendApi.DiscountManagement.Enums;
-using GlobalCoders.PSP.BackendApi.DiscountManagement.Factories;
-using GlobalCoders.PSP.BackendApi.DiscountManagement.ModelsDto;
-using GlobalCoders.PSP.BackendApi.DiscountManagement.Services;
-using GlobalCoders.PSP.BackendApi.EmployeeManagment.Controllers;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Services;
-using GlobalCoders.PSP.BackendApi.Identity.Services;
+using GlobalCoders.PSP.BackendApi.InventoryManagement.Services;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.Entities;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.Enums;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.Factories;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.Helpers;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.ModelsDto;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.Repositories;
-using GlobalCoders.PSP.BackendApi.ProductsManagment.Controllers;
 using GlobalCoders.PSP.BackendApi.ProductsManagment.Services;
 using GlobalCoders.PSP.BackendApi.TaxManagement.Enums;
 using GlobalCoders.PSP.BackendApi.TaxManagement.Factories;
@@ -29,7 +25,7 @@ public class OrdersService : IOrdersService
     private readonly IProductService _productService;
     private readonly IEmployeeService _employeeService;
     private readonly ITaxService _taxService;
-    private readonly IDiscountService _discountService;
+    private readonly IInventoryService _inventoryService;
 
     private readonly Dictionary<OrderStatus, Func<OrderEntity, Task<(bool, string)>>>
         StatusChangeMethods;
@@ -40,7 +36,7 @@ public class OrdersService : IOrdersService
         IProductService productService,
         IEmployeeService employeeService,
         ITaxService taxService,
-        IDiscountService discountService)
+        IInventoryService inventoryService)
     {
         StatusChangeMethods = new Dictionary<OrderStatus, Func<OrderEntity, Task<(bool, string)>>>
         {
@@ -55,7 +51,7 @@ public class OrdersService : IOrdersService
         _productService = productService;
         _employeeService = employeeService;
         _taxService = taxService;
-        _discountService = discountService;
+        _inventoryService = inventoryService;
     }
     public async Task<bool> UpdateAsync(OrderEntity updateModel)
     {
@@ -134,7 +130,10 @@ public class OrdersService : IOrdersService
             return (false, "Refunded status can be set only for paid orders");
         }
         
-        //todo here should be refund logic
+        foreach (var product in order.OrderProducts)
+        {
+            await _inventoryService.ChangeQuantityAsync(order.MerchantId, product.ProductId, product.Quantity, CancellationToken.None);
+        }
         
         order.Status = OrderStatus.Refunded;
         
@@ -172,6 +171,38 @@ public class OrdersService : IOrdersService
 
     private async Task<(bool, string)> ChangeToClosed(OrderEntity order)
     {
+        var (validationResult, message) = await ValidateStatusChangeToClosed(order);
+        
+        if(!validationResult)
+        {
+            return (validationResult, message);
+        }
+
+        order.Status = OrderStatus.Closed;
+        
+        var taxes = await _taxService.GetAllAsync(TaxFilterFactory.CreateForAllItems(order.MerchantId));
+        var discounts = order.OrderDiscounts.Select(x=>x.Discount).ToList(); 
+        
+        foreach (var orderProduct in order.OrderProducts)
+        {
+            await _inventoryService.ChangeQuantityAsync(order.MerchantId, orderProduct.ProductId, -orderProduct.Quantity, CancellationToken.None);
+            
+            orderProduct.Price = CalculationHelpers.RoundToTwoDecimalPlaces(orderProduct.Product.Price);
+            orderProduct.OrderProductTaxes = CalculateTaxes(taxes.Items, orderProduct);
+            orderProduct.Discount = CalculateDiscount(discounts, orderProduct);
+            orderProduct.ProductName = orderProduct.Product.DisplayName;
+        }
+        
+        order.TotalPrice = CalculationHelpers.CalculatePriceWithTax(order);
+
+        order.Discount = CalculateOrderDiscount(discounts, order);
+        order.TotalPriceWithDiscount = CalculationHelpers.CalculateTotalPrice(order);
+        
+        return (await _ordersRepository.UpdateAsync(order), "Failed to change status");
+    }
+
+    private async Task<(bool, string)> ValidateStatusChangeToClosed(OrderEntity order)
+    {
         if(order.Status != OrderStatus.Open)
         {
             return (false, "Closed status can be set only for open orders");
@@ -181,35 +212,28 @@ public class OrdersService : IOrdersService
         {
             return (false, "Order has no products");
         }
-        
-        order.Status = OrderStatus.Closed;
-        
-        var taxes = await _taxService.GetAllAsync(TaxFilterFactory.CreateForAllItems(order.MerchantId));
-        var discounts = await _discountService.GetAllAsync(DiscountFilterFactory.CreateForAllItems(order.MerchantId));
-        
-        foreach (var orderProduct in order.OrderProducts)
-        {
-            orderProduct.Price = CalculationHelpers.RoundToTwoDecimalPlaces(orderProduct.Product.Price);
-            orderProduct.OrderProductTaxes = CalculateTaxes(taxes.Items, orderProduct);
-            orderProduct.Discount = CalculateDiscount(discounts.Items, orderProduct);
-            orderProduct.ProductName = orderProduct.Product.DisplayName;
-        }
-        
-        order.TotalPrice = CalculationHelpers.CalculatePriceWithTax(order);
 
-        order.Discount = CalculateOrderDiscount(discounts.Items, order);
-        order.TotalPriceWithDiscount = CalculationHelpers.CalculateTotalPrice(order);
-        
-        return (await _ordersRepository.UpdateAsync(order), "Failed to change status");
+        foreach (var product in order.OrderProducts)
+        {
+            var quantity = await _inventoryService.GetQuantityAsync(order.MerchantId, product.ProductId);
+            if(quantity < product.Quantity)
+            {
+                return (false, "Not enough products in inventory");
+            }
+        }
+
+        return (true, string.Empty);
     }
 
-    private decimal CalculateOrderDiscount(List<DiscountListModel> discountsItems, OrderEntity order)
+    private decimal CalculateOrderDiscount(List<DiscountEntity> discountsItems, OrderEntity order)
     {
+        var currentTime = DateTime.UtcNow;
         var discountToApply = discountsItems.Where(x =>
             x.ProductTypeId == null
-            && x.ProductId == null).ToList();
+            && x.ProductId == null
+            && DiscountTimeValid(x, currentTime)).ToList();
 
-        _logger.LogInformation("Applying discounts {@Discounts} for order {orderId}", discountToApply, order.Id);
+        _logger.LogInformation("Applying discounts {@Discounts} for order {OrderId}", discountToApply, order.Id);
         var calculatedDiscount = 0m;
         foreach (var discount in discountToApply)
         {
@@ -227,11 +251,13 @@ public class OrdersService : IOrdersService
         return CalculationHelpers.RoundToTwoDecimalPlaces( calculatedDiscount);
     }
 
-    private decimal CalculateDiscount(List<DiscountListModel> discountsItems, OrderProductEntity product)
+    private decimal CalculateDiscount(List<DiscountEntity> discountsItems, OrderProductEntity product)
     {
+        var currentTime = DateTime.UtcNow;
         var productDiscounts = discountsItems.Where(x =>
-            x.ProductTypeId == product.Product?.ProductTypeId
-            || x.ProductId == product.ProductId).ToList();
+           ( x.ProductTypeId == product.Product?.ProductTypeId
+            || x.ProductId == product.ProductId)
+            && DiscountTimeValid(x, currentTime)).ToList();
        
         var totalDiscount = 0m;
         foreach (var discount in productDiscounts)
@@ -247,6 +273,14 @@ public class OrdersService : IOrdersService
         }
 
         return totalDiscount;
+    }
+
+    private static bool DiscountTimeValid(DiscountEntity x, DateTime currentTime)
+    {
+        return (
+            (x.StartDate <= currentTime && x.EndDate >= currentTime)
+            || (x.StartDate == null && x.EndDate == null)
+        );
     }
 
     public static ICollection<OrderProductTaxEntity> CalculateTaxes(List<TaxListModel> taxes, OrderProductEntity product)
