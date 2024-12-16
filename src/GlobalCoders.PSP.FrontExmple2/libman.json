@@ -1,0 +1,63 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "jquery@3.6.4",
+      "files": ["jquery.min.js", "jquery.js", "jquery.min.map"],
+      "destination": "wwwroot/lib/jquery/dist"
+    },
+    {
+      "library": "jquery-validate@1.19.5",
+      "files": ["jquery.validate.js", "jquery.validate.min.js", "additional-methods.js","additional-methods.min.js"],
+      "destination": "wwwroot/lib/jquery-validation/dist"
+    },
+    {
+      "library": "jquery-validation-unobtrusive@4.0.0",
+      "files": [
+        "jquery.validate.unobtrusive.js",
+        "jquery.validate.unobtrusive.min.js"
+      ],
+      "destination": "wwwroot/lib/jquery-validation-unobtrusive"
+    },
+    {
+      "library": "bootstrap@5.2.2",
+      "destination": "wwwroot/lib/bootstrap"
+    },
+    {
+      "library": "datatables@1.10.21",
+      "destination": "wwwroot/lib/datatables"
+    },
+    {
+      "library": "datatables-responsive@2.4.1",
+      "destination": "wwwroot/lib/datatables-responsive"
+    },
+    {
+      "library": "datatables.net-bs5@1.13.4",
+      "destination": "wwwroot/lib/datatables-net-bs5"
+    },
+    {
+      "provider": "unpkg",
+      "library": "sweetalert2@11.6.7",
+      "destination": "wwwroot/lib/sweetalert2/",
+      "files": [
+        "dist/sweetalert2.min.js",
+        "dist/sweetalert2.min.css"
+      ]
+    },
+    {
+      "library": "font-awesome@6.2.1",
+      "destination": "wwwroot/lib/font-awesome/",
+      "files": [
+        "css/all.min.css",
+        "webfonts/*.ttf",
+        "webfonts/*.woff2"
+      ]
+    },
+    {
+      "library": "select2@4.0.13",
+      "files": ["js/select2.min.js", "css/select2.min.css"],
+      "destination": "wwwroot/lib/select2/"
+    }
+  ]
+}
