@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../../services/auth.service';
+import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
@@ -18,11 +21,14 @@ export class DashboardComponent implements OnInit {
   total_sales: number = 1000;
   messages: number = 10;
   reservations: number = 5;
+  isloggedIn: boolean = false;
 
-  constructor() { }
+  constructor(private auth: AuthService) { }
 
   ngOnInit(): void {
-    this.getCurrentDateTime();}
+    this.getCurrentDateTime();
+    this.isloggedIn = this.auth.isloggedIn();
+  }
 
   getCurrentDateTime() {
     const now = new Date();

@@ -1,51 +1,54 @@
-<header>
-    <h1>Hi, {{employee}}!</h1>
-    <section>
-        <h3 class="fecha"> {{fecha}} </h3>
-        <h3 class="hora"> {{hora}}</h3>
-    </section>
-</header>
-
-<div class="container">
-    <div class="revenue">
-        <h2>Daily Revenue</h2>
-        <p>{{revenue}} €</p>
-    </div>
-    <div class="refunded">
-        <h2>Refunded Orders</h2>
-        <p>{{refunded}}</p>
-    </div>
-    <div class="total">
-        <h2>Total Orders</h2>
-        <p>{{total_sales}}</p>
-    </div>
-    <div class="out">
-        <h2>Out of stock</h2>
-        <p>{{out_of_stock}}</p>
-    </div>
-    <div class="notify">
+<ng-container *ngIf="isloggedIn">
+    <header>
+        <h1>Hi, {{employee}}!</h1>
         <section>
-            <img src="mail.png" alt="">
-            <h4>Notifications</h4>
+            <h3 class="fecha"> {{fecha}} </h3>
+            <h3 class="hora"> {{hora}}</h3>
         </section>
-        <p>{{messages}}</p>
+    </header>
+    
+    <div class="container">
+        <div class="revenue">
+            <h2>Daily Revenue</h2>
+            <p>{{revenue}} €</p>
+        </div>
+        <div class="refunded">
+            <h2>Refunded Orders</h2>
+            <p>{{refunded}}</p>
+        </div>
+        <div class="total">
+            <h2>Total Orders</h2>
+            <p>{{total_sales}}</p>
+        </div>
+        <div class="out">
+            <h2>Out of stock</h2>
+            <p>{{out_of_stock}}</p>
+        </div>
+        <div class="notify">
+            <section>
+                <img src="mail.png" alt="">
+                <h4>Notifications</h4>
+            </section>
+            <p>{{messages}}</p>
+        </div>
+        <div class="reservation">
+            <section>
+                <img src="booking.png" alt="">
+                <h4>Reservations</h4>
+            </section>
+            <p>{{reservations}}</p>
+        </div>
+    
+        <!--Graphs for dashboard-->
+        <div class="status">
+            <h3>Order Status</h3>
+    
+        </div>
+        <div class="sales">
+            <section>
+                <img src="sales.png" alt="">Sales
+            </section>
+        </div>
     </div>
-    <div class="reservation">
-        <section>
-            <img src="booking.png" alt="">
-            <h4>Reservations</h4>
-        </section>
-        <p>{{reservations}}</p>
-    </div>
-
-    <!--Graphs for dashboard-->
-    <div class="status">
-        <h3>Order Status</h3>
-
-    </div>
-    <div class="sales">
-        <section>
-            <img src="sales.png" alt="">Sales
-        </section>
-    </div>
-</div>
+    
+</ng-container>

@@ -11,7 +11,7 @@ export class UserService {
   constructor(private api: ApiService) {}
 
   getUsers(): Observable<any> {
-    return this.api.get<any>(`Employee/All`);
+    return this.api.post<any>(`Employee/All`, {});
   }
 
   getUser(id: number): Observable<any> {
