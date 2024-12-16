@@ -17,4 +17,5 @@ public interface IOrdersService
         CancellationToken cancellationToken);
 
     Task<(bool result, string message)> MakePaymentAsync(OrderMakePaymentRequestModel orderMakePaymentRequest, CancellationToken cancellationToken);
+    Task<(bool result, string message)> ChangeTipsAsync(TipsRequestModel tipsRequest, CancellationToken cancellationToken);
 }

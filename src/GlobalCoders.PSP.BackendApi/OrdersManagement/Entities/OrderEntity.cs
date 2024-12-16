@@ -16,8 +16,6 @@ public class OrderEntity
     public string ClientName { get; set; } = string.Empty;
 
     public decimal Tips { get; set; } //create method for this 
-    public decimal Discount { get; set; } //create method for this
-
     public OrderStatus Status { get; set; } //create method for this
 
     public Guid EmployeeId { get; set; }
@@ -28,6 +26,11 @@ public class OrderEntity
     
     public virtual ICollection<OrderProductEntity> OrderProducts { get; set; } = [];
     public virtual ICollection<OrderPaymentsEntity> OrderPayments { get; set; } = [];
+    public virtual ICollection<OrderDiscountsEntity> OrderDiscounts { get; set; } = [];
+    
+    public decimal Discount { get; set; }
+    public decimal TotalPrice { get; set; }
+    public decimal TotalPriceWithDiscount { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public bool IsDeleted { get; set; }

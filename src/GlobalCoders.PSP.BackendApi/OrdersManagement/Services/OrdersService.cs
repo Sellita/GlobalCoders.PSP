@@ -1,15 +1,15 @@
 using GlobalCoders.PSP.BackendApi.Base.Factories;
 using GlobalCoders.PSP.BackendApi.Base.ModelsDto;
-using GlobalCoders.PSP.BackendApi.EmployeeManagment.Controllers;
+using GlobalCoders.PSP.BackendApi.DiscountManagement.Entities;
+using GlobalCoders.PSP.BackendApi.DiscountManagement.Enums;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Services;
-using GlobalCoders.PSP.BackendApi.Identity.Services;
+using GlobalCoders.PSP.BackendApi.InventoryManagement.Services;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.Entities;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.Enums;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.Factories;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.Helpers;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.ModelsDto;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.Repositories;
-using GlobalCoders.PSP.BackendApi.ProductsManagment.Controllers;
 using GlobalCoders.PSP.BackendApi.ProductsManagment.Services;
 using GlobalCoders.PSP.BackendApi.TaxManagement.Enums;
 using GlobalCoders.PSP.BackendApi.TaxManagement.Factories;
@@ -20,19 +20,27 @@ namespace GlobalCoders.PSP.BackendApi.OrdersManagement.Services;
 
 public class OrdersService : IOrdersService
 {
+    private readonly ILogger<OrdersService> _logger;
     private readonly IOrdersRepository _ordersRepository;
     private readonly IProductService _productService;
     private readonly IEmployeeService _employeeService;
     private readonly ITaxService _taxService;
+    private readonly IInventoryService _inventoryService;
+
+    private const string FailedToChangeStatusMessage = "Failed to change status";
 
     private readonly Dictionary<OrderStatus, Func<OrderEntity, Task<(bool, string)>>>
-        StatusChangeMethods;
+        _statusChangeMethods;
 
-    public OrdersService(IOrdersRepository ordersRepository, IProductService productService,
+    public OrdersService(
+        ILogger<OrdersService> logger,
+        IOrdersRepository ordersRepository, 
+        IProductService productService,
         IEmployeeService employeeService,
-        ITaxService taxService)
+        ITaxService taxService,
+        IInventoryService inventoryService)
     {
-        StatusChangeMethods = new Dictionary<OrderStatus, Func<OrderEntity, Task<(bool, string)>>>
+        _statusChangeMethods = new Dictionary<OrderStatus, Func<OrderEntity, Task<(bool, string)>>>
         {
             { OrderStatus.Open, ChangeToOpen },
             { OrderStatus.Closed, ChangeToClosed },
@@ -40,10 +48,12 @@ public class OrdersService : IOrdersService
             { OrderStatus.Cancelled, ChangeToCanceled },
             { OrderStatus.Refunded, ChangeToRefunded }
         };
+        _logger = logger;
         _ordersRepository = ordersRepository;
         _productService = productService;
         _employeeService = employeeService;
         _taxService = taxService;
+        _inventoryService = inventoryService;
     }
     public async Task<bool> UpdateAsync(OrderEntity updateModel)
     {
@@ -107,7 +117,7 @@ public class OrdersService : IOrdersService
             return (false, "Order not found");
         }
 
-        if (!StatusChangeMethods.TryGetValue(orderChangeStatusRequest.NewStatus, out var method))
+        if (!_statusChangeMethods.TryGetValue(orderChangeStatusRequest.NewStatus, out var method))
         {
             return (false, "Invalid status change");
         }
@@ -122,11 +132,14 @@ public class OrdersService : IOrdersService
             return (false, "Refunded status can be set only for paid orders");
         }
         
-        //todo here should be refund logic
+        foreach (var product in order.OrderProducts)
+        {
+            await _inventoryService.ChangeQuantityAsync(order.MerchantId, product.ProductId, product.Quantity, CancellationToken.None);
+        }
         
         order.Status = OrderStatus.Refunded;
         
-        return (await _ordersRepository.UpdateAsync(order), "Failed to change status");
+        return (await _ordersRepository.UpdateAsync(order), FailedToChangeStatusMessage);
     }
 
     private async Task<(bool, string)> ChangeToCanceled(OrderEntity order)
@@ -138,7 +151,7 @@ public class OrdersService : IOrdersService
        
         order.Status = OrderStatus.Cancelled;
         
-        return (await _ordersRepository.UpdateAsync(order), "Failed to change status");
+        return (await _ordersRepository.UpdateAsync(order), FailedToChangeStatusMessage);
     }
 
     private async Task<(bool, string)> ChangeToPaid(OrderEntity order)
@@ -155,10 +168,53 @@ public class OrdersService : IOrdersService
         
         order.Status = OrderStatus.Paid;
         
-        return (await _ordersRepository.UpdateAsync(order), "Failed to change status");
+        return (await _ordersRepository.UpdateAsync(order), FailedToChangeStatusMessage);
     }
 
     private async Task<(bool, string)> ChangeToClosed(OrderEntity order)
+    {
+        var (validationResult, message) = await ValidateStatusChangeToClosed(order);
+        
+        if(!validationResult)
+        {
+            return (validationResult, message);
+        }
+
+        order.Status = OrderStatus.Closed;
+        
+        var taxes = await _taxService.GetAllAsync(TaxFilterFactory.CreateForAllItems(order.MerchantId));
+        var discounts = order.OrderDiscounts
+            .Where(x=>x.Discount != null)
+            .Select(x=>x.Discount!)
+            .ToList(); 
+        
+        foreach (var orderProduct in order.OrderProducts)
+        {
+            if(orderProduct.Product == null)
+            {
+                return (false, "Product not found");
+            }
+            
+            await _inventoryService.ChangeQuantityAsync(order.MerchantId, orderProduct.ProductId, -orderProduct.Quantity, CancellationToken.None);
+            
+            orderProduct.Price = CalculationHelpers.RoundToTwoDecimalPlaces(orderProduct.Product.Price);
+            orderProduct.OrderProductTaxes = CalculateTaxes(taxes.Items, orderProduct);
+            orderProduct.Discount = CalculateDiscount(discounts, orderProduct);
+            orderProduct.ProductName = orderProduct.Product.DisplayName;
+        }
+        
+        order.TotalPrice = CalculationHelpers.CalculatePriceWithTax(order);
+
+        order.Discount = CalculateOrderDiscount(discounts, order);
+        order.TotalPriceWithDiscount = CalculationHelpers.CalculateTotalPrice(order);
+        
+        
+        return (await _ordersRepository.UpdateAsync(order), FailedToChangeStatusMessage);
+    }
+
+ 
+
+    private async Task<(bool, string)> ValidateStatusChangeToClosed(OrderEntity order)
     {
         if(order.Status != OrderStatus.Open)
         {
@@ -169,20 +225,75 @@ public class OrdersService : IOrdersService
         {
             return (false, "Order has no products");
         }
-        
-        order.Status = OrderStatus.Closed;
-        
-        var taxes = await _taxService.GetAllAsync(TaxFilterFactory.CreateForAllItems(order.MerchantId));
-        
-        foreach (var orderProduct in order.OrderProducts)
+
+        foreach (var product in order.OrderProducts)
         {
-            orderProduct.Price = CalculationHelpers.RoundToTwoDecimalPlaces(orderProduct.Product.Price);
-            orderProduct.OrderProductTaxes = CalculateTaxes(taxes.Items, orderProduct);
-            orderProduct.Discount = 0; // todo calculate discount
-            orderProduct.ProductName = orderProduct.Product.DisplayName;
+            var quantity = await _inventoryService.GetQuantityAsync(order.MerchantId, product.ProductId);
+            if(quantity < product.Quantity)
+            {
+                return (false, "Not enough products in inventory");
+            }
         }
-        
-        return (await _ordersRepository.UpdateAsync(order), "Failed to change status");
+
+        return (true, string.Empty);
+    }
+
+    private decimal CalculateOrderDiscount(List<DiscountEntity> discountsItems, OrderEntity order)
+    {
+        var currentTime = DateTime.UtcNow;
+        var discountToApply = discountsItems.Where(x =>
+            x.ProductTypeId == null
+            && x.ProductId == null
+            && DiscountTimeValid(x, currentTime)).ToList();
+
+        _logger.LogInformation("Applying discounts {@Discounts} for order {OrderId}", discountToApply, order.Id);
+        var calculatedDiscount = 0m;
+        foreach (var discount in discountToApply)
+        {
+            if (discount.Type == DiscountType.Percentage)
+            {
+                calculatedDiscount += order.TotalPrice * discount.Value / 100;
+            }
+            else
+            {
+                calculatedDiscount += discount.Value;
+            }
+        }
+        _logger.LogInformation("CalculatedDiscount: {CalculateDiscount}", calculatedDiscount);
+
+        return CalculationHelpers.RoundToTwoDecimalPlaces( calculatedDiscount);
+    }
+
+    private static decimal CalculateDiscount(List<DiscountEntity> discountsItems, OrderProductEntity product)
+    {
+        var currentTime = DateTime.UtcNow;
+        var productDiscounts = discountsItems.Where(x =>
+           ( x.ProductTypeId == product.Product?.ProductTypeId
+            || x.ProductId == product.ProductId)
+            && DiscountTimeValid(x, currentTime)).ToList();
+       
+        var totalDiscount = 0m;
+        foreach (var discount in productDiscounts)
+        {
+            if(discount.Type == DiscountType.Percentage)
+            {
+                totalDiscount += product.Price * discount.Value / 100;
+            }
+            else
+            {
+                totalDiscount += discount.Value;
+            }
+        }
+
+        return totalDiscount;
+    }
+
+    private static bool DiscountTimeValid(DiscountEntity x, DateTime currentTime)
+    {
+        return (
+            (x.StartDate <= currentTime && x.EndDate >= currentTime)
+            || (x.StartDate == null && x.EndDate == null)
+        );
     }
 
     public static ICollection<OrderProductTaxEntity> CalculateTaxes(List<TaxListModel> taxes, OrderProductEntity product)
@@ -218,6 +329,11 @@ public class OrdersService : IOrdersService
     {
         var order = await _ordersRepository.GetAsync(orderChangeStatusRequest.OrderId);
 
+        if (order == null)
+        {
+            return (false, "Order not found");
+        }
+
         if(order.Status != OrderStatus.Open)
         {
             return (false, "Products can be changed only for open orders");
@@ -227,20 +343,7 @@ public class OrdersService : IOrdersService
         
         if(productFromList != null)
         {
-            productFromList.Quantity += orderChangeStatusRequest.Quantity;
-            if(productFromList.Quantity < 0)
-            {
-                return (false, "Quantity can't be negative");
-            }
-            
-            if(productFromList.Quantity == 0)
-            {
-                order.OrderProducts.Remove(productFromList);
-                
-                return (await _ordersRepository.DeleteProductFromLustAsync(productFromList), "Failed to delete product from list");
-            }
-            
-            return (await _ordersRepository.UpdateAsync(order), "Failed to change product quantity");
+            return await UpdateExistingProduct(orderChangeStatusRequest, productFromList, order);
         }
         
         var product = await _productService.GetAsync(orderChangeStatusRequest.ProductId);
@@ -258,6 +361,25 @@ public class OrdersService : IOrdersService
         order.OrderProducts.Add(OrderProductEntityFactory.Create(product, orderChangeStatusRequest.Quantity));
         
         return (await _ordersRepository.UpdateAsync(order), "Failed to add product to order");
+    }
+
+    private async Task<(bool result, string message)> UpdateExistingProduct(OrderChangeProductRequestModel orderChangeStatusRequest,
+        OrderProductEntity productFromList, OrderEntity order)
+    {
+        productFromList.Quantity += orderChangeStatusRequest.Quantity;
+        if(productFromList.Quantity < 0)
+        {
+            return (false, "Quantity can't be negative");
+        }
+            
+        if(productFromList.Quantity == 0)
+        {
+            order.OrderProducts.Remove(productFromList);
+
+            return (await _ordersRepository.DeleteProductFromLustAsync(productFromList), "Failed to delete product from list");
+        }
+            
+        return (await _ordersRepository.UpdateAsync(order), "Failed to change product quantity");
     }
 
     public async Task<(bool result, string message)> MakePaymentAsync(OrderMakePaymentRequestModel orderMakePaymentRequest, CancellationToken cancellationToken)
@@ -284,5 +406,21 @@ public class OrdersService : IOrdersService
         }
         
         return (await _ordersRepository.UpdateAsync(order), "Failed to make payment");
+    }
+
+    public async Task<(bool result, string message)> ChangeTipsAsync(TipsRequestModel tipsRequest, CancellationToken cancellationToken)
+    {
+        var order = await _ordersRepository.GetAsync(tipsRequest.OrderId);
+
+        if(order?.Status != OrderStatus.Open)
+        {
+            return (false, "Tips can be changed only for open orders");
+        }
+
+        order.Tips = CalculationHelpers.RoundToTwoDecimalPlaces(tipsRequest.Value);
+        
+        var result = await _ordersRepository.UpdateAsync(order);
+        
+        return (result, "Failed to change tips");
     }
 }

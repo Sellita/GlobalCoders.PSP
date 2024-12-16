@@ -5,5 +5,6 @@ public class OrderCreateModel
     public string ClientName { get; set; } = string.Empty;
     public Guid? EmployeeId { get; set; }
     public Guid? MerchantId { get; set; }
-    public decimal? Discount { get; set; }
+
+    public List<OrderDiscountCreateModel> Discounts { get; set; }
 }
