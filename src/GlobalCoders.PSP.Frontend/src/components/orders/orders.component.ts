@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
-import { AddOrderComponent } from '../../popups/add-order/add-order.component';
-import { EditOrderComponent } from '../../popups/edit-order/edit-order.component';
+import { AddOrderComponent } from '../../popups/for_ordering/add-order/add-order.component';
+import { EditOrderComponent } from '../../popups/for_ordering/edit-order/edit-order.component';
 import { OrderingTableComponent } from '../tables/ordering-table/ordering-table.component';
 import { Order } from '../../models/order.model';
 

@@ -1,16 +1,16 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { RouterLinkActive } from '@angular/router';
-import { LoginComponent } from '../../popups/login/login.component';
+import { LoginComponent } from '../../popups/for_login/login/login.component';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
-import { LogoutComponent } from '../../popups/logout/logout.component';
+import { LogoutComponent } from '../../popups/for_login/logout/logout.component';
 import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, LoginComponent, CommonModule, LogoutComponent],
+  imports: [RouterLink, RouterLinkActive, CommonModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
