@@ -5,7 +5,7 @@ namespace GlobalCoders.PSP.BackendApi.OrdersManagement.ModelsDto;
 public class OrderDiscountModel
 {
     public Guid DiscountId { get; set; }
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
     public decimal Value { get; set; }
     public DiscountType Type { get; set; }
 }

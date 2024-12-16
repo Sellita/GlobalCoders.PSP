@@ -3,36 +3,36 @@ using GlobalCoders.PSP.BackendApi.Base.Factories;
 using GlobalCoders.PSP.BackendApi.Base.ModelsDto;
 using GlobalCoders.PSP.BackendApi.Identity.Enums;
 using GlobalCoders.PSP.BackendApi.Identity.Extensions;
-using GlobalCoders.PSP.BackendApi.OrganizationManagment.Factories;
-using GlobalCoders.PSP.BackendApi.OrganizationManagment.ModelsDto;
-using GlobalCoders.PSP.BackendApi.OrganizationManagment.Services;
+using GlobalCoders.PSP.BackendApi.ProductsManagement.Factories;
+using GlobalCoders.PSP.BackendApi.ProductsManagement.ModelsDto;
+using GlobalCoders.PSP.BackendApi.ProductsManagement.Services;
 using Microsoft.AspNetCore.Mvc;
 using IAuthorizationService = GlobalCoders.PSP.BackendApi.Identity.Services.IAuthorizationService;
 
-namespace GlobalCoders.PSP.BackendApi.OrganizationManagment.Controllers;
+namespace GlobalCoders.PSP.BackendApi.ProductsManagement.Controllers;
 
-public class OrganizationController : BaseApiController//todo we need to check access
+public class ProductTypeController : BaseApiController
 {
-    private readonly ILogger<OrganizationController> _logger;
+    private readonly ILogger<ProductTypeController> _logger;
     private readonly IAuthorizationService _authorizationService;
-    private readonly IMerchantService _merchantService;
+    private readonly IProductTypeService _produyctTypeService;
 
-    public OrganizationController(ILogger<OrganizationController> logger, IAuthorizationService authorizationService, IMerchantService merchantService)
+    public ProductTypeController(ILogger<ProductTypeController> logger, IAuthorizationService authorizationService, IProductTypeService produyctTypeService)
     {
         _logger = logger;
         _authorizationService = authorizationService;
-        _merchantService = merchantService;
+        _produyctTypeService = produyctTypeService;
     }
     
     [HttpGet("[action]/{organizationId}")]
-    public async Task<ActionResult<OrganizationResponseModel>> Id(Guid organizationId,
+    public async Task<ActionResult<ProductTypeResponseModel>> Id(Guid organizationId,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
             return ValidationProblem();
         }
- 
+
         var user = await _authorizationService.GetUserAsync(User);
         
         if (user?.MerchantId != organizationId && !await _authorizationService.HasPermissionsAsync(
@@ -46,7 +46,7 @@ public class OrganizationController : BaseApiController//todo we need to check a
             return NotFound();
         }
         
-        var result = await _merchantService.GetAsync(organizationId);
+        var result = await _produyctTypeService.GetAsync(organizationId);
         
         if(result == null)
         {
@@ -57,7 +57,7 @@ public class OrganizationController : BaseApiController//todo we need to check a
     }
     
     [HttpPost("[action]")]
-    public async Task<ActionResult<BasePagedResponse<OrganizationsListModel>>> All(OrganizationsFilter filter, CancellationToken cancellationToken)
+    public async Task<ActionResult<BasePagedResponse<ProductTypeListModel>>> All(ProductTypeFilter filter, CancellationToken cancellationToken)
     {
         if(!ModelState.IsValid)
         {
@@ -78,32 +78,32 @@ public class OrganizationController : BaseApiController//todo we need to check a
                 return NotFound();
             }
             
-            var userOrganization = await _merchantService.GetAsync(user.MerchantId.Value);
+            var userOrganization = await _produyctTypeService.GetAsync(user.MerchantId.Value);
 
             if (userOrganization == null)
             {
                 return NotFound();
             }
 
-            return Ok(BasePagedResopnseFactory.CreateSingle(OrganizationsListModelFactory.Create(userOrganization)));
+            return Ok(BasePagedResopnseFactory.CreateSingle(ProductTypeListModelFactory.Create(userOrganization)));
         }
         
-        var result = await _merchantService.GetAllAsync(filter);
+        var result = await _produyctTypeService.GetAllAsync(filter);
         
         return Ok(result);
     }
     
     [HttpPost("[action]")]
-    public async Task<IActionResult> Create(OrganizationCreateModel organizationCreateModel)
+    public async Task<IActionResult> Create(ProductTypeCreateModel organizationCreateModel)
     {
         if (!ModelState.IsValid)
         {
             return ValidationProblem();
         }
         
-        var createModel = MerchantEntityFactory.Create(organizationCreateModel);
+        var createModel = ProductTypeEntityFactory.Create(organizationCreateModel);
         
-        var result = await _merchantService.CreateAsync(createModel);
+        var result = await _produyctTypeService.CreateAsync(createModel);
 
         if (result)
         {
@@ -114,16 +114,16 @@ public class OrganizationController : BaseApiController//todo we need to check a
     }
     
     [HttpPut("[action]")]
-    public async Task<IActionResult> Update(OrganizationUpdateModel organizationUpdateModel)
+    public async Task<IActionResult> Update(ProductTypeUpdateModel organizationUpdateModel)
     {
         if (!ModelState.IsValid)
         {
             return ValidationProblem();
         }
         
-        var updateModel = MerchantEntityFactory.CreateUpdate(organizationUpdateModel);
+        var updateModel = ProductTypeEntityFactory.CreateUpdate(organizationUpdateModel);
         
-        var result = await _merchantService.UpdateAsync(updateModel);
+        var result = await _produyctTypeService.UpdateAsync(updateModel);
 
         if (result)
         {
@@ -136,7 +136,7 @@ public class OrganizationController : BaseApiController//todo we need to check a
     [HttpDelete("[action]/{organizationId}")]
     public async Task<IActionResult> Delete(Guid organizationId)
     {
-        var result = await _merchantService.DeleteAsync(organizationId);
+        var result = await _produyctTypeService.DeleteAsync(organizationId);
 
         if (result)
         {

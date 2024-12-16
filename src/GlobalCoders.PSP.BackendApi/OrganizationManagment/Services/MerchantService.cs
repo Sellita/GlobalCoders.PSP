@@ -37,6 +37,11 @@ public class MerchantService : IMerchantService
     public async Task<OrganizationResponseModel?> GetAsync(Guid organizationId)
     {
         var entity = await _merchantRepository.GetAsync(organizationId);
+
+        if (entity == null)
+        {
+            return null;
+        }
         
         return OrganizationResponseModelFactory.Create(entity);
     }

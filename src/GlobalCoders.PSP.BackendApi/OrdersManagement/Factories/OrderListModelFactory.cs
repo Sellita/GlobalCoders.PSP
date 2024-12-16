@@ -13,7 +13,7 @@ public static class OrderListModelFactory
             Id = merchantEntity.Id,
             Client = merchantEntity.ClientName,
             Date = merchantEntity.CreatedAt,
-            Merchant = merchantEntity.Merchant.DisplayName,
+            Merchant = merchantEntity.Merchant?.DisplayName ?? string.Empty,
             Status = merchantEntity.Status,
 
         };

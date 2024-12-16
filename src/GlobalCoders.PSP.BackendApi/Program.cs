@@ -10,7 +10,7 @@ using GlobalCoders.PSP.BackendApi.Identity.Extensions;
 using GlobalCoders.PSP.BackendApi.InventoryManagement.Extensions;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.Extensions;
 using GlobalCoders.PSP.BackendApi.OrganizationManagment.Extensions;
-using GlobalCoders.PSP.BackendApi.ProductsManagment.Extensions;
+using GlobalCoders.PSP.BackendApi.ProductsManagement.Extensions;
 using GlobalCoders.PSP.BackendApi.SurchargeManagement.Extensions;
 using GlobalCoders.PSP.BackendApi.TaxManagement.Extensions;
 using Microsoft.EntityFrameworkCore;
