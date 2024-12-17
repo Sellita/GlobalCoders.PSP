@@ -88,6 +88,7 @@ public class EmployeeService : IEmployeeService
                 queryAppUsers = queryAppUsers
                 .Include(x => x.UserPermissions)
                 .ThenInclude(x => x.AppRole)
+                .Include(x=>x.WorkingSchedule)
                 .AsNoTracking()
                 .AsQueryable()
                 .AsSplitQuery();
@@ -136,6 +137,7 @@ public class EmployeeService : IEmployeeService
             await _userManager.SetUserNameAsync(user, createRequest.Email);
 
             var result = await _userManager.CreateAsync(user);
+            
 
             if (!result.Succeeded)
             {
@@ -148,6 +150,16 @@ public class EmployeeService : IEmployeeService
             {
                 await _userManager.AddToRoleAsync(user, createRequest.Role);
             }
+            
+
+            user.WorkingSchedule = createRequest.WorkingSchedule.Select(x=> new EmployeeScheduleEntity
+            {
+                DayOfWeek = x.DayOfWeek,
+                StartTime = x.StartTime,
+                EndTime = x.EndTime
+            }).ToList();
+
+            await _employeeRepository.UpdateScheduleAsync(user, cancellationToken);
 
             var code = await _userManager.GeneratePasswordResetTokenAsync(user);
 

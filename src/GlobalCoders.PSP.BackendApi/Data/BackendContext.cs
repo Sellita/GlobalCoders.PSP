@@ -5,6 +5,7 @@ using GlobalCoders.PSP.BackendApi.InventoryManagement.Entities;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.Entities;
 using GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities;
 using GlobalCoders.PSP.BackendApi.ProductsManagement.Entities;
+using GlobalCoders.PSP.BackendApi.ServicesManagement.Entities;
 using GlobalCoders.PSP.BackendApi.SurchargeManagement.Entities;
 using GlobalCoders.PSP.BackendApi.TaxManagement.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +38,7 @@ public sealed class BackendContext : BaseDbContext
         builder.ApplyConfiguration(new OrderProductsEntityConfiguration());
         builder.ApplyConfiguration(new OrderEntityConfiguration());
         builder.ApplyConfiguration(new AppUserRoleConfigurations());
+        builder.ApplyConfiguration(new ServiceEntityConfiguration());
     }
 
     //Empoloee Managment
@@ -64,6 +66,7 @@ public sealed class BackendContext : BaseDbContext
     
     public DbSet<InventoryTransactionEntity> InventoryTransactions => Set<InventoryTransactionEntity>();
     
+    public DbSet<ServiceEntity> Services => Set<ServiceEntity>();
     public DbSet<OrderEntity> Orders => Set<OrderEntity>();
     public DbSet<OrderProductEntity> OrderProducts => Set<OrderProductEntity>();
     public DbSet<OrderPaymentsEntity> OrderPayments => Set<OrderPaymentsEntity>();

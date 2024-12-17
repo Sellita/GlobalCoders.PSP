@@ -34,9 +34,9 @@ public class ProductService : IProductService
         return BasePagedResopnseFactory.Create(models, filter, entities.totalItems);
     }
 
-    public async Task<ProductResponseModel?> GetAsync(Guid productId)
+    public async Task<ProductResponseModel?> GetAsync(Guid productId, Guid? merchant = null)
     {
-        var entity = await _productRepository.GetAsync(productId);
+        var entity = await _productRepository.GetAsync(productId, merchant);
         
         if(entity == null)
         {
