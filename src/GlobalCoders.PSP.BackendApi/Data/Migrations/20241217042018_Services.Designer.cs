@@ -3,6 +3,7 @@ using System;
 using GlobalCoders.PSP.BackendApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GlobalCoders.PSP.BackendApi.Data.Migrations
 {
     [DbContext(typeof(BackendContext))]
-    partial class BackendContextModelSnapshot : ModelSnapshot
+    [Migration("20241217042018_Services")]
+    partial class Services
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -580,9 +583,6 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                     b.Property<int>("DurationMin")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("EmployeeId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Image")
                         .IsRequired()
                         .HasColumnType("text");
@@ -593,6 +593,9 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                     b.Property<DateTime>("LastUpdateDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid>("MerchantId")
+                        .HasColumnType("uuid");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
@@ -601,7 +604,7 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeId");
+                    b.HasIndex("MerchantId");
 
                     b.ToTable("Services");
                 });
@@ -964,13 +967,13 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
 
             modelBuilder.Entity("GlobalCoders.PSP.BackendApi.ServicesManagement.Entities.ServiceEntity", b =>
                 {
-                    b.HasOne("GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities.EmployeeEntity", "Employee")
+                    b.HasOne("GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities.MerchantEntity", "Merchant")
                         .WithMany()
-                        .HasForeignKey("EmployeeId")
+                        .HasForeignKey("MerchantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Employee");
+                    b.Navigation("Merchant");
                 });
 
             modelBuilder.Entity("GlobalCoders.PSP.BackendApi.SurchargeManagement.Entities.SurchargeEntity", b =>
