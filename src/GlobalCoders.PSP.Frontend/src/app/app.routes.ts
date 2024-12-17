@@ -12,6 +12,7 @@ import { ServicesComponent } from '../components/services/services.component';
 
 
 export const routes: Routes = [
+    { path: '', component: DashboardComponent },
     { path: 'dashboard', component: DashboardComponent },
     { path: 'orders', component: OrdersComponent },
     { path: 'reservations', component: ReservationsComponent },

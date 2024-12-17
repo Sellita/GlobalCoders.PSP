@@ -2,24 +2,28 @@
 <div class="popup" *ngIf="isPopupVisible">
     <div class="container">
         <!--Inputs section-->
-        <section>
-            <div>
-                <label for="name">Name</label>
+        <section class="inputs">
+            <div class="legalname">
+                <label for="name">Display Name</label>
                 <input type="text" id="name" [(ngModel)]="merchant.displayName">
             </div>
-            <div>
+            <div class="displayName">
+                <label for="name">Legal Name</label>
+                <input type="text" id="name" [(ngModel)]="merchant.legalName">
+            </div>
+            <div class="email">
                 <label for="email">Email</label>
                 <input type="email" id="email" [(ngModel)]="merchant.email">
             </div>
-            <div>
+            <div class="phone">
                 <label for="phone">Phone</label>
                 <input type="tel" id="phone" [(ngModel)]="merchant.mainPhoneNumber">
             </div>
-            <div>
-                <label for="category">Category</label>
-                <input type="text" id="category" [(ngModel)]="merchant.legalName">
+            <div class="secondaryPhoneNumber">
+                <label for="phone">Secondary Phone</label>
+                <input type="tel" id="phone" [(ngModel)]="merchant.secondaryPhoneNumber">
             </div>
-            <div>
+            <div class="address">
                 <label for="address">Address</label>
                 <input type="text" id="address" [(ngModel)]="merchant.address">
             </div>
@@ -28,12 +32,12 @@
         <!--Timetable section-->
         <section>
             <h3>Schedule</h3>
-            <div *ngFor="let day of weekDays; let i = index">
-                <div>
+            <div *ngFor="let day of weekDays; let i = index" class="timetable">
+                <div class="day">
                     <input type="checkbox" id="{{day}}-checkbox" [(ngModel)]="merchant.workingSchedule[i].isOpen">
                     <label for="{{day}}-checkbox">{{day}}</label>
                 </div>
-                <div *ngIf="merchant.workingSchedule[i].isOpen">
+                <div *ngIf="merchant.workingSchedule[i].isOpen" class="time">
                     <label for="{{day}}-start">Start Time</label>
                     <input type="time" id="{{day}}-start" [(ngModel)]="merchant.workingSchedule[i].StartTime">
                     <label for="{{day}}-end">End Time</label>
@@ -42,17 +46,6 @@
             </div>
         </section>
 
-        <!--State section-->
-        <section>
-            <h3>State</h3>
-            <div>
-            </div>
-        </section>
-
-        <!--Description section-->
-        <section>
-
-        </section>
-
+        <button (click)="createOrganization()">Create</button>
     </div>
 </div>

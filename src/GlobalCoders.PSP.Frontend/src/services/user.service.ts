@@ -12,8 +12,12 @@ export class UserService {
   constructor(private api: ApiService) {}
 
   private getAuthHeaders() {
-    const token = localStorage.getItem('accessToken');
-    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    let headers = new HttpHeaders();
+    if (typeof window !== 'undefined' && localStorage.getItem('accessToken')) {
+      const token = localStorage.getItem('accessToken');
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    return headers;
   }
 
 

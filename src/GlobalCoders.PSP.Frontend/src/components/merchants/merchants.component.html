@@ -1,5 +1,6 @@
 <app-add-merchant #popup></app-add-merchant>
 <app-edit-merchant #popupedit></app-edit-merchant>
+<app-delete-popup #popupdelete></app-delete-popup>
 
 <header class="title">
     <h1>Merchant Management</h1>
@@ -13,3 +14,5 @@
         <img src="./filter.png" alt="">
     </button>
 </div>
+
+<app-ordering-table #table [columns]="columns" [data]="data"></app-ordering-table>

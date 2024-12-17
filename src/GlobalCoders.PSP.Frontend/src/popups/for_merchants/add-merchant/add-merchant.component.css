@@ -20,7 +20,6 @@
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     z-index: 1000;
-    width: auto;
     height: auto;
     text-align: center;
     background-color: #212529;
@@ -35,15 +34,134 @@
 .popup button {
     margin-top: 20px;
     padding: 10px 20px;
-    background: #007bff;
+    background: #6C757D;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
     width: 100px;
+    font-weight: bold;
+    font-size: 1em;
 }
 
 .popup button:hover {
-    background: #0056b3;
+    background: #495057;
+}
+
+
+.inputs {
+    background-color: #212529;
+    display: grid; 
+    grid-auto-columns: 1fr; 
+    grid-template-columns: 1fr 1fr; 
+    grid-template-rows: 1fr 1fr 1fr; 
+    grid-template-areas: 
+        "displayName legalname"
+        "email address"
+        "phone secondaryPhoneNumber";
+    padding: 0%;
+    margin: 0%;
+}
+
+.inputs div { 
+    padding: 10px; 
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    flex-direction: column;
+}
+
+.inputs div label { 
+    font-size: 1.2em;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.inputs div input { 
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+}
+
+
+.legalname { 
+    grid-area: legalname;
+}
+
+.displayname { 
+    grid-area: displayName; 
+}
+
+.email { 
+    grid-area: email; 
+}
+
+.address { 
+    grid-area: address; 
+}
+
+.phone { 
+    grid-area: phone; 
+}
+
+.secondphone { 
+    grid-area: secondaryPhoneNumber; 
+}
+
+.timetable{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    padding: 5px 10px;
+    height: 50px;
+    gap: 20px;
+}
+
+
+section h3{
+    color: white;
+    font-size: 1.3em;
+    font-weight: bold;
+    margin: 20px 10px 10px 10px;
+    text-align: left;
+}
+
+.timetable div label {
+    font-size: 1em;
+    font-weight: normal;
+    color: white;
+    margin-right: 10px;
+   
+}
+
+.day, .time{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.timetable div input[type="checkbox"] {
+    margin-right: 7px;
+    width: 18px;
+    height: 18px;
+}
+
+.timetable .time label {
+    font-size: 0.9em;
+    font-weight: normal;
+    color: white;
+    margin-right: 5px;
+}
+
+.timetable .time input[type="time"] {
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+    margin-right: 10px;
 }

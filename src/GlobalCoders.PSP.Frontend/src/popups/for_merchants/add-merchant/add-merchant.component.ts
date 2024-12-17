@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Organization } from '../../../models/organization.model';
-import { WorkingSchedule } from '../../../models/WorkingSchedule.model';
 
 @Component({
   selector: 'app-add-merchant',
@@ -44,4 +43,8 @@ export class AddMerchantComponent {
     this.isPopupVisible = false; // Cierra el popup
   }
 
+  createOrganization() {
+    // Crea la organización
+    console.log(this.merchant);
+  }
 }
