@@ -80,4 +80,27 @@ public class EmployeeRepository : IEmployeeRepository
             .Where(x => x.Id == user)
             .FirstOrDefaultAsync();
     }
+
+    public async Task<bool> UpdateScheduleAsync(EmployeeEntity user, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
+            
+            context.Users.Update(user);
+            
+            var oldSchedule = context.EmployeeScheduleEntity.Where(x=>x.EmployeeEntityId == user.Id).ToList();
+            context.RemoveRange(oldSchedule);
+            
+            var result = await context.SaveChangesAsync(cancellationToken);
+
+            return result > 0;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to update user by Id {Id}", user.Id);
+
+            return false;
+        }
+    }
 }

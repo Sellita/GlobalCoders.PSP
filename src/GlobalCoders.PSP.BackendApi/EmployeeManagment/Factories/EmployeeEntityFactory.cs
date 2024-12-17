@@ -21,12 +21,7 @@ public static class EmployeeEntityFactory
             Name = request.Name,
             PhoneNumber = request.PhoneNumber,
             CreationDateTime = DateTime.UtcNow,
-            WorkingSchedule = request.WorkingSchedule.Select(x=> new EmployeeScheduleEntity
-            {
-                DayOfWeek = x.DayOfWeek,
-                StartTime = x.StartTime,
-                EndTime = x.EndTime
-            }).ToList(),
+            WorkingSchedule = [],
             MerchantId = request.OrganizationId
         };
     }

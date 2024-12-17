@@ -79,7 +79,9 @@ public class MerchantRepository : IMerchantRepository
     {
         await using var context = await _contextFactory.CreateDbContextAsync();
 
-        return await context.Merchant.FirstOrDefaultAsync(x => x.Id == organizationId);
+        return await context.Merchant
+            .Include(x=>x.WorkingSchedule)
+            .FirstOrDefaultAsync(x => x.Id == organizationId);
     }
 
     public async Task<bool> DeleteAsync(Guid organizationId)

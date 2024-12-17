@@ -8,4 +8,5 @@ public interface IEmployeeRepository
     Task<bool> UpdateAsync(EmployeeEntity appUser, string updateRequestRole, CancellationToken cancellationToken);
     Task<bool> DeleteAsync(Guid employeeId);
     Task<EmployeeEntity?> GetUserAsync(Guid userId);
+    Task<bool> UpdateScheduleAsync(EmployeeEntity user, CancellationToken cancellationToken);
 }
