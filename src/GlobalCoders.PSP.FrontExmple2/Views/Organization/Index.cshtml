@@ -1,24 +1,19 @@
-@section LibStyles
-{
-    <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/lib/sweetalert2/dist/sweetalert2.min.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/lib/select2/css/select2.min.css" asp-append-version="true"/>
-}
-
 @section Styles
 {
-    <link rel="stylesheet" href="~/lib/datatables/css/dataTables.material.min.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/lib/datatables.net-bs5/dataTables.bootstrap5.min.css"/>
+    <link rel="stylesheet" href="~/lib/datatables.net-buttons-bs5/buttons.bootstrap5.min.css"/>
+    <link rel="stylesheet" href="~/lib/sweetalert2/dist/sweetalert2.min.css"/>
 }
 
 @section LibScripts
 {
-    <script src="~/lib/sweetalert2/dist/sweetalert2.min.js" asp-append-version="true"></script>
     <partial name="_ValidationScriptsPartial"/>
 
-    <script src="~/lib/datatables/js/jquery.dataTables.js" asp-append-version="true"></script>
-    <script src="~/lib/datatables-net-bs5/dataTables.bootstrap5.js" asp-append-version="true"></script>
-    <script src="~/lib/datatables-responsive/dataTables.responsive.min.js" asp-append-version="true"></script>
-    <script src="~/lib/select2/js/select2.min.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="lib/datatables.net/dataTables.js"></script>
+    <script type="text/javascript" src="lib/datatables.net-bs5/dataTables.bootstrap5.min.js"></script>
+    <script type="text/javascript" src="lib/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="lib/datatables.net-buttons-bs5/buttons.bootstrap5.min.js"></script>
+    <script type="text/javascript" src="lib/sweetalert2/dist/sweetalert2.min.js"></script>
 }
 
 @section Scripts
@@ -38,11 +33,6 @@
                 </tr>
                 </thead>
                 <tfoot>
-                <tr>
-                    <th scope="col" class="desktop tablet">Id</th>
-                    <th scope="col" class="desktop tablet">Name</th>
-                    <th scope="col" data-orderable="false" class="desktop tablet">Actions</th>
-                </tr>
                 </tfoot>
             </table>
         </div>

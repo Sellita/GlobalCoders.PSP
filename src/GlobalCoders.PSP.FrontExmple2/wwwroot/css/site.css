@@ -20,3 +20,21 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+textarea:focus, input:focus{
+  outline: none;
+}
+
+*:focus {
+  outline: none;
+}
+
+.form-control:focus {
+  border-color: inherit;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+.day-input {
+  width: 100px;
+}
