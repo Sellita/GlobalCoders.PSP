@@ -131,7 +131,7 @@ public class OrdersController : BaseApiController
     [HttpPut("[action]")]
     public async Task<IActionResult> Update(OrderUpdateModel orderUpdateModel, CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid || orderUpdateModel.Id == Guid.Empty)
         {
             return ValidationProblem();
         }
