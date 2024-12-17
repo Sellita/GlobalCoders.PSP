@@ -34,9 +34,9 @@ public class ServicesService : IServicesService
         return BasePagedResopnseFactory.Create(models, filter, entities.totalItems);
     }
 
-    public async Task<ServiceResponseModel?> GetAsync(Guid serviceId)
+    public async Task<ServiceResponseModel?> GetAsync(Guid serviceId, Guid? merchantId = null)
     {
-        var entity = await _servicesRepository.GetAsync(serviceId);
+        var entity = await _servicesRepository.GetAsync(serviceId, merchantId);
         
         if(entity == null)
         {

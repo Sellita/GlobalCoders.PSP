@@ -23,8 +23,8 @@ public class ServiceController : BaseApiController
         _servicesService = servicesService;
     }
     
-    [HttpGet("[action]/{organizationId}")]
-    public async Task<ActionResult<ServiceResponseModel>> Id(Guid organizationId,
+    [HttpGet("[action]/{serviceId}")]
+    public async Task<ActionResult<ServiceResponseModel>> Id(Guid serviceId,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
@@ -33,19 +33,19 @@ public class ServiceController : BaseApiController
         }
 
         var user = await _authorizationService.GetUserAsync(User);
-        
-        if (user?.MerchantId != organizationId && !await _authorizationService.HasPermissionsAsync(
+        var merchantId = user?.Merchant?.Id;
+        if (!await _authorizationService.HasPermissionsAsync(
                 User,
                 [Permissions.CanViewAllOrganizations],
                 cancellationToken))
         {
             
-             _logger.LogWarning("User ({UserId}) has no permissions to view organization {OrganizaitonId}", User.GetUserId(), organizationId);
+             _logger.LogWarning("User ({UserId}) has no permissions to view organization {OrganizaitonId}", User.GetUserId(), serviceId);
 
             return NotFound();
         }
         
-        var result = await _servicesService.GetAsync(organizationId);
+        var result = await _servicesService.GetAsync(serviceId, merchantId);
         
         if(result == null)
         {
@@ -77,9 +77,7 @@ public class ServiceController : BaseApiController
                 return NotFound();
             }
             
-            var userOrganization = await _servicesService.GetAsync(user.Merchant.Id);
-            
-            filter.MerchantId = userOrganization?.EmployeeId;
+            filter.MerchantId = user.MerchantId;
             
             if(filter.MerchantId == null)
             {

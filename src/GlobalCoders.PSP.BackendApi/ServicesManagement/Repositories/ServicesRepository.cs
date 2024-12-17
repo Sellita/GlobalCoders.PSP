@@ -78,13 +78,22 @@ public class ServicesRepository : IServicesRepository
         return (items, totalItems);
     }
 
-    public async Task<ServiceEntity?> GetAsync(Guid serviceId)
+    public async Task<ServiceEntity?> GetAsync(Guid serviceId, Guid? merchantId)
     {
         await using var context = await _contextFactory.CreateDbContextAsync();
 
-        var service =  await context.Services
+        var querry =   context.Services
             .Include(x=>x.Employee)
-            .FirstOrDefaultAsync(x => x.Id == serviceId);
+            .ThenInclude(x=>x.Merchant)
+            .Where(x => x.Id == serviceId);
+       
+        if (merchantId.HasValue)
+        {
+            querry = querry.Where(x => x.Employee != null && x.Employee.MerchantId == merchantId);
+        }
+         
+        var service = await querry
+            .FirstOrDefaultAsync();
 
         return service;
     }

@@ -8,6 +8,6 @@ public interface IProductRepository
     Task<bool> UpdateAsync(ProductEntity updateModel);
     Task<bool> CreateAsync(ProductEntity createModel);
     Task<(List<ProductEntity> items, int totalItems)> GetAllAsync(ProductFilter filter);
-    Task<ProductEntity?> GetAsync(Guid productId);
+    Task<ProductEntity?> GetAsync(Guid productId, Guid? merchant);
     Task<bool> DeleteAsync(Guid organizationId);
 }

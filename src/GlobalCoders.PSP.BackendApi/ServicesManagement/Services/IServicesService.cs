@@ -9,6 +9,6 @@ public interface IServicesService
     Task<bool> UpdateAsync(ServiceEntity updateModel);
     Task<bool> CreateAsync(ServiceEntity createModel);
     Task<BasePagedResponse<ServiceListModel>> GetAllAsync(ServiceFilter filter);
-    Task<ServiceResponseModel?> GetAsync(Guid serviceId);
+    Task<ServiceResponseModel?> GetAsync(Guid serviceId, Guid? merchantId = null);
     Task<bool> DeleteAsync(Guid organizationId);
 }

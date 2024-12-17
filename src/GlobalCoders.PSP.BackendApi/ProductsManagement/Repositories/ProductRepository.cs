@@ -83,14 +83,22 @@ public class ProductRepository : IProductRepository
         return (items, totalItems);
     }
 
-    public async Task<ProductEntity?> GetAsync(Guid productId)
+    public async Task<ProductEntity?> GetAsync(Guid productId, Guid? merchant)
     {
         await using var context = await _contextFactory.CreateDbContextAsync();
 
-        var product =  await context.Product
+        var querry =   context.Product
             .Include(x=>x.Merchant)
             .Include(x=>x.ProductType)
-            .FirstOrDefaultAsync(x => x.Id == productId);
+            .Where(x=>x.Id == productId);
+       
+        if (merchant.HasValue)
+        {
+            querry = querry.Where(x => x.MerchantId == merchant);
+        }
+        
+        var product = await querry
+            .FirstOrDefaultAsync();
 
         return product;
     }
