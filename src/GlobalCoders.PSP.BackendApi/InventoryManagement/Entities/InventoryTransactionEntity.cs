@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities;
-using GlobalCoders.PSP.BackendApi.ProductsManagment.Entities;
+using GlobalCoders.PSP.BackendApi.ProductsManagement.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace GlobalCoders.PSP.BackendApi.InventoryManagement.Entities;

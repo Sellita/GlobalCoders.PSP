@@ -39,6 +39,11 @@ public class SurchargeService : ISurchargeService
     {
         var entity = await _surchargeRepository.GetAsync(surchargeId);
         
+        if (entity == null)
+        {
+            return null;
+        }
+        
         return SurchargeResponseModelFactory.Create(entity);
     }
 

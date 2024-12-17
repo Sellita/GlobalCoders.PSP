@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities;
-using GlobalCoders.PSP.BackendApi.ProductsManagment.Entities;
+using GlobalCoders.PSP.BackendApi.ProductsManagement.Entities;
 using GlobalCoders.PSP.BackendApi.TaxManagement.Enums;
 using GlobalCoders.PSP.BackendApi.TaxManagement.Constants;
 

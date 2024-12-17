@@ -1,5 +1,4 @@
 using GlobalCoders.PSP.BackendApi.OrdersManagement.Entities;
-using GlobalCoders.PSP.BackendApi.ProductsManagment.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

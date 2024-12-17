@@ -489,7 +489,7 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                     b.ToTable("OrganizationScheduleEntity");
                 });
 
-            modelBuilder.Entity("GlobalCoders.PSP.BackendApi.ProductsManagment.Entities.ProductEntity", b =>
+            modelBuilder.Entity("GlobalCoders.PSP.BackendApi.ProductsManagement.Entities.ProductEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -539,7 +539,7 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                     b.ToTable("Product");
                 });
 
-            modelBuilder.Entity("GlobalCoders.PSP.BackendApi.ProductsManagment.Entities.ProductTypeEntity", b =>
+            modelBuilder.Entity("GlobalCoders.PSP.BackendApi.ProductsManagement.Entities.ProductTypeEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -556,6 +556,54 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ProductType");
+                });
+
+            modelBuilder.Entity("GlobalCoders.PSP.BackendApi.ServicesManagement.Entities.ServiceEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<int>("DurationMin")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("EmployeeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("LastUpdateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("ServiceState")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("Services");
                 });
 
             modelBuilder.Entity("GlobalCoders.PSP.BackendApi.SurchargeManagement.Entities.SurchargeEntity", b =>
@@ -758,11 +806,11 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GlobalCoders.PSP.BackendApi.ProductsManagment.Entities.ProductEntity", "Product")
+                    b.HasOne("GlobalCoders.PSP.BackendApi.ProductsManagement.Entities.ProductEntity", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId");
 
-                    b.HasOne("GlobalCoders.PSP.BackendApi.ProductsManagment.Entities.ProductTypeEntity", "ProductType")
+                    b.HasOne("GlobalCoders.PSP.BackendApi.ProductsManagement.Entities.ProductTypeEntity", "ProductType")
                         .WithMany()
                         .HasForeignKey("ProductTypeId");
 
@@ -814,7 +862,7 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GlobalCoders.PSP.BackendApi.ProductsManagment.Entities.ProductEntity", "Product")
+                    b.HasOne("GlobalCoders.PSP.BackendApi.ProductsManagement.Entities.ProductEntity", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -872,7 +920,7 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                         .WithMany("OrderProducts")
                         .HasForeignKey("OrderId");
 
-                    b.HasOne("GlobalCoders.PSP.BackendApi.ProductsManagment.Entities.ProductEntity", "Product")
+                    b.HasOne("GlobalCoders.PSP.BackendApi.ProductsManagement.Entities.ProductEntity", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -895,7 +943,7 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                         .HasForeignKey("MerchantEntityId");
                 });
 
-            modelBuilder.Entity("GlobalCoders.PSP.BackendApi.ProductsManagment.Entities.ProductEntity", b =>
+            modelBuilder.Entity("GlobalCoders.PSP.BackendApi.ProductsManagement.Entities.ProductEntity", b =>
                 {
                     b.HasOne("GlobalCoders.PSP.BackendApi.OrganizationManagment.Entities.MerchantEntity", "Merchant")
                         .WithMany()
@@ -903,7 +951,7 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GlobalCoders.PSP.BackendApi.ProductsManagment.Entities.ProductTypeEntity", "ProductType")
+                    b.HasOne("GlobalCoders.PSP.BackendApi.ProductsManagement.Entities.ProductTypeEntity", "ProductType")
                         .WithMany()
                         .HasForeignKey("ProductTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -912,6 +960,17 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                     b.Navigation("Merchant");
 
                     b.Navigation("ProductType");
+                });
+
+            modelBuilder.Entity("GlobalCoders.PSP.BackendApi.ServicesManagement.Entities.ServiceEntity", b =>
+                {
+                    b.HasOne("GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities.EmployeeEntity", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("GlobalCoders.PSP.BackendApi.SurchargeManagement.Entities.SurchargeEntity", b =>
@@ -933,7 +992,7 @@ namespace GlobalCoders.PSP.BackendApi.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GlobalCoders.PSP.BackendApi.ProductsManagment.Entities.ProductTypeEntity", "ProductType")
+                    b.HasOne("GlobalCoders.PSP.BackendApi.ProductsManagement.Entities.ProductTypeEntity", "ProductType")
                         .WithMany()
                         .HasForeignKey("ProductTypeId");
 

@@ -10,7 +10,8 @@ using GlobalCoders.PSP.BackendApi.Identity.Extensions;
 using GlobalCoders.PSP.BackendApi.InventoryManagement.Extensions;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.Extensions;
 using GlobalCoders.PSP.BackendApi.OrganizationManagment.Extensions;
-using GlobalCoders.PSP.BackendApi.ProductsManagment.Extensions;
+using GlobalCoders.PSP.BackendApi.ProductsManagement.Extensions;
+using GlobalCoders.PSP.BackendApi.ServicesManagement.Extensions;
 using GlobalCoders.PSP.BackendApi.SurchargeManagement.Extensions;
 using GlobalCoders.PSP.BackendApi.TaxManagement.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -82,6 +83,7 @@ void RegisterServices(IServiceCollection services, ConfigurationManager configur
     services.RegisterOrdersServices();
     services.RegisterTaxManagementServices();
     services.RegisterDiscountManagementServices();
+    services.RegisterServicesManagementServices();
 }
 
 void RegisterDataBaseServices(IServiceCollection services, ConfigurationManager configuration)

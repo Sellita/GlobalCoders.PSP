@@ -79,7 +79,7 @@ public class OrdersController : BaseApiController
                 return NotFound();
             }
             
-            filter.MerchantId = user.Merchant.Id;
+            filter.MerchantId = user.MerchantId;
         }
         
         var result = await _ordersService.GetAllAsync(filter);
@@ -187,7 +187,7 @@ public class OrdersController : BaseApiController
     }
     
     [HttpPost("[action]")]
-    public async Task<IActionResult> ChaneStatus(OrderChangeStatusRequestModel orderChangeStatusRequest, CancellationToken cancellationToken)
+    public async Task<IActionResult> ChangeStatus(OrderChangeStatusRequestModel orderChangeStatusRequest, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {

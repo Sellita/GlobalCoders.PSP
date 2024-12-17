@@ -32,10 +32,10 @@ public class OrganizationController : BaseApiController//todo we need to check a
         {
             return ValidationProblem();
         }
-
+ 
         var user = await _authorizationService.GetUserAsync(User);
         
-        if (user?.Merchant.Id != organizationId && !await _authorizationService.HasPermissionsAsync(
+        if (user?.MerchantId != organizationId && !await _authorizationService.HasPermissionsAsync(
                 User,
                 [Permissions.CanViewAllOrganizations],
                 cancellationToken))
@@ -73,12 +73,12 @@ public class OrganizationController : BaseApiController//todo we need to check a
         {
             _logger.LogWarning("User ({UserId}) has no permissions to view all organization", User.GetUserId());
 
-            if (user == null)
+            if (user == null || !user.MerchantId.HasValue)
             {
                 return NotFound();
             }
             
-            var userOrganization = await _merchantService.GetAsync(user.Merchant.Id);
+            var userOrganization = await _merchantService.GetAsync(user.MerchantId.Value);
 
             if (userOrganization == null)
             {
