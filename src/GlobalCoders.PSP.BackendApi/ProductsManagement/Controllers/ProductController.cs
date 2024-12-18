@@ -155,10 +155,10 @@ public class ProductController : BaseApiController
         return Problem("Failed to update Product");
     }
     
-    [HttpDelete("[action]/{organizationId}")]
-    public async Task<IActionResult> Delete(Guid organizationId)
+    [HttpDelete("[action]/{productId}")]
+    public async Task<IActionResult> Delete(Guid productId)
     {
-        var result = await _productService.DeleteAsync(organizationId);
+        var result = await _productService.DeleteAsync(productId);
 
         if (result)
         {
