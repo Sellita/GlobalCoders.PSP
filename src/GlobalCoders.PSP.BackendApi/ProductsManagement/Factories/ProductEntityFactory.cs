@@ -28,6 +28,7 @@ public static class ProductEntityFactory
 
         merchantEntity.Id = updateModel.Id;
         merchantEntity.LastUpdateDate = DateTime.UtcNow;
+        merchantEntity.ProductState = updateModel.ProductState;
 
         return merchantEntity;
     }
