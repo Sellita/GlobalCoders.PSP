@@ -31,9 +31,16 @@ export class UserComponent {
       schedule: this.fb.array([]),
     });
 
-    this.orgService.getOrganizations().subscribe((response: any) => {
-      this.orgs = response.items;
-    });
+    this.orgService.getOrganizations().subscribe(
+      (res: any) => {
+        res.items.forEach((org: any) => {
+          this.orgs.push(this.orgService.getOrganization(org.id));
+        });
+      },
+      (err) => {
+        console.error('Error al obtener las organizaciones:', err);
+      }
+    );
   }
 
   get scheduleControls() {
