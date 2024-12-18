@@ -77,6 +77,7 @@ public class EmployeeRepository : IEmployeeRepository
         return context.Users
             .Include(x => x.UserPermissions)
             .Include(x=>x.Merchant)
+            .Include(x=>x.WorkingSchedule)
             .Where(x => x.Id == user)
             .FirstOrDefaultAsync();
     }
