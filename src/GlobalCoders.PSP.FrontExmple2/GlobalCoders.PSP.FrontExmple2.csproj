@@ -217,4 +217,5 @@
     <ItemGroup>
       <AdditionalFiles Include="Views\ProductType\Index.cshtml" />
     </ItemGroup>
+  
 </Project>
