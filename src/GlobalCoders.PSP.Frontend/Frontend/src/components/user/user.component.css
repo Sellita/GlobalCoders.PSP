@@ -1,0 +1,23 @@
+
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.error {
+    color: red;
+    font-size: 12px;
+}
+
+
+
+button.active {
+    background-color: #007bff;
+    color: white;
+}
+
+button:not(.active) {
+    background-color: #f8f9fa;
+    color: black;
+}
+  

@@ -1,0 +1,110 @@
+<button (click)="toggleForm()" class="btn btn-primary">
+    {{ showForm ? 'Cancel' : 'Create Merchant' }}
+</button>
+
+<div *ngIf="showForm" class="form-container">
+    <h3>New Merchant</h3>
+    <form [formGroup]="companyForm" (ngSubmit)="submitForm()">
+        <!-- Campos de información general -->
+        <div class="form-group">
+          <label for="displayName">Nombre:</label>
+          <input
+            type="text"
+            id="displayName"
+            formControlName="displayName"
+            class="form-control"
+            placeholder="Nombre de la empresa"
+          />
+          <div *ngIf="companyForm.get('displayName')?.invalid && companyForm.get('displayName')?.touched" class="error">
+            El nombre es obligatorio.
+          </div>
+        </div>
+      
+        <div class="form-group">
+          <label for="legalName">Nombre Legal:</label>
+          <input
+            type="text"
+            id="legalName"
+            formControlName="legalName"
+            class="form-control"
+            placeholder="Nombre legal de la empresa"
+          />
+          <div *ngIf="companyForm.get('legalName')?.invalid && companyForm.get('legalName')?.touched" class="error">
+            El nombre legal es obligatorio.
+          </div>
+        </div>
+      
+        <div class="form-group">
+          <label for="address">Dirección:</label>
+          <input
+            type="text"
+            id="address"
+            formControlName="address"
+            class="form-control"
+            placeholder="Dirección"
+          />
+          <div *ngIf="companyForm.get('address')?.invalid && companyForm.get('address')?.touched" class="error">
+            La dirección es obligatoria.
+          </div>
+        </div>
+      
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            class="form-control"
+            placeholder="Correo electrónico"
+          />
+          <div *ngIf="companyForm.get('email')?.invalid && companyForm.get('email')?.touched" class="error">
+            El email es obligatorio y debe tener un formato válido.
+          </div>
+        </div>
+      
+        <div class="form-group">
+          <label for="mainPhoneNumber">Teléfono Principal:</label>
+          <input
+            type="tel"
+            id="mainPhoneNumber"
+            formControlName="mainPhoneNumber"
+            class="form-control"
+            placeholder="Teléfono principal"
+          />
+          <div *ngIf="companyForm.get('mainPhoneNumber')?.invalid && companyForm.get('mainPhoneNumber')?.touched" class="error">
+            El teléfono principal es obligatorio.
+          </div>
+        </div>
+
+        <div class="form-group">
+            <label for="secondaryPhoneNumber">Teléfono Secundario:</label>
+            <input
+              type="tel"
+              id="secondaryPhoneNumber"
+              formControlName="secondaryPhoneNumber"
+              class="form-control"
+              placeholder="Teléfono secundario"
+            />
+        </div>
+      
+        <h4>Horarios</h4>
+        <div formArrayName="workingSchedule">
+            <div *ngFor="let schedule of workingSchedule.controls; let i = index" [formGroupName]="i">
+            <label>Día de la Semana:</label>
+            <select formControlName="DayOfWeek">
+                <option *ngFor="let day of daysOfWeek; let j = index" [value]="j">
+                {{ day }}
+                </option>
+            </select>
+            <label>Inicio:</label>
+            <input type="time" formControlName="StartTime" />
+            <label>Fin:</label>
+            <input type="time" formControlName="EndTime" />
+            <button type="button" (click)="removeWorkingSchedule(i)">Eliminar</button>
+            </div>
+        </div>
+        <button type="button" (click)="addWorkingSchedule()">Añadir Horario</button>
+
+        <button type="submit" [disabled]="companyForm.invalid">Guardar Empresa</button>
+    </form>
+</div>

@@ -1,0 +1,113 @@
+<button (click)="toggleForm()" class="btn btn-primary">
+    {{ showForm ? 'Cancel' : 'Create User' }}
+</button>
+
+<div *ngIf="showForm" class="form-container">
+    <h3>New User</h3>
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="user-form">
+        <!-- Nombre -->
+        <div class="form-group">
+        <label for="name">Nombre</label>
+        <input
+            id="name"
+            type="text"
+            class="form-control"
+            formControlName="name"
+            placeholder="Ingrese el nombre"
+        />
+        <div *ngIf="userForm.get('name')?.touched && userForm.get('name')?.invalid" class="error">
+            El nombre es obligatorio y debe tener al menos 3 caracteres.
+        </div>
+        </div>
+    
+        <div class="form-group">
+            <label for="business">Negocio</label>
+            <select
+              id="business"
+              class="form-control"
+              formControlName="business"
+            >
+              <option value="" disabled selected>Seleccione un negocio</option>
+              <option *ngFor="let org of orgs" [value]="org.id">
+                {{ org.displayName }}
+              </option>
+            </select>
+            <div *ngIf="userForm.get('business')?.touched && userForm.get('business')?.invalid" class="error">
+              El negocio es obligatorio.
+            </div>
+        </div>
+    
+        <!-- Correo -->
+        <div class="form-group">
+        <label for="email">Correo</label>
+        <input
+            id="email"
+            type="email"
+            class="form-control"
+            formControlName="email"
+            placeholder="Ingrese el correo"
+        />
+        <div *ngIf="userForm.get('email')?.touched && userForm.get('email')?.invalid" class="error">
+            Debe ser un correo válido.
+        </div>
+        </div>
+    
+        <!-- Número de teléfono -->
+        <div class="form-group">
+        <label for="phone">Número de Teléfono</label>
+        <input
+            id="phone"
+            type="tel"
+            class="form-control"
+            formControlName="phone"
+            placeholder="Ingrese el teléfono"
+        />
+        <div *ngIf="userForm.get('phone')?.touched && userForm.get('phone')?.invalid" class="error">
+            El número de teléfono es obligatorio y debe tener 10 dígitos.
+        </div>
+        </div>
+    
+        <!-- Rol -->
+        <div class="form-group">
+        <label>Rol</label>
+        <div>
+            <button type="button" [class.active]="userForm.get('role')?.value === 'Empleado'" (click)="setRole('Empleado')">Empleado</button>
+            <button type="button" [class.active]="userForm.get('role')?.value === 'Owner'" (click)="setRole('Owner')">Owner</button>
+        </div>
+        </div>
+    
+        <!-- Estado -->
+        <div class="form-group">
+        <label>Estado</label>
+        <div>
+            <button type="button" [class.active]="userForm.get('status')?.value === 'Activo'" (click)="setStatus('Activo')">Activo</button>
+            <button type="button" [class.active]="userForm.get('status')?.value === 'Inactivo'" (click)="setStatus('Inactivo')">Inactivo</button>
+        </div>
+        </div>
+    
+        <!-- Horario -->
+        <div class="form-group">
+        <label>Horario</label>
+        <div formArrayName="schedule">
+            <div *ngFor="let schedule of scheduleControls.controls; let i = index" [formGroupName]="i">
+            <label>Día</label>
+            <select formControlName="day">
+                <option *ngFor="let day of days" [value]="day">{{ day }}</option>
+            </select>
+    
+            <label>Inicio</label>
+            <input type="time" formControlName="startTime" />
+    
+            <label>Fin</label>
+            <input type="time" formControlName="endTime" />
+    
+            <button type="button" (click)="removeSchedule(i)">Eliminar</button>
+            </div>
+            <button type="button" (click)="addSchedule()">Añadir Horario</button>
+        </div>
+        </div>
+    
+        <!-- Submit -->
+        <button type="submit" [disabled]="userForm.invalid">Guardar Usuario</button>
+    </form>
+</div>
