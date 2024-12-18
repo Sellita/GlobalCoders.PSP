@@ -47,7 +47,7 @@ public sealed class BackendContext : BaseDbContext
 
     #region Employee Managment
 
-   public DbSet<EmployeeScheduleEntity> EmployeeScheduleEntity => Set<EmployeeScheduleEntity>();
+    public DbSet<EmployeeScheduleEntity> EmployeeScheduleEntity => Set<EmployeeScheduleEntity>();
     public DbSet<MerchantEntity> Merchant => Set<MerchantEntity>();
     public DbSet<OrganizationScheduleEntity> OrganizationScheduleEntity => Set<OrganizationScheduleEntity>();
     public DbSet<PermisionEntity> Permission => Set<PermisionEntity>();
