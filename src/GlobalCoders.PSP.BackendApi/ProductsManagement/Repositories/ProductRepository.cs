@@ -54,6 +54,7 @@ public class ProductRepository : IProductRepository
         await using var context = await _contextFactory.CreateDbContextAsync();
 
         var query = context.Product
+            .Include(x=>x.ProductType)
             .Include(x=>x.Merchant)
             .AsQueryable();
         
