@@ -1,3 +1,4 @@
+using GlobalCoders.PSP.BackendApi.ReservationManagment.Enums;
 using GlobalCoders.PSP.BackendApi.ServicesManagement.Enum;
 
 namespace GlobalCoders.PSP.BackendApi.ReservationManagment.ModelsDto;
@@ -21,4 +22,6 @@ public class ReservationListModel
     public DateTime AppointmentTime { get; set; }
     public DateTime AppointmentEndTime { get; set; }
     public string CustomerName { get; set; } = string.Empty;
+
+    public ReservationStatus Status { get; set; }
 }

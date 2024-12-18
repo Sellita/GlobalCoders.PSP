@@ -148,14 +148,14 @@ public class OrdersController : BaseApiController
         
         var updateModel = OrderEntityFactory.CreateUpdate(orderUpdateModel);
         
-        var result = await _ordersService.UpdateAsync(updateModel);
+        var (result, message) = await _ordersService.UpdateAsync(updateModel);
 
         if (result)
         {
             return Ok();
         }
         
-        return Problem("Failed to update order");
+        return BadRequest(message);
     }
     
     [HttpDelete("[action]/{orderId}")]

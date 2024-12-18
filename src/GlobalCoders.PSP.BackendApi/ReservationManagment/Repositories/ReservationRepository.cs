@@ -1,6 +1,7 @@
 using GlobalCoders.PSP.BackendApi.Base.Extensions;
 using GlobalCoders.PSP.BackendApi.Data;
 using GlobalCoders.PSP.BackendApi.ReservationManagment.Entities;
+using GlobalCoders.PSP.BackendApi.ReservationManagment.Enums;
 using GlobalCoders.PSP.BackendApi.ReservationManagment.ModelsDto;
 using Microsoft.EntityFrameworkCore;
 
@@ -69,6 +70,29 @@ public class ReservationRepository : IReservationRepository
             query = query.Where(x => x.Employee!.MerchantId == filter.MerchantId);
         }
         
+        if(filter.ReservationStatus != null)
+        {
+            query = query.Where(x => x.Status == filter.ReservationStatus);
+        }
+        
+        if(filter.EmployeeId != null)
+        {
+            query = query.Where(x => x.EmployeeId == filter.EmployeeId);
+        }
+        
+        if(filter.StartDate != null && filter.EndDate != null)
+        {
+            query = query.Where(x =>  (x.ReservationTime >= filter.StartDate
+                                       && x.ReservationTime <= filter.EndDate) ||
+                                      (x.ReservationEndTime >= filter.StartDate
+                                       && x.ReservationEndTime <= filter.EndDate));
+        }
+        
+        if (!string.IsNullOrWhiteSpace(filter.Name))
+        {
+            query = query.Where(x => x.DisplayName == filter.Name);
+        }
+        
         var totalItems = await query.CountAsync();
 
         var items =  query
@@ -125,6 +149,7 @@ public class ReservationRepository : IReservationRepository
             .Include(x=>x.Employee)
             .FirstOrDefaultAsync(
                 x => x.EmployeeId == serviceUserId
+                     && x.Status != ReservationStatus.Canceled
                      && ((x.ReservationTime <= appointmentTime
                           && x.ReservationEndTime >= appointmentTime) ||
                          (x.ReservationTime <= appointmentEndDate

@@ -10,4 +10,5 @@ public interface IReservationService
     Task<BasePagedResponse<ReservationListModel>?> GetAllAsync(ReservationFilter filter);
     Task<(bool, string)> CreateAsync(ReservationCreateModel reservationCreateModel, EmployeeEntity serviceUser);
     Task<List<TimeSlot>?> GetTimeSlotsAsync(TimeSlotRequest request, EmployeeEntity user);
+    Task<(bool, string)> CancelAppointment(ReservationCancelRequest request, Guid? merchantId);
 }

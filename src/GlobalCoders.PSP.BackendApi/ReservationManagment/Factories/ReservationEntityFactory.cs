@@ -1,5 +1,6 @@
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities;
 using GlobalCoders.PSP.BackendApi.ReservationManagment.Entities;
+using GlobalCoders.PSP.BackendApi.ReservationManagment.Enums;
 using GlobalCoders.PSP.BackendApi.ReservationManagment.ModelsDto;
 using GlobalCoders.PSP.BackendApi.ServicesManagement.Enum;
 using GlobalCoders.PSP.BackendApi.ServicesManagement.ModelsDto;
@@ -19,6 +20,7 @@ public static class ReservationEntityFactory
             Description = reservationCreateModel.Description,
             Price = service.Price,
             CreateTime = DateTime.UtcNow,
+            Status = ReservationStatus.Active,
             CustomerName = reservationCreateModel.CustomerName,
             ReservationTime = reservationCreateModel.AppointmentTime,
             ReservationEndTime = reservationCreateModel.AppointmentTime.AddMinutes(service.DurationMin),

@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Constants;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities;
+using GlobalCoders.PSP.BackendApi.ReservationManagment.Enums;
 using GlobalCoders.PSP.BackendApi.ServicesManagement.Entities;
 using GlobalCoders.PSP.BackendApi.ServicesManagement.Enum;
 
@@ -33,6 +34,8 @@ public class ReservationEntity
 
     public Guid EmployeeId { get; set; }
     public virtual EmployeeEntity? Employee { get; set; }
+
+    public ReservationStatus Status { get; set; } = ReservationStatus.Active;
     
     public bool IsDeleted { get; set; }
 }

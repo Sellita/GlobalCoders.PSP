@@ -166,4 +166,46 @@ public class ReservationController : BaseApiController
         
         return Ok(result);
     }
+    
+    [HttpPost("[action]")]
+    public async Task<ActionResult<List<TimeSlot>>> Cancel(ReservationCancelRequest request, CancellationToken cancellationToken)
+    {
+        if(!ModelState.IsValid || request.ReservationId == Guid.Empty)
+        {
+            return ValidationProblem();
+        }
+
+        var user = await _authorizationService.GetUserAsync(User);
+        Guid? merchantId = null;
+        if (!await _authorizationService.HasPermissionsAsync(
+                User,
+                [Permissions.CanViewAllOrganizations],
+                cancellationToken))
+        {
+            _logger.LogWarning("User ({UserId}) has no permissions to create service not his merchant", User.GetUserId());
+           
+            if (user == null || user.Merchant == null)
+            {
+                return NotFound();
+            }
+            
+            merchantId = user.MerchantId;
+            
+            
+            if(!merchantId.HasValue)
+            {
+                return Unauthorized();
+            }
+        }
+        
+        var (result, message) = await _reservationService.CancelAppointment(request, merchantId);
+        
+        if(!result)
+        {
+            return NotFound(message);
+        }
+        
+        return Ok(result);
+    }
+    
 }

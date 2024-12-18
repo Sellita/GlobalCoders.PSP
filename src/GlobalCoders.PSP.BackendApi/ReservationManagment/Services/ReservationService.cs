@@ -1,6 +1,8 @@
 using GlobalCoders.PSP.BackendApi.Base.Factories;
 using GlobalCoders.PSP.BackendApi.Base.ModelsDto;
 using GlobalCoders.PSP.BackendApi.EmployeeManagment.Entities;
+using GlobalCoders.PSP.BackendApi.ReservationManagment.Entities;
+using GlobalCoders.PSP.BackendApi.ReservationManagment.Enums;
 using GlobalCoders.PSP.BackendApi.ReservationManagment.Factories;
 using GlobalCoders.PSP.BackendApi.ReservationManagment.ModelsDto;
 using GlobalCoders.PSP.BackendApi.ReservationManagment.Repositories;
@@ -71,14 +73,27 @@ public class ReservationService : IReservationService
             return null;
         }
         
-        var (reservationsForDay, totalReservations) = await _reservationRepository.GetAllAsync(ReservationFilterFactory.
-            CreateForAllItems(request.EmployeeId,
+        var (reservationsForDay, _) = await _reservationRepository.GetAllAsync(ReservationFilterFactory.
+            CreateForAllActiveItems(request.EmployeeId,
                 GetDateWithTime(request.DateTime, employScheduleForDay.StartTime),
                 GetDateWithTime(request.DateTime, employScheduleForDay.EndTime)
                 ));
 
+        var timeSlots = FillTimeSlots(request, employScheduleForDay, reservationsForDay);
+
+        if(request.MinimumDurationMin == null ||  request.MinimumDurationMin <= 0)
+        {
+            return timeSlots.Where(x => x.DurationMin >= 1).ToList();
+        }
+
+        return timeSlots.Where(x => x.DurationMin >= request.MinimumDurationMin).ToList();
+    }
+
+    private static List<TimeSlot> FillTimeSlots(TimeSlotRequest request,
+        EmployeeScheduleEntity employScheduleForDay, List<ReservationEntity> reservationsForDay)
+    {
         var timeSlots = new List<TimeSlot>();
-        if (totalReservations == 0)
+        if (reservationsForDay.Count == 0)
         {
             timeSlots.Add(
                 TimeSlotFactory.Create(
@@ -98,20 +113,31 @@ public class ReservationService : IReservationService
 
             processingTime = reservation.ReservationEndTime;
         }
-        
-        timeSlots.Add(
-            TimeSlotFactory.Create(
-                processingTime,
-                GetDateWithTime(request.DateTime, employScheduleForDay.EndTime)
-            ));
 
-        
-        if(request.MinimumDurationMin == null ||  request.MinimumDurationMin <= 0)
+        if (!timeSlots.Exists(x => x.Time == processingTime))
         {
-            return timeSlots.Where(x => x.DurationMin >= 1).ToList();
+            timeSlots.Add(
+                TimeSlotFactory.Create(
+                    processingTime,
+                    GetDateWithTime(request.DateTime, employScheduleForDay.EndTime)
+                ));
         }
 
-        return timeSlots.Where(x => x.DurationMin >= request.MinimumDurationMin).ToList();
+        return timeSlots;
+    }
+
+    public async Task<(bool, string)> CancelAppointment(ReservationCancelRequest request, Guid? merchantId)
+    {
+        var appointment = await _reservationRepository.GetAsync(request.ReservationId, merchantId);
+
+        if (appointment == null)
+        {
+            return (false, "Appointment not found");
+        }
+        
+        appointment.Status = ReservationStatus.Canceled;
+        
+        return (await _reservationRepository.UpdateAsync(appointment), "Failed to cancel appointment");
     }
 
     private static DateTime GetDateWithTime(DateTime requestDateTime, TimeSpan startTime)
