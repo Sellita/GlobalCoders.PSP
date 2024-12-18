@@ -89,9 +89,6 @@ $(async function () {
             {name: "id", data: "id"},
             {name: "displayName", data: "displayName"},
             {name: "description", data: "description"},
-            {name: "stock", data: "stock"},
-            {name: "taxName", data: "taxName"},
-            {name: "taxValue", data: "taxValue"},
             {name: "category", data: "category"},
             {name: "price", data: "price"},
             {
