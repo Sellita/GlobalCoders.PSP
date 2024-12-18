@@ -35,8 +35,6 @@
 
     <ItemGroup>
       <Folder Include="Data\Migrations\" />
-      <Folder Include="ReservationManagment\Factories\" />
-      <Folder Include="ReservationManagment\Repositories\" />
     </ItemGroup>
 
 </Project>

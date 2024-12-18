@@ -11,6 +11,7 @@ using GlobalCoders.PSP.BackendApi.InventoryManagement.Extensions;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.Extensions;
 using GlobalCoders.PSP.BackendApi.OrganizationManagment.Extensions;
 using GlobalCoders.PSP.BackendApi.ProductsManagement.Extensions;
+using GlobalCoders.PSP.BackendApi.ReservationManagment.Extensions;
 using GlobalCoders.PSP.BackendApi.ServicesManagement.Extensions;
 using GlobalCoders.PSP.BackendApi.SurchargeManagement.Extensions;
 using GlobalCoders.PSP.BackendApi.TaxManagement.Extensions;
@@ -84,6 +85,7 @@ void RegisterServices(IServiceCollection services, ConfigurationManager configur
     services.RegisterTaxManagementServices();
     services.RegisterDiscountManagementServices();
     services.RegisterServicesManagementServices();
+    services.RegisterReservationManagementServices();
 }
 
 void RegisterDataBaseServices(IServiceCollection services, ConfigurationManager configuration)

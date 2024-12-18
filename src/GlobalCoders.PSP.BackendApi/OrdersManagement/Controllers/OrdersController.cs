@@ -131,7 +131,7 @@ public class OrdersController : BaseApiController
     [HttpPut("[action]")]
     public async Task<IActionResult> Update(OrderUpdateModel orderUpdateModel, CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid || orderUpdateModel.Id == Guid.Empty)
         {
             return ValidationProblem();
         }
@@ -148,14 +148,14 @@ public class OrdersController : BaseApiController
         
         var updateModel = OrderEntityFactory.CreateUpdate(orderUpdateModel);
         
-        var result = await _ordersService.UpdateAsync(updateModel);
+        var (result, message) = await _ordersService.UpdateAsync(updateModel);
 
         if (result)
         {
             return Ok();
         }
         
-        return Problem("Failed to update order");
+        return BadRequest(message);
     }
     
     [HttpDelete("[action]/{orderId}")]

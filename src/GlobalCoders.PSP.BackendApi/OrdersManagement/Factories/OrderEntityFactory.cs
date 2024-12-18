@@ -21,10 +21,10 @@ public static class OrderEntityFactory
     
     public static OrderEntity CreateUpdate(OrderUpdateModel updateModel)
     {
-        var merchantEntity = Create(updateModel);
+        var orderEntity = Create(updateModel);
 
-        merchantEntity.Id = updateModel.Id;
+        orderEntity.Id = updateModel.Id;
         
-        return merchantEntity;
+        return orderEntity;
     }
 }

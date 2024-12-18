@@ -24,29 +24,16 @@ public class ProductTypeController : BaseApiController
         _produyctTypeService = produyctTypeService;
     }
     
-    [HttpGet("[action]/{organizationId}")]
-    public async Task<ActionResult<ProductTypeResponseModel>> Id(Guid organizationId,
+    [HttpGet("[action]/{productTypeId}")]
+    public async Task<ActionResult<ProductTypeResponseModel>> Id(Guid productTypeId,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
             return ValidationProblem();
         }
-
-        var user = await _authorizationService.GetUserAsync(User);
         
-        if (user?.MerchantId != organizationId && !await _authorizationService.HasPermissionsAsync(
-                User,
-                [Permissions.CanViewAllOrganizations],
-                cancellationToken))
-        {
-            
-             _logger.LogWarning("User ({UserId}) has no permissions to view organization {OrganizaitonId}", User.GetUserId(), organizationId);
-
-            return NotFound();
-        }
-        
-        var result = await _produyctTypeService.GetAsync(organizationId);
+        var result = await _produyctTypeService.GetAsync(productTypeId);
         
         if(result == null)
         {
@@ -62,30 +49,6 @@ public class ProductTypeController : BaseApiController
         if(!ModelState.IsValid)
         {
             return ValidationProblem();
-        }
-        
-        var user = await _authorizationService.GetUserAsync(User);
-        
-        if (!await _authorizationService.HasPermissionsAsync(
-                User,
-                [Permissions.CanViewAllOrganizations],
-                cancellationToken))
-        {
-            _logger.LogWarning("User ({UserId}) has no permissions to view all organization", User.GetUserId());
-
-            if (user == null || !user.MerchantId.HasValue)
-            {
-                return NotFound();
-            }
-            
-            var userOrganization = await _produyctTypeService.GetAsync(user.MerchantId.Value);
-
-            if (userOrganization == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(BasePagedResopnseFactory.CreateSingle(ProductTypeListModelFactory.Create(userOrganization)));
         }
         
         var result = await _produyctTypeService.GetAllAsync(filter);
@@ -114,14 +77,14 @@ public class ProductTypeController : BaseApiController
     }
     
     [HttpPut("[action]")]
-    public async Task<IActionResult> Update(ProductTypeUpdateModel organizationUpdateModel)
+    public async Task<IActionResult> Update(ProductTypeUpdateModel productTypeUpdateModel)
     {
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid|| productTypeUpdateModel.Id == Guid.Empty)
         {
             return ValidationProblem();
         }
         
-        var updateModel = ProductTypeEntityFactory.CreateUpdate(organizationUpdateModel);
+        var updateModel = ProductTypeEntityFactory.CreateUpdate(productTypeUpdateModel);
         
         var result = await _produyctTypeService.UpdateAsync(updateModel);
 

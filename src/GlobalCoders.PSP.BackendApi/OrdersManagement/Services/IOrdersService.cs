@@ -6,7 +6,7 @@ namespace GlobalCoders.PSP.BackendApi.OrdersManagement.Services;
 
 public interface IOrdersService
 {
-    Task<bool> UpdateAsync(OrderEntity updateModel);
+    Task<(bool, string)> UpdateAsync(OrderEntity updateModel);
     Task<bool> CreateAsync(OrderEntity createModel, CancellationToken cancellationToken);
     Task<BasePagedResponse<OrdersListModel>> GetAllAsync(OrdersFilter filter);
     Task<OrderResponseModel?> GetAsync(Guid orderId);

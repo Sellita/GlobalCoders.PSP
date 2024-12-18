@@ -55,9 +55,23 @@ public class OrdersService : IOrdersService
         _taxService = taxService;
         _inventoryService = inventoryService;
     }
-    public async Task<bool> UpdateAsync(OrderEntity updateModel)
+    public async Task<(bool, string)> UpdateAsync(OrderEntity updateModel)
     {
-        return await _ordersRepository.UpdateAsync(updateModel);
+        var order = await _ordersRepository.GetAsync(updateModel.Id);
+        
+        if (order == null)
+        {
+            return (false, "order not found");
+        }
+        
+        if(order.Status != OrderStatus.Open)
+        {
+            return (false, "Order can be updated only in open status");
+        }
+        
+        updateModel.Status = order.Status;
+        
+        return (await _ordersRepository.UpdateAsync(updateModel), "Failed to update order");
     }
 
     public async Task<bool> CreateAsync(OrderEntity createModel, CancellationToken cancellationToken)

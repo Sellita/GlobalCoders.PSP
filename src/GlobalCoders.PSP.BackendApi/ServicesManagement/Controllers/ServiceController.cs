@@ -33,16 +33,19 @@ public class ServiceController : BaseApiController
         }
 
         var user = await _authorizationService.GetUserAsync(User);
-        var merchantId = user?.Merchant?.Id;
+        Guid? merchantId = null;
         if (!await _authorizationService.HasPermissionsAsync(
                 User,
                 [Permissions.CanViewAllOrganizations],
                 cancellationToken))
         {
+             _logger.LogWarning("User ({UserId}) has no permissions to view services different than organization {OrganizaitonId}", User.GetUserId(), serviceId);
+            merchantId = user?.Merchant?.Id;
             
-             _logger.LogWarning("User ({UserId}) has no permissions to view organization {OrganizaitonId}", User.GetUserId(), serviceId);
-
-            return NotFound();
+            if (!merchantId.HasValue)
+            {
+                return Unauthorized();
+            }
         }
         
         var result = await _servicesService.GetAsync(serviceId, merchantId);
@@ -91,7 +94,7 @@ public class ServiceController : BaseApiController
     }
     
     [HttpPost("[action]")]
-    public async Task<IActionResult> Create(ServiceCreateModel organizationCreateModel, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create(ServiceCreateModel serviceCreateModel, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
@@ -105,19 +108,25 @@ public class ServiceController : BaseApiController
                 cancellationToken))
         {
             _logger.LogWarning("User ({UserId}) has no permissions to create service not his merchant", User.GetUserId());
-
+            
+            var serviceUser = await _authorizationService.GetUserByIdAsync(serviceCreateModel.EmployeeId);
+            if (serviceUser == null || !serviceUser.MerchantId.HasValue)
+            {
+                return BadRequest();
+            }
+            
             if (user == null || user.Merchant == null)
             {
                 return NotFound();
             }
             
-            if(user.Merchant.Id != organizationCreateModel.EmployeeId)
+            if(user.MerchantId != serviceUser.MerchantId)
             {
                 return Unauthorized();
             }
         }
         
-        var createModel = ServiceEntityFactory.Create(organizationCreateModel);
+        var createModel = ServiceEntityFactory.Create(serviceCreateModel);
         
         var result = await _servicesService.CreateAsync(createModel);
 
@@ -130,14 +139,14 @@ public class ServiceController : BaseApiController
     }
     
     [HttpPut("[action]")]
-    public async Task<IActionResult> Update(ServiceUpdateModel organizationUpdateModel)
+    public async Task<IActionResult> Update(ServiceUpdateModel serviceUpdateModel)
     {
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid|| serviceUpdateModel.Id == Guid.Empty)
         {
             return ValidationProblem();
         }
         
-        var updateModel = ServiceEntityFactory.CreateUpdate(organizationUpdateModel);
+        var updateModel = ServiceEntityFactory.CreateUpdate(serviceUpdateModel);
         
         var result = await _servicesService.UpdateAsync(updateModel);
 
