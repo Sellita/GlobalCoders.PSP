@@ -45,7 +45,6 @@ function createDaysOfWeekTable(tableId, schedules = []) {
     const daysSchedules = [...daysOfWeek];
 
     for (let i = 0; i < daysSchedules.length; i++) {
-        console.log(daysSchedules[i])
 
         const schedule = schedules.find((element) => element['dayOfWeek'] === i);
         
@@ -59,8 +58,6 @@ function createDaysOfWeekTable(tableId, schedules = []) {
 
     daysSchedules.forEach(function (daySchedule, index) {
 
-        console.log(daySchedule.name, index);
-
         rows += `<input type="hidden" class="${daySchedule.name}-day-input" value="${daySchedule.id}" disabled/>`;
 
         const startTime = daySchedule.startTime || '';
@@ -68,8 +65,6 @@ function createDaysOfWeekTable(tableId, schedules = []) {
 
         const checked = startTime !== '' || endTime !== '' ? 'checked' : '';
         const disabled = !checked ? 'disabled' : '';
-
-        console.log(daySchedule, startTime, endTime);
 
         rows += `<tr>
                     <td><input type="checkbox" class="${daySchedule.name}-day" onchange="daySelectOnChangeHandler(this)" ${checked}/></td>
