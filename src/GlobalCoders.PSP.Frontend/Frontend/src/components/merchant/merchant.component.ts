@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { OrgService } from '../../services/org.service';
+import { Org } from '../../models/org';
+import { OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-merchant',
@@ -11,13 +13,14 @@ import { OrgService } from '../../services/org.service';
   templateUrl: './merchant.component.html',
   styleUrl: './merchant.component.css'
 })
-export class MerchantComponent {
+export class MerchantComponent implements OnInit {
 
   showForm: boolean = false;
   companyForm: FormGroup;
-  organizations: Object[] = [];
-
+  organizations: Org[] = [];
+  headers = ["ID","Display Name", "Legal Name", "Address", "Email", "Main Phone Number", "Secondary Phone Number", "Working Schedule", "Actions"];
   daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
 
   constructor(private fb: FormBuilder, private orgService: OrgService) {
     this.companyForm = this.fb.group({
@@ -31,14 +34,23 @@ export class MerchantComponent {
     });
 
     this.addWorkingSchedule();
+  }
+
+  ngOnInit() {
+
     this.orgService.getOrganizations().subscribe(
-      (res) => {
-        console.log('Organizaciones obtenidas:', res);
+      (res: any) => {
+        res.items.forEach((org: Org) => {
+          this.organizations.push(this.orgService.getOrganization(org.id));
+        });
       },
       (err) => {
         console.error('Error al obtener las organizaciones:', err);
       }
     );
+    console.log('Organizaciones:', this.organizations);
+    this.addWorkingSchedule();
+
   }
 
   get workingSchedule(): FormArray {
@@ -80,8 +92,20 @@ export class MerchantComponent {
     }
   }
 
-  deleteOrganization(index: number) {
-    this.organizations.splice(index, 1);
+  deleteOrg(id: string) {
+    this.orgService.deleteOrganization(id).subscribe(
+      (res) => {
+        console.log('Organización eliminada:', res);
+        this.organizations = this.organizations.filter(org => org.id !== id);
+      },
+      (err) => {
+        console.error('Error al eliminar la organización:', err);
+      }
+    );
+  }
+
+  updateOrg(org: Org) {
+    this.orgService.updateOrganization(org);
   }
 
   toggleForm(): void {

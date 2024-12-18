@@ -108,3 +108,41 @@
         <button type="submit" [disabled]="companyForm.invalid">Guardar Empresa</button>
     </form>
 </div>
+
+
+<div class="table-container">
+  <table class="table">
+    <!-- Generar encabezados dinámicamente -->
+    <thead>
+      <tr>
+        <th *ngFor="let header of headers">{{ header | titlecase }}</th>
+      </tr>
+    </thead>
+    <!-- Generar filas dinámicamente -->
+    <tbody>
+      <tr *ngFor="let org of organizations">
+        <td>{{ org.id }}</td>
+        <td>{{ org.displayName }}</td>
+        <td>{{ org.legalName }}</td>
+        <td>{{ org.address }}</td>
+        <td>{{ org.email }}</td>
+        <td>{{ org.mainPhoneNumber }}</td>
+        <td>{{ org.secondaryPhoneNumber || '' }}</td>
+        <td>
+          <div *ngIf="org.workingSchedule.length > 0; else noSchedule">
+            <div *ngFor="let schedule of org.workingSchedule">
+              {{ schedule.dayOfWeek }}
+              <br>
+              {{ schedule.startTime }} - {{ schedule.endTime }}
+            </div>
+          </div>
+          <ng-template #noSchedule>No Schedule</ng-template>
+        </td>
+        <td>
+          <button class="btn btn-primary btn-sm" (click)="updateOrg(org)">Update</button>
+          <button class="btn btn-danger btn-sm" (click)="deleteOrg(org.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
