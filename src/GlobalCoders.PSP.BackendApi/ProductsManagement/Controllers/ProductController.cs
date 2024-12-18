@@ -34,7 +34,8 @@ public class ProductController : BaseApiController
 
         var user = await _authorizationService.GetUserAsync(User);
 
-        var merchant = user?.MerchantId;
+        Guid? merchantId = null;
+        
         if (!await _authorizationService.HasPermissionsAsync(
                 User,
                 [Permissions.CanViewAllOrganizations],
@@ -42,15 +43,15 @@ public class ProductController : BaseApiController
         {
             
              _logger.LogWarning("User ({UserId}) has no permissions to view all organizations", User.GetUserId());
-
-             if (!merchant.HasValue)
+             merchantId = user?.MerchantId;
+             if (!merchantId.HasValue)
              {
                  return Unauthorized();
              }
              
         }
         
-        var result = await _productService.GetAsync(productId, merchant);
+        var result = await _productService.GetAsync(productId, merchantId);
         
         if(result == null)
         {
@@ -137,7 +138,7 @@ public class ProductController : BaseApiController
     [HttpPut("[action]")]
     public async Task<IActionResult> Update(ProductUpdateModel organizationUpdateModel)
     {
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid|| organizationUpdateModel.Id == Guid.Empty)
         {
             return ValidationProblem();
         }

@@ -59,6 +59,23 @@ public class EmployeeController : BaseApiController
         {
             return ValidationProblem();
         }
+        var user = await _authorizationService.GetUserAsync(User);
+
+        if (!await _authorizationService.HasPermissionsAsync(
+                User,
+                [Permissions.CanViewAllEmployees],
+                cancellationToken))
+        {
+            
+            _logger.LogWarning("User ({UserId}) has no permissions to view all employee", User.GetUserId());
+
+            filter.OrganizationId = user?.MerchantId;
+
+            if (filter.OrganizationId == null)
+            {
+                return Unauthorized();
+            }
+        }
         
         var result = await _employeeService.GetAllAsync(filter, cancellationToken);
         
@@ -99,7 +116,7 @@ public class EmployeeController : BaseApiController
     [HttpPut("[action]")]
     public async Task<IActionResult> Update(EmployeeUpdateRequest updateRequest, CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid || updateRequest.Id == Guid.Empty)
         {
             return ValidationProblem();
         }

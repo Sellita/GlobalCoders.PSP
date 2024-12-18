@@ -116,7 +116,7 @@ public class OrganizationController : BaseApiController//todo we need to check a
     [HttpPut("[action]")]
     public async Task<IActionResult> Update(OrganizationUpdateModel organizationUpdateModel)
     {
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid || organizationUpdateModel.Id == Guid.Empty)
         {
             return ValidationProblem();
         }

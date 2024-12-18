@@ -124,7 +124,7 @@ public class TaxController : BaseApiController
     [HttpPut("[action]")]
     public async Task<IActionResult> Update(TaxUpdateModel taxUpdateModel)
     {
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid|| taxUpdateModel.Id == Guid.Empty)
         {
             return ValidationProblem();
         }
