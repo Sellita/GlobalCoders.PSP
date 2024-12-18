@@ -1,9 +1,9 @@
 function createInput(id, type, title, placeholder, value, required = false) {
-    
+
     const label = type !== 'hidden' ? `<div class="col-auto">
                 <label for="${id}" class="col-form-label">${title}:</label>
             </div>` : '';
-    
+
     return `<div class="row g-3 align-items-center mb-3">
             ${label}
             <div class="col">
@@ -12,47 +12,58 @@ function createInput(id, type, title, placeholder, value, required = false) {
            </div>`;
 }
 
-function daySelectOnChangeHandler(checkbox){
+function daySelectOnChangeHandler(checkbox) {
     console.log(checkbox)
     console.log(checkbox.checked)
-    
+
     $(`.${checkbox.className}-input`).prop('disabled', !checkbox.checked);
-    
+
 }
-function createDaysOfWeekTable(tableId, schedule = []){
+
+function createDaysOfWeekTable(tableId, schedules = []) {
 
     let rows = '';
-    
-    daysOfWeek.forEach(function (day, index) {
-        console.log(day, index);
-        
-        rows += `<input type="hidden" class="${day}-day-input" value="${index}" disabled/>`;
 
-        if(!schedule[index]){
-            rows += `<tr>
-                        <td><input type="checkbox" class="${day}-day" onchange="daySelectOnChangeHandler(this)"/></td>
-                        <td>${day}</td>
-                        <td><input id="${day}-dayOfWeek-startime" type="text" class="${day}-day-input day-input" disabled/></td>
-                        <td><input id="${day}-dayOfWeek-endtime" type="text" class="${day}-day-input day-input" disabled/></td>
-                     </tr>`;
-            
-            return;
-        }
+    const daysSchedules = [...daysOfWeek];
+
+    for (let i = 0; i < daysSchedules.length; i++) {
+        console.log(daysSchedules[i])
+
+        const schedule = schedules.find((element) => element['dayOfWeek'] === i);
         
-        const startTime = schedule[index]['startTime'] || '';
-        const endTime = schedule[index]['endTime'] || '';
-        
+        daysSchedules[i] = {
+            id: i,
+            name: daysSchedules[i],
+            startTime: schedule?.startTime,
+            endTime: schedule?.endTime
+        };
+    }
+
+    daysSchedules.forEach(function (daySchedule, index) {
+
+        console.log(daySchedule.name, index);
+
+        rows += `<input type="hidden" class="${daySchedule.name}-day-input" value="${daySchedule.id}" disabled/>`;
+
+        const startTime = daySchedule.startTime || '';
+        const endTime = daySchedule.endTime || '';
+
+        const checked = startTime !== '' || endTime !== '' ? 'checked' : '';
+        const disabled = !checked ? 'disabled' : '';
+
+        console.log(daySchedule, startTime, endTime);
+
         rows += `<tr>
-                    <td><input type="checkbox" class="${day}-day" onchange="daySelectOnChangeHandler(this)" checked/></td>
-                    <td>${day}</td>
-                    <td><input id="${day}-dayOfWeek-startime" type="text" class="${day}-day-input day-input" value="${startTime}"/></td>
-                    <td><input id="${day}-dayOfWeek-endtime" type="text" class="${day}-day-input day-input" value="${endTime}"/></td>
+                    <td><input type="checkbox" class="${daySchedule.name}-day" onchange="daySelectOnChangeHandler(this)" ${checked}/></td>
+                    <td>${daySchedule.name}</td>
+                    <td><input id="${daySchedule.name}-dayOfWeek-startime" type="text" class="${daySchedule.name}-day-input day-input" value="${startTime}" ${disabled}/></td>
+                    <td><input id="${daySchedule.name}-dayOfWeek-endtime" type="text" class="${daySchedule.name}-day-input day-input" value="${endTime}" ${disabled}/></td>
                  </tr>`;
 
     });
-    
-    
-    const table = `<table id="${tableId}" class="table border-1">
+
+
+    return `<table id="${tableId}" class="table border-1">
 <thead>
 <tr>
 <td></td></td><td>Day</td><td>Start Time</td><td>End Time</td>
@@ -62,8 +73,6 @@ function createDaysOfWeekTable(tableId, schedule = []){
 ${rows}
 </tbody>
 </table>`;
-    
-    return table;
 }
 
 function capitalizeFirstLetter(string) {
