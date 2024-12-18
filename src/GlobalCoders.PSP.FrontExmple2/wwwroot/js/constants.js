@@ -19,3 +19,13 @@ const productStates = [
         value: 2,
         label: "Inactive"
     }];
+
+const serviceStates = [
+    {
+        value: 1,
+        label: "Active"
+    },
+    {
+        value: 2,
+        label: "Inactive"
+    }];
