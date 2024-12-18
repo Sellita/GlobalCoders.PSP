@@ -24,6 +24,40 @@ public class EmployeeRepository : IEmployeeRepository
             var oldSchedule = context.EmployeeScheduleEntity.Where(x=>x.EmployeeEntityId == appUser.Id).ToList();
             context.RemoveRange(oldSchedule);
             
+            var roles = context.Roles
+                .AsNoTracking()
+                .Where(x => updateRequestRole.Contains(x.Name))
+                .ToList();
+
+            var appUserEntity = await context.Users
+                .Where(x => x.Id == appUser.Id)
+                .Include(x => x.UserPermissions)
+                .ThenInclude(x => x.AppRole)
+                .FirstOrDefaultAsync(cancellationToken);
+            
+            var remove = appUserEntity.UserPermissions
+                .Where(x => x.AppRole != null && !roles.Select(r => r.Name).Contains(x.AppRole.Name))
+                .ToList();
+
+            context.UserRoles.RemoveRange(remove);
+
+            var userRoles = appUserEntity.UserPermissions
+                .Where(x => x.AppRole != null)
+                .Select(x => x.AppRole)
+                .ToList();
+
+            var add = roles
+                .Where(x => !userRoles.Select(r => r.Id).Contains(x.Id))
+                .Select(
+                    x => new PermisionEntity()
+                    {
+                        UserId = appUserEntity.Id,
+                        RoleId = x.Id
+                    })
+                .ToList();
+
+            context.UserRoles.AddRange(add);
+            
             var result = await context.SaveChangesAsync(cancellationToken);
 
             return result > 0;
