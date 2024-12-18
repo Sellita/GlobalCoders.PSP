@@ -99,7 +99,7 @@ public class SurchargeController : BaseApiController
     [HttpPut("[action]")]
     public async Task<IActionResult> Update(SurchargeUpdateModel surchargeUpdateModel)
     {
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid || surchargeUpdateModel.Id == Guid.Empty)
         {
             return ValidationProblem();
         }

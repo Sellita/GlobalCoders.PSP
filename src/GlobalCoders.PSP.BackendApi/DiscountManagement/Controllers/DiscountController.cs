@@ -124,7 +124,7 @@ public class DiscountController : BaseApiController
     [HttpPut("[action]")]
     public async Task<IActionResult> Update(DiscountUpdateModel discountUpdateModel)
     {
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid || discountUpdateModel.Id == Guid.Empty)
         {
             return ValidationProblem();
         }

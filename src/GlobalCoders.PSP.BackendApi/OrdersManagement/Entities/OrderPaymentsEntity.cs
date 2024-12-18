@@ -14,4 +14,9 @@ public class OrderPaymentsEntity
     public decimal Amount { get; set; }
     public DateTime PaymentDate { get; set; }
     public PaymentType Type { get; set; }
+
+    public bool IsPaid { get; set; }
+    
+    [StringLength(500)]
+    public string SessionId { get; set; } = string.Empty;
 }

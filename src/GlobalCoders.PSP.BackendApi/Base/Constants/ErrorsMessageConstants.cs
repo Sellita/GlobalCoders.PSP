@@ -38,4 +38,5 @@ public static class ErrorsMessageConstants
     public const string FailedDeleteFileItemFromFileStorage = "Failed to delete file from file storage";
 
     public const string SystemError = "An error occurred while processing the request";
+    public const string? EmployeeNotFound = "Employee not found";
 }
