@@ -12,6 +12,24 @@ function createInput(id, type, title, placeholder, value, required = false) {
            </div>`;
 }
 
+function createSelect(id, title, options = [], selectedValue = '') {
+    let optionsHtml = options.map(option => {
+        const isSelected = option.value === selectedValue ? 'selected' : '';
+        return `<option value="${option.value}" ${isSelected}>${option.label}</option>`;
+    }).join('');
+
+    return `<div class="row g-3 align-items-center mb-3">
+                <div class="col-auto">
+                    <label for="${id}" class="col-form-label">${title}:</label>
+                </div>
+                <div class="col">
+                    <select id="${id}" name="${id}" class="form-select w-100">
+                        ${optionsHtml}
+                    </select>
+                </div>
+            </div>`;
+}
+
 function daySelectOnChangeHandler(checkbox){
     console.log(checkbox)
     console.log(checkbox.checked)

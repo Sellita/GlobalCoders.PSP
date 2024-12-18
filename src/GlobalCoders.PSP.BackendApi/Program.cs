@@ -40,7 +40,7 @@ builder.Services.AddControllers()
             options.SerializerSettings.ContractResolver =
                 new CamelCasePropertyNamesContractResolver();
 
-            options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Ignore;
+            options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Include;
         });
 
 RegisterServices(builder.Services, builder.Configuration, builder.Environment.IsDevelopment());

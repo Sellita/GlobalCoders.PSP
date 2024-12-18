@@ -213,4 +213,8 @@
       <_ContentIncludedByDefault Remove="wwwroot\lib\sweetalert2\dist\sweetalert2.min.css" />
       <_ContentIncludedByDefault Remove="wwwroot\lib\sweetalert2\dist\sweetalert2.min.js" />
     </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Views\ProductType\Index.cshtml" />
+    </ItemGroup>
 </Project>

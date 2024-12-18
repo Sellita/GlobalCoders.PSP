@@ -21,10 +21,6 @@ public static class PaymentManagementExtension
         }
 
         StripeConfiguration.ApiKey = identityConfiguration.ApiKey;
-        //StripeConfiguration.ApiKey = identityConfiguration.ApiKey;
-        
-      
-        //StripeConfiguration.
     }
 
     public static void RegisterPaymentManagement(this WebApplication app)

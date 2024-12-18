@@ -10,7 +10,7 @@ public static class ProductTypeListModelFactory
         return new ProductTypeListModel
         {
             Id = merchantEntity.Id,
-            DisplayName = merchantEntity.DisplayName
+            DisplayName = merchantEntity.DisplayName,
         };
     }
 
