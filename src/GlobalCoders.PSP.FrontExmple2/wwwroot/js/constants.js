@@ -10,11 +10,12 @@ const daysOfWeek = [
     "Saturday"
 ];
 
-const productStates = [{
-    id: 1,
-    label: "Active"
-},
+const productStates = [
     {
-        id: 2,
+        value: 1,
+        label: "Active"
+    },
+    {
+        value: 2,
         label: "Inactive"
     }];

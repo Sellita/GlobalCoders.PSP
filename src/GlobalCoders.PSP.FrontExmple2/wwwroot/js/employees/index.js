@@ -20,7 +20,7 @@ $(async function () {
         });
     }
 
-    const organizationOptions = await getOrganizationsOptionsAsync();
+    const organizationOptions = await GetSelects(`${DOMAIN_URL}Organization/All`, "id", "displayName");
 
     const dt = $(`#${employeesDataTableId}`).DataTable({
         initComplete: function () {
@@ -156,7 +156,7 @@ $(async function () {
         (async () => {
             const rowId = "new-employee";
 
-            const organizationOptions = await getOrganizationsOptionsAsync();
+            const organizationOptions = await GetSelects(`${DOMAIN_URL}Organization/All`, "id", "displayName");
 
             console.log(organizationOptions);
 
@@ -244,7 +244,7 @@ $(async function () {
     function editEmployee(rowId) {
         (async () => {
 
-            const organizationOptions = await getOrganizationsOptionsAsync();
+            const organizationOptions = await GetSelects(`${DOMAIN_URL}Organization/All`, "id", "displayName");
 
             const emploeeResponse = await fetch(`${DOMAIN_URL}Employee/Id/${rowId}`, {
                 method: "GET",
@@ -282,7 +282,7 @@ $(async function () {
             inputs += createInput("id", "hidden", "", "", rowId);
 
             await Swal.fire({
-                title: "New Employee",
+                title: "Edit Employee",
                 html: `<div class="container">
                         <form id="form-${rowId}">${inputs}</form>
                         </div>`,
@@ -334,7 +334,7 @@ $(async function () {
 
                     Swal.fire({
                         title: "Status",
-                        text: "Success saved new employee",
+                        text: "Success updated employee",
                         icon: "success",
                         confirmButtonColor: "#70757d"
                     });
@@ -387,42 +387,6 @@ $(async function () {
                 }
             });
         })();
-    }
-    
-    async function getOrganizationsOptionsAsync() {
-
-        const organizationsResponse = await fetch(`${DOMAIN_URL}Organization/All`, {
-            method: "POST",
-            headers: {
-                Authorization: "Bearer " + localStorage.getItem("token"),
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                "page": 1,
-                "itemsPerPage": 100
-            })
-        });
-
-        if (!organizationsResponse.ok) {
-
-            console.error("Something was wrong when try get organizations");
-
-            return [];
-        }
-
-        const organizations = await organizationsResponse.json()
-
-        const organizationOptions = [];
-
-        organizations.items.map(organization => {
-
-            organizationOptions.push({
-                value: organization.id,
-                label: organization.displayName
-            });
-        });
-
-        return organizationOptions;
     }
 
     function getworkingSchedule() {

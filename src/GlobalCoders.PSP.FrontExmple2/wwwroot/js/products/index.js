@@ -97,7 +97,7 @@ $(async function () {
             {
                 data: "productState",
                 render: function (data, type, row) {
-                    return productStates.find((productState) => productState.id === row['productState'])?.label;
+                    return productStates.find((productState) => productState.value === row['productState'])?.label;
                 }
             },
             {name: "merchant", data: "merchant"},
@@ -154,31 +154,24 @@ $(async function () {
         (async () => {
             const rowId = "new-product";
 
-            const organizationOptions = await getOrganizationsOptionsAsync();
+            const organizationOptions = await GetSelects(`${DOMAIN_URL}Organization/All`, "id", "displayName");
+
+            const productTypeOptions = await GetSelects(`${DOMAIN_URL}producttype/All`, "id", "displayName");
 
             console.log(organizationOptions);
 
-            let inputs = createInput("name", "text", "Name", "Name", "", true);
-            inputs += createInput("email", "text", "E-mail", "E-mail", "");
-            inputs += createInput("phoneNumber", "text", "Phone", "Phone", "");
+            let inputs = createInput("displayName", "text", "DisplayName", "DisplayName", "", true);
+            inputs += createInput("description", "text", "Description", "Description", "");
+            inputs += createInput("price", "text", "Price", "Price", "");
+            
+            inputs += createSelect("productState", "State", productStates, '');
+            inputs += createSelect("productTypeId", "Type", productTypeOptions, productTypeOptions[0]);
 
-            inputs += createSelect("role", "Role", [
-                {value: 'Admin', label: 'Admin'},
-                {value: 'Owner', label: 'Owner'},
-                {value: 'Employee', label: 'Employee'}
-            ], '');
-
-            inputs += createSelect("isActive", "Enabled", [
-                {value: true, label: 'Yes'},
-                {value: false, label: 'No'}
-            ], "true");
-
-            inputs += createSelect("organizationId", "Organization", organizationOptions, organizationOptions[0]);
-
-            inputs += createDaysOfWeekTable('workingScheduleTableId', []);
+            inputs += createSelect("merchantId", "Organization", organizationOptions, organizationOptions[0]);
+            
 
             await Swal.fire({
-                title: "New Employee",
+                title: "New Product",
                 html: `<div class="container">
                         <form id="form-${rowId}">${inputs}</form>
                         </div>`,
@@ -203,14 +196,12 @@ $(async function () {
                         formObject[value.name] = value.value;
                     });
 
-                    formObject['workingSchedule'] = getworkingSchedule();
-
                     if (errors) {
                         Swal.showValidationMessage(errors);
                         return false;
                     }
 
-                    const saveEmployeeResponse = await fetch(`${DOMAIN_URL}Employee/Create`, {
+                    const saveProductResponse = await fetch(`${DOMAIN_URL}Product/Create`, {
                         method: "POST",
                         headers: {
                             Authorization: "Bearer " + localStorage.getItem("token"),
@@ -219,18 +210,18 @@ $(async function () {
                         body: JSON.stringify(formObject)
                     });
 
-                    if (!saveEmployeeResponse.ok) {
+                    if (!saveProductResponse.ok) {
 
                         Swal.showValidationMessage("Something was wrong when try save");
 
                         return;
                     }
 
-                    $(`#${employeesDataTableId}`).DataTable().ajax.reload();
+                    $(`#${productsDataTableId}`).DataTable().ajax.reload();
 
                     Swal.fire({
                         title: "Status",
-                        text: "Success saved new employee",
+                        text: "Success saved new product",
                         icon: "success",
                         confirmButtonColor: "#70757d"
                     });
@@ -239,39 +230,97 @@ $(async function () {
         })();
     }
 
-    async function getOrganizationsOptionsAsync() {
+    function editProduct(rowId) {
+        (async () => {
 
-        const organizationsResponse = await fetch(`${DOMAIN_URL}Organization/All`, {
-            method: "POST",
-            headers: {
-                Authorization: "Bearer " + localStorage.getItem("token"),
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                "page": 1,
-                "itemsPerPage": 100
+            const organizationOptions = await GetSelects(`${DOMAIN_URL}Organization/All`, "id", "displayName");
+
+            const productTypeOptions = await GetSelects(`${DOMAIN_URL}producttype/All`, "id", "displayName");
+
+            console.log(organizationOptions);
+
+            const productResponse = await fetch(`${DOMAIN_URL}Product/Id/${rowId}`, {
+                method: "GET",
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem("token"),
+                    'Content-Type': 'application/json',
+                }
             })
-        });
 
-        if (!organizationsResponse.ok) {
+            if (!productResponse.ok) {
+                return false;
+            }
 
-            console.error("Something was wrong when try get organizations");
+            const product = await productResponse.json();
 
-            return [];
-        }
 
-        const organizations = await organizationsResponse.json()
+            let inputs = createInput("displayName", "text", "DisplayName", "DisplayName", product['displayName'], true);
+            inputs += createInput("description", "text", "Description", "Description", product['description'], true);
+            inputs += createInput("price", "text", "Price", "Price", product['price']);
+            inputs += createSelect("productState", "State", productStates, product['productState']);
+            inputs += createSelect("productTypeId", "Type", productTypeOptions, product['productTypeId']);
 
-        const organizationOptions = [];
+            inputs += createSelect("merchantId", "Organization", organizationOptions, product['merchantId']);
 
-        organizations.items.map(organization => {
+            inputs += createInput("id", "hidden", "", "", rowId);
 
-            organizationOptions.push({
-                value: organization.id,
-                label: organization.displayName
+            await Swal.fire({
+                title: "Edit Product",
+                html: `<div class="container">
+                        <form id="form-${rowId}">${inputs}</form>
+                        </div>`,
+                focusConfirm: false,
+                allowOutsideClick: false,
+                confirmButtonColor: "#70757d",
+                showCancelButton: true,
+                preConfirm: async () => {
+
+                    const formArray = $(`#form-${rowId}`).serializeArray();
+                    const formObject = {};
+
+                    let errors = '';
+
+                    formArray.forEach((value, index) => {
+
+                        if (!value.value && $(`#${value.name}`).attr('required')) {
+                            errors += `Field "${capitalizeFirstLetter(value.name)}" is required<br>`
+                            return;
+                        }
+
+                        formObject[value.name] = value.value;
+                    });
+
+                    if (errors) {
+                        Swal.showValidationMessage(errors);
+                        return false;
+                    }
+
+                    const updateProductResponse = await fetch(`${DOMAIN_URL}Product/Update`, {
+                        method: "PUT",
+                        headers: {
+                            Authorization: "Bearer " + localStorage.getItem("token"),
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formObject)
+                    });
+
+                    if (!updateProductResponse.ok) {
+
+                        Swal.showValidationMessage("Something was wrong when try save");
+
+                        return;
+                    }
+
+                    $(`#${productsDataTableId}`).DataTable().ajax.reload();
+
+                    Swal.fire({
+                        title: "Status",
+                        text: "Success updated product",
+                        icon: "success",
+                        confirmButtonColor: "#70757d"
+                    });
+                }
             });
-        });
-
-        return organizationOptions;
+        })();
     }
 });
