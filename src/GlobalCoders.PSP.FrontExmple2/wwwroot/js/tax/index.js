@@ -1,5 +1,9 @@
 const taxDataTable = "taxes-data-table";
-$(function () {
+const taxTypes = [
+    {value: 1, label: "Percentage"},
+    {value: 2, label: "Value"}
+]
+$(async function () {
 
     $.fn.dataTable.ext.errMode = "none";
 
@@ -18,6 +22,7 @@ $(function () {
             deleteTax(rowId);
         });
     }
+    const productTypeOptions = await GetSelects(`${DOMAIN_URL}producttype/All`, "id", "displayName");
 
     const dt = $(`#${taxDataTable}`).DataTable({
         initComplete: function () {
@@ -87,9 +92,22 @@ $(function () {
         columns: [
             {name: "id", data: "id"},
             {name: "displayName", data: "displayName"},
-            {name: "type", data: "type"},
+            {name: "type", data: "type",
+                render: function (data, type, row) {
+
+                    console.log(taxTypes)
+
+                    return  taxTypes.find((element) => element['value'] === row['type'])?.label || '';
+                }},
             {name: "value", data: "value"},
-            {name: "productTypeId", data: "productTypeId"},
+            {name: "productTypeId", data: "productTypeId",
+                render: function (data, type, row) {
+
+                    console.log(productTypeOptions)
+
+                    return  productTypeOptions.find((element) => element['value'] === row['productTypeId'])?.label || '';
+                }},
+            
             {
                 render: function (data, type, row) {
                     let actions = "";
@@ -143,10 +161,15 @@ $(function () {
             
             const organizationOptions = await GetSelects(`${DOMAIN_URL}Organization/All`, "id", "displayName");
             const productTypeOptions = await GetSelects(`${DOMAIN_URL}producttype/All`, "id", "displayName");
+            productTypeOptions.unshift({value: "", label: "all types"});
+            
+
             
             let inputs = createInput("name", "text", "Display Name", "Display Name", "", true);
             inputs += createSelect("organizationId", "Organization", organizationOptions, organizationOptions[0]);
             inputs += createSelect("productTypeId", "Product type", productTypeOptions, productTypeOptions[0]);
+            inputs += createSelect("type", "Tax type", taxTypes, taxTypes[0]);
+            inputs += createInput("value", "number", "Value", 0, taxTypes[0]);
             
             await Swal.fire({
                 title: "New Tax",
@@ -224,9 +247,18 @@ $(function () {
 
             const tax = await taxResponse.json();
 
-            let inputs = createInput("displayName", "text", "Display Name", "Display Name", tax["displayName"], true);
+            const organizationOptions = await GetSelects(`${DOMAIN_URL}Organization/All`, "id", "displayName");
+            const productTypeOptions = await GetSelects(`${DOMAIN_URL}producttype/All`, "id", "displayName");
+            productTypeOptions.unshift({value: "", label: "all types"});
+
+            let inputs = createInput("name", "text", "Display Name", "Display Name", tax['name'], true);
+            inputs += createSelect("organizationId", "Organization", organizationOptions, tax['organizationId']);
+            inputs += createSelect("productTypeId", "Product type", productTypeOptions, tax['productTypeId']);
+            inputs += createSelect("type", "Tax type", taxTypes, tax['type']);
+            inputs += createInput("value", "number", "Value", 0, tax['value']);
             inputs += createInput("id", "hidden", "", "", rowId);
-            
+
+
             await Swal.fire({
                 title: "Edit Tax",
                 html: `<div class="container">
