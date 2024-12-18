@@ -323,4 +323,50 @@ $(async function () {
             });
         })();
     }
+
+    function deleteProduct(rowId) {
+        (async () => {
+
+            await Swal.fire({
+                title: `Delete product`,
+                text: 'Are you sure want to delete?',
+                icon: "warning",
+                focusConfirm: false,
+                allowOutsideClick: false,
+                confirmButtonColor: "#70757d",
+                showCancelButton: true,
+                preConfirm: async () => {
+
+                    const deleteProductResponse = await fetch(`${DOMAIN_URL}Product/Delete/${rowId}`, {
+                        method: "DELETE",
+                        headers: {
+                            Authorization: "Bearer " + localStorage.getItem("token"),
+                            'Content-Type': 'application/json',
+                        }
+                    });
+
+                    if (!deleteProductResponse.ok) {
+
+                        Swal.fire({
+                            title: "Status",
+                            text: "Oops...Something was wrong",
+                            icon: "error",
+                            confirmButtonColor: "#70757d"
+                        });
+
+                        return;
+                    }
+
+                    $(`#${productsDataTableId}`).DataTable().ajax.reload();
+
+                    Swal.fire({
+                        title: "Status",
+                        text: "Success product deleted",
+                        icon: "success",
+                        confirmButtonColor: "#70757d"
+                    });
+                }
+            });
+        })();
+    }
 });
