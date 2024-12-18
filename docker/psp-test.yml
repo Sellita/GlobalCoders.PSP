@@ -47,6 +47,16 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+      
+  stripe-mock:
+    container_name: stripe-mock
+    image: stripe/stripe-mock
+    restart: always
+    ports:
+      - "12111:12111"
+    networks:
+      global_coders_backend_network:
+        ipv4_address: 174.30.0.114
   
   mailhog:
     container_name: mail
