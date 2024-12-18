@@ -6,6 +6,7 @@ using GlobalCoders.PSP.BackendApi.Identity.Extensions;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.Factories;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.ModelsDto;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.Services;
+using GlobalCoders.PSP.BackendApi.PaymentsService.Models;
 using Microsoft.AspNetCore.Mvc;
 using IAuthorizationService = GlobalCoders.PSP.BackendApi.Identity.Services.IAuthorizationService;
 
@@ -243,7 +244,7 @@ public class OrdersController : BaseApiController
     }
     
     [HttpPost("[action]")]
-    public async Task<IActionResult> MakePayment(OrderMakePaymentRequestModel orderMakePaymentRequest, CancellationToken cancellationToken)
+    public async Task<ActionResult<PaymentInfo>> MakePayment(OrderMakePaymentRequestModel orderMakePaymentRequest, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
@@ -262,9 +263,27 @@ public class OrdersController : BaseApiController
         
         var (result, message) = await _ordersService.MakePaymentAsync(orderMakePaymentRequest, cancellationToken);
         
-        if (result)
+        if (result != null)
         {
-            return Ok();
+            return Ok(result);
+        }
+        
+        return BadRequest(message);
+    }
+    
+    [HttpPost("[action]")]
+    public async Task<ActionResult<PaymentInfo>> ResumePayment(OrderResumePaymentModel resumePaymentRequest, CancellationToken cancellationToken)
+    {
+        if (resumePaymentRequest.PaymentId == Guid.Empty || resumePaymentRequest.OrderId == Guid.Empty)
+        {
+            return BadRequest();
+        }
+
+        var (result, message) = await _ordersService.ResumePaymentAsync(resumePaymentRequest, cancellationToken);
+        
+        if (result != null)
+        {
+            return Ok(result);
         }
         
         return BadRequest(message);

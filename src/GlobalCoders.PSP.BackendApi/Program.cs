@@ -10,6 +10,7 @@ using GlobalCoders.PSP.BackendApi.Identity.Extensions;
 using GlobalCoders.PSP.BackendApi.InventoryManagement.Extensions;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.Extensions;
 using GlobalCoders.PSP.BackendApi.OrganizationManagment.Extensions;
+using GlobalCoders.PSP.BackendApi.PaymentsService.Extensions;
 using GlobalCoders.PSP.BackendApi.ProductsManagement.Extensions;
 using GlobalCoders.PSP.BackendApi.ReservationManagment.Extensions;
 using GlobalCoders.PSP.BackendApi.ServicesManagement.Extensions;
@@ -86,6 +87,7 @@ void RegisterServices(IServiceCollection services, ConfigurationManager configur
     services.RegisterDiscountManagementServices();
     services.RegisterServicesManagementServices();
     services.RegisterReservationManagementServices();
+    services.RegisterPaymentManagementServices(configuration);
 }
 
 void RegisterDataBaseServices(IServiceCollection services, ConfigurationManager configuration)
