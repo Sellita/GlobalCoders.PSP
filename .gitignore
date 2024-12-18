@@ -526,3 +526,5 @@ FodyWeavers.xsd
 *.sln.iml
 .idea/
 .idea/*
+
+.env

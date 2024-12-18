@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { OrgService } from '../../services/org.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-user',
@@ -20,7 +21,7 @@ export class UserComponent {
   orgs: any[] = [];
   days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
-  constructor(private fb: FormBuilder, private orgService: OrgService) {
+  constructor(private fb: FormBuilder, private orgService: OrgService, private userService: UserService) {
     this.userForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       business: ['', Validators.required],
@@ -31,16 +32,11 @@ export class UserComponent {
       schedule: this.fb.array([]),
     });
 
-    this.orgService.getOrganizations().subscribe(
-      (res: any) => {
-        res.items.forEach((org: any) => {
-          this.orgs.push(this.orgService.getOrganization(org.id));
-        });
-      },
-      (err) => {
-        console.error('Error al obtener las organizaciones:', err);
-      }
-    );
+    this.orgService.getOrganizations().subscribe((response: any) => {
+      this.orgs = response.items;
+    });
+
+    this.loadEmployees();
   }
 
   get scheduleControls() {
@@ -71,6 +67,17 @@ export class UserComponent {
   onSubmit() {
     if (this.userForm.valid) {
       console.log('Formulario enviado', this.userForm.value);
+      this.userService.createEmployee(this.userForm.value).subscribe({
+        next: (response: any) => {
+          console.log('Empleado creado exitosamente:', response);
+          this.loadEmployees(); // Recargar la lista de empleados
+          this.userForm.reset(); // Opcional: limpiar el formulario
+          this.showForm = false; // Cierra el formulario después de enviar
+        },
+        error: (err) => {
+          console.error('Error al crear el empleado:', err);
+        }
+      });
     } else {
       console.log('Formulario inválido');
     }
@@ -79,5 +86,18 @@ export class UserComponent {
   toggleForm(): void {
     this.showForm = !this.showForm;
   }
+
+  loadEmployees() {
+    this.userService.getEmployees().subscribe({
+      next: (response: any) => {
+        this.users = response.items || []; // Asigna los empleados a la lista
+        console.log('Empleados cargados:', this.users);
+      },
+      error: (err) => {
+        console.error('Error al cargar los empleados:', err);
+      }
+    });
+  }
+  
 
 }
