@@ -163,13 +163,9 @@ $(async function () {
             let inputs = createInput("displayName", "text", "DisplayName", "DisplayName", "", true);
             inputs += createInput("description", "text", "Description", "Description", "");
             inputs += createInput("price", "text", "Price", "Price", "");
-            
-            inputs += createSelect("productState", "State", productStates, '');
             inputs += createSelect("productTypeId", "Type", productTypeOptions, productTypeOptions[0]);
-
             inputs += createSelect("merchantId", "Organization", organizationOptions, organizationOptions[0]);
             
-
             await Swal.fire({
                 title: "New Product",
                 html: `<div class="container">
@@ -259,9 +255,7 @@ $(async function () {
             inputs += createInput("price", "text", "Price", "Price", product['price']);
             inputs += createSelect("productState", "State", productStates, product['productState']);
             inputs += createSelect("productTypeId", "Type", productTypeOptions, product['productTypeId']);
-
             inputs += createSelect("merchantId", "Organization", organizationOptions, product['merchantId']);
-
             inputs += createInput("id", "hidden", "", "", rowId);
 
             await Swal.fire({
