@@ -215,6 +215,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <AdditionalFiles Include="Views\Discount\Index.cshtml" />
       <AdditionalFiles Include="Views\ProductType\Index.cshtml" />
     </ItemGroup>
   

@@ -7,7 +7,7 @@ public static class DiscountEntityFactory
 {
     public static DiscountEntity Create(DiscountCreateModel discountCreateModel, Guid? organizationId = null)
     {
-        return new DiscountEntity
+        var result = new DiscountEntity
         {
             MerchantId = discountCreateModel.OrganizationId ??
                          organizationId ?? throw new ArgumentNullException(nameof(organizationId)),
@@ -21,6 +21,18 @@ public static class DiscountEntityFactory
             StartDate = discountCreateModel.StartDate,
             EndDate = discountCreateModel.EndDate,
         };
+        
+        if(result.StartDate.HasValue)
+        {
+            result.StartDate = DateTime.SpecifyKind(result.StartDate.Value, DateTimeKind.Utc);
+        }
+        
+        if(result.EndDate.HasValue)
+        {
+            result.EndDate = DateTime.SpecifyKind(result.EndDate.Value, DateTimeKind.Utc);
+        }
+
+        return result;
     }  
     
     public static DiscountEntity CreateUpdate(DiscountUpdateModel updateModel)
