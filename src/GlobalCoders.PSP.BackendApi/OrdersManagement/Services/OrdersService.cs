@@ -10,6 +10,8 @@ using GlobalCoders.PSP.BackendApi.OrdersManagement.Factories;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.Helpers;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.ModelsDto;
 using GlobalCoders.PSP.BackendApi.OrdersManagement.Repositories;
+using GlobalCoders.PSP.BackendApi.PaymentsService.Models;
+using GlobalCoders.PSP.BackendApi.PaymentsService.Services;
 using GlobalCoders.PSP.BackendApi.ProductsManagement.Services;
 using GlobalCoders.PSP.BackendApi.TaxManagement.Enums;
 using GlobalCoders.PSP.BackendApi.TaxManagement.Factories;
@@ -26,6 +28,7 @@ public class OrdersService : IOrdersService
     private readonly IEmployeeService _employeeService;
     private readonly ITaxService _taxService;
     private readonly IInventoryService _inventoryService;
+    private readonly IPaymentService _paymentService;
 
     private const string FailedToChangeStatusMessage = "Failed to change status";
 
@@ -38,7 +41,8 @@ public class OrdersService : IOrdersService
         IProductService productService,
         IEmployeeService employeeService,
         ITaxService taxService,
-        IInventoryService inventoryService)
+        IInventoryService inventoryService,
+        IPaymentService paymentService)
     {
         _statusChangeMethods = new Dictionary<OrderStatus, Func<OrderEntity, Task<(bool, string)>>>
         {
@@ -54,6 +58,7 @@ public class OrdersService : IOrdersService
         _employeeService = employeeService;
         _taxService = taxService;
         _inventoryService = inventoryService;
+        _paymentService = paymentService;
     }
     public async Task<(bool, string)> UpdateAsync(OrderEntity updateModel)
     {
@@ -396,30 +401,36 @@ public class OrdersService : IOrdersService
         return (await _ordersRepository.UpdateAsync(order), "Failed to change product quantity");
     }
 
-    public async Task<(bool result, string message)> MakePaymentAsync(OrderMakePaymentRequestModel orderMakePaymentRequest, CancellationToken cancellationToken)
+    public async Task<(PaymentInfo? result, string message)> MakePaymentAsync(OrderMakePaymentRequestModel orderMakePaymentRequest, CancellationToken cancellationToken)
     {
         var order = await _ordersRepository.GetAsync(orderMakePaymentRequest.OrderId);
 
         if(order?.Status != OrderStatus.Closed)
         {
-            return (false, "Products can be changed only for closed orders");
+            return (null, "Products can be changed only for closed orders");
         }
         
         var leftToPay = CalculationHelpers.CalculateLeftToPay(order);
         
         if(leftToPay < orderMakePaymentRequest.Amount)
         {
-            return (false, "Amount is bigger than left to pay");
+            return (null, "Amount is bigger than left to pay");
         }
         
-        order.OrderPayments.Add(OrderPaymentsEntityFactory.Create(orderMakePaymentRequest));
+        var paymentId = await _ordersRepository.AddPayment(OrderPaymentsEntityFactory.Create(orderMakePaymentRequest));
         
-        if(leftToPay == orderMakePaymentRequest.Amount)
+        if(paymentId == null || paymentId == Guid.Empty)
         {
-            order.Status = OrderStatus.Paid;
+            return (null, "Failed to add payment");
         }
+
+        var result = await _paymentService.PayAsync(new PaymentData
+            { PaymentId = paymentId.Value, 
+                Amount = orderMakePaymentRequest.Amount,
+                OrderId = order.Id.ToString()
+            });
         
-        return (await _ordersRepository.UpdateAsync(order), "Failed to make payment");
+        return (result, "Failed to make payment");
     }
 
     public async Task<(bool result, string message)> ChangeTipsAsync(TipsRequestModel tipsRequest, CancellationToken cancellationToken)
@@ -436,5 +447,65 @@ public class OrdersService : IOrdersService
         var result = await _ordersRepository.UpdateAsync(order);
         
         return (result, "Failed to change tips");
+    }
+
+    public async Task<bool> ConfirmPaymentAsync(Guid orderId, string sessionId)
+    {
+        var result = await _ordersRepository.ConfirmPaymentAsync(orderId, sessionId);
+
+        if (!result)
+        {
+            return false;
+        }
+        
+        _logger.LogInformation("Payment was Confirmed for order {OrderId}", orderId);
+
+        var order = await _ordersRepository.GetAsync(orderId);
+        
+        var leftToPay = CalculationHelpers.CalculateLeftToPay(order);
+
+        if (leftToPay == 0)
+        {
+            _logger.LogInformation("Payment was fully paid changing status: {OrderId}", orderId);
+
+            order.Status = OrderStatus.Paid;
+            
+            await _ordersRepository.UpdateAsync(order);
+        }
+
+        return true;
+    }
+
+    public async Task<bool> CancelPaymentAsync(Guid orderId, string sessionId)
+    {
+        var result = await _ordersRepository.RemovePaymentAsync(orderId, sessionId);
+
+        _logger.LogInformation("Payment was removed({IsRemoved}) for order {OrderId}", result, orderId);
+        return result;
+    }
+
+    public async Task<(PaymentInfo? result, string message)> ResumePaymentAsync(OrderResumePaymentModel resumePaymentRequest, CancellationToken cancellationToken)
+    {
+        var order = await _ordersRepository.GetAsync(resumePaymentRequest.OrderId);
+
+        if(order?.Status != OrderStatus.Closed)
+        {
+            return (null, "Products can be changed only for closed orders");
+        }
+
+        var payment = order.OrderPayments.FirstOrDefault(x => x.Id == resumePaymentRequest.PaymentId);
+        if(payment == null)
+        {
+            return (null, "Payment not found to resume");
+        }
+        
+        var result = await _paymentService.PayAsync(new PaymentData
+        { 
+            PaymentId = payment.Id, 
+            Amount = payment.Amount,
+            OrderId = order.Id.ToString()
+        });
+        
+        return (result, "Failed to make payment");
     }
 }

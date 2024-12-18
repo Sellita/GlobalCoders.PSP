@@ -1,3 +1,4 @@
+using System.Net;
 using GlobalCoders.PSP.BackendApi.PaymentsService.Configuration;
 using GlobalCoders.PSP.BackendApi.PaymentsService.Services;
 using Stripe;
@@ -20,6 +21,10 @@ public static class PaymentManagementExtension
         }
 
         StripeConfiguration.ApiKey = identityConfiguration.ApiKey;
+        //StripeConfiguration.ApiKey = identityConfiguration.ApiKey;
+        
+      
+        //StripeConfiguration.
     }
 
     public static void RegisterPaymentManagement(this WebApplication app)

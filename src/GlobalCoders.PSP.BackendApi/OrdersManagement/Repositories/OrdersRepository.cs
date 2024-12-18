@@ -159,4 +159,75 @@ public class OrdersRepository : IOrdersRepository
         
         return await context.SaveChangesAsync() > 0;
     }
+
+    public async Task<Guid?> AddPayment(OrderPaymentsEntity create)
+    {
+        await using var context = await _contextFactory.CreateDbContextAsync();
+        
+        await context.OrderPayments.AddAsync(create);
+
+        var result = await context.SaveChangesAsync();
+        
+        
+        return result > 0 ? create.Id : null;
+    }
+
+    public async Task<bool> UpdatePaymentSessionIdAsync(Guid paymentPaymentId, string id)
+    {
+        await using var context = await _contextFactory.CreateDbContextAsync();
+        
+        var payment = await context.OrderPayments.FirstOrDefaultAsync(x=> x.Id == paymentPaymentId);
+
+        if (payment == null)
+        {
+            return false;
+        }
+        
+        payment.SessionId = id;
+        
+        var result = await context.SaveChangesAsync();
+        
+        
+        return result > 0;
+    }
+
+    public async Task<bool> ConfirmPaymentAsync(Guid orderId, string sessionId)
+    {
+        await using var context = await _contextFactory.CreateDbContextAsync();
+
+        var payment =
+            await context.OrderPayments.FirstOrDefaultAsync(x => x.OrderId == orderId 
+                                                                 && x.SessionId == sessionId);
+
+        if (payment == null)
+        {
+            return false;
+        }
+        
+        payment.IsPaid = true;
+        
+        var result = await context.SaveChangesAsync();
+        
+        return result > 0;
+    }
+
+    public async Task<bool> RemovePaymentAsync(Guid orderId, string sessionId)
+    {
+        await using var context = await _contextFactory.CreateDbContextAsync();
+
+        var payment =
+            await context.OrderPayments.FirstOrDefaultAsync(x => x.OrderId == orderId 
+                                                                 && x.SessionId == sessionId);
+
+        if (payment == null)
+        {
+            return false;
+        }
+
+        context.OrderPayments.Remove(payment);
+        
+        var result = await context.SaveChangesAsync();
+        
+        return result > 0;
+    }
 }

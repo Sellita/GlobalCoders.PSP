@@ -4,5 +4,5 @@ namespace GlobalCoders.PSP.BackendApi.PaymentsService.Services;
 
 public interface IPaymentService
 {
-    public Task<bool> PayAsync(PaymentData payment);
+    public Task<PaymentInfo?> PayAsync(PaymentData payment);
 }
