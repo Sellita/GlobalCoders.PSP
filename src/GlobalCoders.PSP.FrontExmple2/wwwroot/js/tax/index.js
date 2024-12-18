@@ -1,25 +1,25 @@
-const productTypesDataTable = "product-types-data-table";
+const taxDataTable = "taxes-data-table";
 $(function () {
 
     $.fn.dataTable.ext.errMode = "none";
 
-    console.log("product-types")
+    console.log("taxes")
 
     function init() {
-        const dataTableBody = $(`#${productTypesDataTable} tbody`);
+        const dataTableBody = $(`#${taxDataTable} tbody`);
 
-        dataTableBody.on('click', 'tr button.edit-product-type', function () {
+        dataTableBody.on('click', 'tr button.edit-tax', function () {
             const rowId = $(this).attr('data-id');
-            editProductType(rowId);
+            editTax(rowId);
         });
 
-        dataTableBody.on('click', 'tr button.delete-product-type', function () {
+        dataTableBody.on('click', 'tr button.delete-tax', function () {
             const rowId = $(this).attr('data-id');
-            deleteProductType(rowId);
+            deleteTax(rowId);
         });
     }
 
-    const dt = $(`#${productTypesDataTable}`).DataTable({
+    const dt = $(`#${taxDataTable}`).DataTable({
         initComplete: function () {
             init();
         },
@@ -27,12 +27,12 @@ $(function () {
         "stripeClasses": ['odd-row', 'even-row'],
         ajax: function(data, callback,settings) {
             
-            const pageInfo = $(`#${productTypesDataTable}`).DataTable().page.info();
+            const pageInfo = $(`#${taxDataTable}`).DataTable().page.info();
             
             console.log(pageInfo)
             
             $.ajax({
-                url: `${DOMAIN_URL}productType/All`,
+                url: `${DOMAIN_URL}tax/All`,
                 type: "POST",
                 crossDomain: true,
                 contentType: "application/json",
@@ -64,13 +64,13 @@ $(function () {
         response: true,
         buttons: [
             {
-                text: 'New Product type',
+                text: 'New Tax',
                 attr: {
-                    id: 'btn-product-type-new',
+                    id: 'btn-tax-new',
                     class: 'btn btn-primary'
                 },
                 action: function (e, dt, node, config) {
-                    createProductType();
+                    createTax();
                 }
             }
         ],
@@ -87,12 +87,15 @@ $(function () {
         columns: [
             {name: "id", data: "id"},
             {name: "displayName", data: "displayName"},
+            {name: "type", data: "type"},
+            {name: "value", data: "value"},
+            {name: "productTypeId", data: "productTypeId"},
             {
                 render: function (data, type, row) {
                     let actions = "";
 
-                    actions += createeditProductTypeButton(data, row);
-                    actions += createdeleteProductTypeButton(data, row);
+                    actions += createeditTaxButton(data, row);
+                    actions += createdeleteTaxButton(data, row);
 
                     return actions;
                 }
@@ -100,11 +103,11 @@ $(function () {
         ]
     });
 
-    function createeditProductTypeButton(data, row) {
+    function createeditTaxButton(data, row) {
         const $editButton = $('<button>', {
             "role": "button",
             "data-id": row.id,
-            "class": "btn btn-sm btn-primary edit-product-type me-1 mb-1",
+            "class": "btn btn-sm btn-primary edit-tax me-1 mb-1",
             "title": "Edit"
         });
 
@@ -117,11 +120,11 @@ $(function () {
         return $editButton.get(0).outerHTML;
     }
 
-    function createdeleteProductTypeButton(data, row) {
+    function createdeleteTaxButton(data, row) {
         const $deleteButton = $('<button>', {
             "role": "button",
             "data-id": row.id,
-            "class": "btn btn-sm btn-secondary delete-product-type me-1 mb-1",
+            "class": "btn btn-sm btn-secondary delete-tax me-1 mb-1",
             "title": "Delete"
         });
 
@@ -134,48 +137,19 @@ $(function () {
         return $deleteButton.get(0).outerHTML;
     }
 
-    function createProductType(){
+    function createTax(){
         (async () => {
-            const rowId = "new-product-type";
-
-            // const organizationsResponse = await fetch(`${DOMAIN_URL}Organization/All`, {
-            //     method: "POST",
-            //     headers: {
-            //         Authorization: "Bearer " + localStorage.getItem("token"),
-            //         'Content-Type': 'application/json',
-            //     },
-            //     body: JSON.stringify({
-            //         "page": 1,
-            //         "itemsPerPage": 100
-            //     })
-            // });
-            //
-            // if(!organizationsResponse.ok){
-            //     Swal.fire({
-            //         title: "Status",
-            //         text: "Oops...Something was wrong",
-            //         icon: "error",
-            //         confirmButtonColor: "#70757d"
-            //     })
-            //     return;
-            // }
-            //
-            // const organizations = await organizationsResponse.json();
-            // let organizationOptions = []
-            // organizations.items.map(organization => {
-            //    
-            //     organizationOptions.push({
-            //         value: organization.id,
-            //         label: organization.displayName
-            //     });
-            // });
-            // debugger;
+            const rowId = "new-tax";
             
-            let inputs = createInput("displayName", "text", "Display Name", "Display Name", "", true);
-            //inputs += createSelect("productState", "State", organizationOptions, organizationOptions[0]);
+            const organizationOptions = await GetSelects(`${DOMAIN_URL}Organization/All`, "id", "displayName");
+            const productTypeOptions = await GetSelects(`${DOMAIN_URL}producttype/All`, "id", "displayName");
+            
+            let inputs = createInput("name", "text", "Display Name", "Display Name", "", true);
+            inputs += createSelect("organizationId", "Organization", organizationOptions, organizationOptions[0]);
+            inputs += createSelect("productTypeId", "Product type", productTypeOptions, productTypeOptions[0]);
             
             await Swal.fire({
-                title: "New Product Type",
+                title: "New Tax",
                 html: `<div class="container">
                         <form id="form-${rowId}">${inputs}</form>
                         </div>`,
@@ -205,7 +179,7 @@ $(function () {
                         return false;
                     }
 
-                    const saveProductTypeResponse = await fetch(`${DOMAIN_URL}producttype/Create`, {
+                    const saveTaxResponse = await fetch(`${DOMAIN_URL}tax/Create`, {
                         method: "POST",
                         headers: {
                             Authorization: "Bearer " + localStorage.getItem("token"),
@@ -214,18 +188,18 @@ $(function () {
                         body: JSON.stringify(formObject)
                     });
 
-                    if (!saveProductTypeResponse.ok) {
+                    if (!saveTaxResponse.ok) {
 
                         Swal.showValidationMessage("Something was wrong when try save");
 
                         return;
                     }
 
-                    $(`#${productTypesDataTable}`).DataTable().ajax.reload();
+                    $(`#${taxDataTable}`).DataTable().ajax.reload();
 
                     Swal.fire({
                         title: "Status",
-                        text: "Success saved new product type",
+                        text: "Success saved new tax",
                         icon: "success",
                         confirmButtonColor: "#70757d"
                     });
@@ -234,9 +208,9 @@ $(function () {
         })();
     }
     
-    function editProductType(rowId) {
+    function editTax(rowId) {
         (async () => {
-            const productTypeResponse = await fetch(`${DOMAIN_URL}producttype/Id/${rowId}`, {
+            const taxResponse = await fetch(`${DOMAIN_URL}tax/Id/${rowId}`, {
                 method: "GET",
                 headers: {
                     Authorization: "Bearer " + localStorage.getItem("token"),
@@ -244,17 +218,17 @@ $(function () {
                 }
             })
 
-            if (!productTypeResponse.ok) {
+            if (!taxResponse.ok) {
                 return false;
             }
 
-            const productType = await productTypeResponse.json();
+            const tax = await taxResponse.json();
 
-            let inputs = createInput("displayName", "text", "Display Name", "Display Name", productType["displayName"], true);
+            let inputs = createInput("displayName", "text", "Display Name", "Display Name", tax["displayName"], true);
             inputs += createInput("id", "hidden", "", "", rowId);
             
             await Swal.fire({
-                title: "Edit Product type",
+                title: "Edit Tax",
                 html: `<div class="container">
                         <form id="form-${rowId}">${inputs}</form>
                         </div>`,
@@ -286,7 +260,7 @@ $(function () {
                         return false;
                     }
 
-                    const updateProductTypeResponse = await fetch(`${DOMAIN_URL}producttype/Update`, {
+                    const updateTaxResponse = await fetch(`${DOMAIN_URL}tax/Update`, {
                         method: "PUT",
                         headers: {
                             Authorization: "Bearer " + localStorage.getItem("token"),
@@ -295,18 +269,18 @@ $(function () {
                         body: JSON.stringify(formObject)
                     });
 
-                    if (!updateProductTypeResponse.ok) {
+                    if (!updateTaxResponse.ok) {
 
                         Swal.showValidationMessage("Something was wrong when try update");
 
                         return;
                     }
 
-                    $(`#${productTypesDataTable}`).DataTable().ajax.reload();
+                    $(`#${taxDataTable}`).DataTable().ajax.reload();
 
                     Swal.fire({
                         title: "Status",
-                        text: "Success updated product type",
+                        text: "Success updated tax",
                         icon: "success",
                         confirmButtonColor: "#70757d"
                     });
@@ -316,11 +290,11 @@ $(function () {
         })();
     }
     
-    function deleteProductType(rowId) {
+    function deleteTax(rowId) {
         (async () => {
             
             await Swal.fire({
-                title: `Delete product type`,
+                title: `Delete tax`,
                 text: 'Are you sure want to delete?',
                 icon: "warning",
                 focusConfirm: false,
@@ -329,7 +303,7 @@ $(function () {
                 showCancelButton: true,
                 preConfirm: async () => {
 
-                    const deleteProductTypeResponse = await fetch(`${DOMAIN_URL}producttype/Delete/${rowId}`, {
+                    const deleteTaxResponse = await fetch(`${DOMAIN_URL}tax/Delete/${rowId}`, {
                         method: "DELETE",
                         headers: {
                             Authorization: "Bearer " + localStorage.getItem("token"),
@@ -337,7 +311,7 @@ $(function () {
                         }
                     });
 
-                    if (!deleteProductTypeResponse.ok) {
+                    if (!deleteTaxResponse.ok) {
 
                         Swal.fire({
                             title: "Status",
@@ -349,11 +323,11 @@ $(function () {
                         return;
                     }
 
-                    $(`#${productTypesDataTable}`).DataTable().ajax.reload();
+                    $(`#${taxDataTable}`).DataTable().ajax.reload();
 
                     Swal.fire({
                         title: "Status",
-                        text: "Success product type deleted",
+                        text: "Success tax deleted",
                         icon: "success",
                         confirmButtonColor: "#70757d"
                     });
