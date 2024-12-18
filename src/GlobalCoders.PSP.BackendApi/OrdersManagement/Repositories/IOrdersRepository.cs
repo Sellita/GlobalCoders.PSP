@@ -13,4 +13,8 @@ public interface IOrdersRepository
     Task<bool> OrderBelongsToMerchantAsync(Guid orderIdOrderId, Guid? userMerchantId);
     Task<(bool result, string message)> ChangeStatusAsync(OrderChangeStatusRequestModel orderChangeStatusRequest);
     Task<bool> DeleteProductFromLustAsync(OrderProductEntity productFromList);
+    Task<Guid?> AddPayment(OrderPaymentsEntity create);
+    Task<bool> UpdatePaymentSessionIdAsync(Guid paymentPaymentId, string id);
+    Task<bool> ConfirmPaymentAsync(Guid orderId, string sessionId);
+    Task<bool> RemovePaymentAsync(Guid orderId, string sessionId);
 }

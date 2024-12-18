@@ -155,6 +155,11 @@ public sealed class AuthorizationService : IAuthorizationService
 
     }
 
+    public async Task<EmployeeEntity?> GetUserByIdAsync(Guid employeeId)
+    {
+        return await _employeeRepository.GetUserAsync(employeeId);
+    }
+
     private Dictionary<string, bool> GetScopesWithAccessStatus(
         IEnumerable<string> scopes,
         Func<string, bool> accessChecker)

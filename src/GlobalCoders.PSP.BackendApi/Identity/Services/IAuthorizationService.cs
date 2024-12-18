@@ -17,4 +17,5 @@ public interface IAuthorizationService
         CancellationToken cancellationToken);
 
     Task<EmployeeEntity?> GetUserAsync(ClaimsPrincipal user);
+    Task<EmployeeEntity?> GetUserByIdAsync(Guid employeeId);
 }

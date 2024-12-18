@@ -12,6 +12,7 @@ services:
       ASPNETCORE_URLS: "http://+"
       DbSettings__ConnectionString: ${w_connection_string}
       SmtpProvider__SmtpServer: "mail"
+      PaymentConfiguration__ApiKey: "${w_stripe_apy_key}"
       Cors__Origins__0: "http://localhost:4200"
       Cors__Origins__1: "https://localhost:4200"
       Cors__Origins__2: "http://localhost:9001"
@@ -47,6 +48,16 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+      
+  stripe-mock:
+    container_name: stripe-mock
+    image: stripe/stripe-mock
+    restart: always
+    ports:
+      - "12111:12111"
+    networks:
+      global_coders_backend_network:
+        ipv4_address: 174.30.0.114
   
   mailhog:
     container_name: mail

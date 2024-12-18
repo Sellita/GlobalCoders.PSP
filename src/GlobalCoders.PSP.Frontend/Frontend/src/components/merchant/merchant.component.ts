@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
+import { OrgService } from '../../services/org.service';
 
 @Component({
   selector: 'app-merchant',
@@ -14,11 +15,11 @@ export class MerchantComponent {
 
   showForm: boolean = false;
   companyForm: FormGroup;
-  organizations: any[] = [];
+  organizations: Object[] = [];
 
   daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private orgService: OrgService) {
     this.companyForm = this.fb.group({
       displayName: ['', Validators.required],
       legalName: ['', Validators.required],
@@ -30,6 +31,14 @@ export class MerchantComponent {
     });
 
     this.addWorkingSchedule();
+    this.orgService.getOrganizations().subscribe(
+      (res) => {
+        console.log('Organizaciones obtenidas:', res);
+      },
+      (err) => {
+        console.error('Error al obtener las organizaciones:', err);
+      }
+    );
   }
 
   get workingSchedule(): FormArray {
@@ -54,6 +63,15 @@ export class MerchantComponent {
   submitForm() {
     if (this.companyForm.valid) {
       this.organizations.push({ ...this.companyForm.value });
+      this.orgService.createOrganization(this.companyForm.value).subscribe(
+        (res) => {
+          console.log('Nueva organización añadida:', res);
+        },
+        (err) => {
+          console.error('Error al añadir la organización:', err);
+        }
+      );
+
       console.log('Nueva organización añadida:', this.companyForm.value);
 
       this.companyForm.reset();

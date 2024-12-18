@@ -10,7 +10,8 @@ public static class OrderPaymentsModelFactory
         return new OrderPaymentsModel
         {
             Id = paymentEntity.Id,
-            Amount = paymentEntity.Amount
+            Amount = paymentEntity.Amount,
+            IsPaid = paymentEntity.IsPaid
         };
     }
 }
