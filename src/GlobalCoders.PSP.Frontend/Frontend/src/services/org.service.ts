@@ -41,5 +41,4 @@ export class OrgService {
     return this.http.get('http://localhost:9001/Organization/Id/'+id, { headers: this.headers });
   }
 
-  
 }

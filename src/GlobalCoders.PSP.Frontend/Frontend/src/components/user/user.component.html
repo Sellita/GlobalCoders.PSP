@@ -110,4 +110,28 @@
         <!-- Submit -->
         <button type="submit" [disabled]="userForm.invalid">Guardar Usuario</button>
     </form>
+
+   
 </div>
+
+ <h2>Lista de Empleados</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Teléfono</th>
+        <th>Rol</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users">
+        <td>{{ user.name }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.phone }}</td>
+        <td>{{ user.role }}</td>
+        <td>{{ user.status }}</td>
+      </tr>
+    </tbody>
+  </table>
