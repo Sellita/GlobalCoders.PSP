@@ -113,7 +113,7 @@
         <td>{{ service.description }}</td>
         <td>{{ service.durationMin }}</td>
         <td>{{ service.price }}</td>
-        <td>{{ service.serviceState }}</td>
+        <td>{{ service.serviceState === 1 ? 'Active' : 'Inactive' }}</td>
         <td>{{ service.employeeId }}</td>
         <td>{{ service.employee }}</td>
         <td>{{ service.creationDate | date: 'dd/MM/yyyy' }}</td>

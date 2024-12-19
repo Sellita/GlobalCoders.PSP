@@ -119,7 +119,7 @@
     </thead>
     <!-- Generar filas dinámicamente -->
     <tbody>
-      <tr *ngFor="let org of organizations">
+      <tr *ngFor="let org of orgs">
         <td>{{ org.id }}</td>
         <td>{{ org.displayName }}</td>
         <td>{{ org.legalName }}</td>
@@ -128,15 +128,11 @@
         <td>{{ org.mainPhoneNumber }}</td>
         <td>{{ org.secondaryPhoneNumber || '' }}</td>
         <td>
-          <div *ngIf="org.workingSchedule.length > 0; else noSchedule">
-            <div *ngFor="let schedule of org.workingSchedule">
-              {{ daysOfWeek[schedule.dayOfWeek] }}
-              <br>
-              {{ schedule.startTime }} - {{ schedule.endTime }}
-            </div>
-          </div>
-          <ng-template #noSchedule>No Schedule</ng-template>
-        </td>
+          <ul>
+            <li *ngFor="let schedule of org.workingSchedule">
+              {{ daysOfWeek[schedule.dayOfWeek] }}: {{ schedule.startTime }} - {{ schedule.endTime }}
+            </li>
+          </ul>
         <td>
           <button class="btn btn-primary btn-sm" (click)="updateOrg(org)">Update</button>
           <button class="btn btn-danger btn-sm" (click)="deleteOrg(org.id)">Delete</button>

@@ -153,9 +153,11 @@ export class UserComponent {
         phoneNumber: user.phoneNumber,
         role: user.role,
         isActive: user.isActive,
-        organizationId: this.orgService.getOrganization(user.organizationId).displayName,
+        organizationId: this.orgService.getOrganization(user.organizationId),
         workingSchedule: schedules
     });
+
+    console.log(this.orgService.getOrganization(user.organizationId));
 
     this.showForm = true;
   }

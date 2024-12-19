@@ -56,6 +56,7 @@ export class ServiceComponent {
   }
 
   ngOnInit(): void {
+
     // Suscribirse a la lista de servicios reactiva
     this.service.services$.subscribe((data) => {
       this.services = data;
@@ -67,7 +68,11 @@ export class ServiceComponent {
     });
 
     // Cargar los servicios inicialmente
-    this.service.getServices().subscribe();
+    this.service.getServices().subscribe(
+      (data) => {
+        console.log('Servicios:', data);
+      }
+    );
   }
 
 
@@ -83,13 +88,14 @@ export class ServiceComponent {
         this.serviceForm.patchValue({ id: this.serviceForm.value.id });
         this.service.updateService(this.serviceForm.value).subscribe((data: any) => {
           console.log('Servicio actualizado:', data);
-          alert('Servicio actualizado con éxito');
         });
         this.editMode = false;
+        this.showForm = false;
       } else {
         this.service.createService(this.serviceForm.value).subscribe((data: any) => {
           console.log('Servicio creado:', data);
         });
+        this.showForm = false;
       }
     } else {
       alert('Por favor corrige los errores antes de enviar el formulario.');

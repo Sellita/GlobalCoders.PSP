@@ -15,44 +15,52 @@ import { OnInit } from '@angular/core';
 })
 export class MerchantComponent implements OnInit {
 
-  edit: boolean = false;
-  selectedOrg: string = '';
-
+  
+  headers = [
+    "ID",
+    "Display Name", 
+    "Legal Name", 
+    "Address", 
+    "Email", 
+    "Main Phone Number", 
+    "Secondary Phone Number", 
+    "Working Schedule", 
+    "Actions"];
+  daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  editMode: boolean = false;
   showForm: boolean = false;
   companyForm: FormGroup;
-  organizations: Org[] = [];
-  headers = ["ID","Display Name", "Legal Name", "Address", "Email", "Main Phone Number", "Secondary Phone Number", "Working Schedule", "Actions"];
-  daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  orgs: Org[] = [];
 
-
-  constructor(private fb: FormBuilder, private orgService: OrgService) {
+  constructor(
+    private orgService: OrgService,
+    private fb: FormBuilder,
+  ) {
     this.companyForm = this.fb.group({
       displayName: ['', Validators.required],
       legalName: ['', Validators.required],
       address: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      mainPhoneNumber: ['', Validators.required],
-      secondaryPhoneNumber: [''],
-      workingSchedule: this.fb.array([])
+      mainPhoneNumber: ['', [Validators.required, Validators.pattern(/^\d{9}$/)]],
+      secondaryPhoneNumber: ['', [Validators.required, Validators.pattern(/^\d{9}$/)]],
+      workingSchedule: this.fb.array([]),
+      id: ['']
     });
-
-    this.addWorkingSchedule();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
 
+    // Cargar los servicios inicialmente
     this.orgService.getOrganizations().subscribe(
-      (res: any) => {
-        res.items.forEach((org: Org) => {
-          this.organizations.push(this.orgService.getOrganization(org.id));
+      (data: any) => {
+        data.items.forEach((org: Org) => {
+          this.orgService.getOrganization(org.id).subscribe((data: any) => {
+            this.orgs.push(data);
+            console.log('organización cargada:', data);
+          });
         });
-      },
-      (err) => {
-        console.error('Error al obtener las organizaciones:', err);
       }
     );
-    this.addWorkingSchedule();
-
   }
 
   get workingSchedule(): FormArray {
@@ -73,77 +81,42 @@ export class MerchantComponent implements OnInit {
     this.workingSchedule.removeAt(index);
   }
 
+  toggleForm() {
+    this.showForm = !this.showForm;
+    this.editMode = false;
+    this.companyForm.reset();
+  }
 
   submitForm() {
-
-    const orgData = this.companyForm.value;
-    if (this.edit) {
-      const orgIndex = this.organizations.findIndex(org => org.id === this.selectedOrg);
-      if (orgIndex !== -1) {
-      this.organizations[orgIndex] = { ...orgData, id: this.selectedOrg };
-      this.orgService.updateOrganization(this.organizations[orgIndex]).subscribe(
-        (res) => {
-        console.log('Organización actualizada:', res);
-        },
-        (err) => {
-        console.error('Error al actualizar la organización:', err);
-        }
-      );
+    if (this.companyForm.valid) {
+      if (this.editMode) {
+        this.companyForm.patchValue({ id: this.companyForm.value.id });
+        this.orgService.updateOrganization(this.companyForm.value).subscribe((data: any) => {
+          console.log('Org actualizada:', data);
+        });
+        this.editMode = false;
+        this.showForm = false;
+      } else {
+        this.orgService.createOrganization(this.companyForm.value).subscribe((data: any) => {
+          console.log('Org creada:', data);
+        });
+        this.showForm = false;
       }
-      this.edit = false;
     } else {
-      this.orgService.createOrganization(orgData).subscribe(
-      (res: any) => {
-        console.log('Nueva organización añadida:', res);
-        this.organizations.push(res);
-      },
-      (err) => {
-        console.error('Error al añadir la organización:', err);
-      }
-      );
+      alert('Por favor corrige los errores antes de enviar el formulario.');
     }
-    this.companyForm.reset();
-    this.workingSchedule.clear();
-    this.addWorkingSchedule();
-    this.showForm = false;
   }
 
   deleteOrg(id: string) {
-    this.orgService.deleteOrganization(id).subscribe(
-      (res) => {
-        console.log('Organización eliminada:', res);
-        this.organizations = this.organizations.filter(org => org.id !== id);
-      },
-      (err) => {
-        console.error('Error al eliminar la organización:', err);
-      }
-    );
+    this.orgService.deleteOrganization(id).subscribe((data: any) => {
+      console.log('Org eliminada:', data);
+    });
   }
 
   updateOrg(org: Org) {
-    this.edit = true;
-    this.selectedOrg = org.id;
-
-    this.companyForm.patchValue({
-        displayName: org.displayName,
-        legalName: org.legalName,
-        address: org.address,
-        email: org.email,
-        mainPhoneNumber: org.mainPhoneNumber,
-        secondaryPhoneNumber: org.secondaryPhoneNumber,
-        workingSchedule: org.workingSchedule.map((schedule: any) => ({
-            DayOfWeek: schedule.dayOfWeek,
-            StartTime: schedule.startTime,
-            EndTime: schedule.endTime,
-        }))
-    });
-
+    this.editMode = true;
     this.showForm = true;
-
-  }
-
-  toggleForm(): void {
-    this.showForm = !this.showForm;
+    this.companyForm.patchValue(org);
   }
 
 }
