@@ -6,6 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { OrgService } from '../../services/org.service';
 import { UserService } from '../../services/user.service';
 import { User } from '../../models/user';
+import { OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-user',
@@ -14,7 +15,7 @@ import { User } from '../../models/user';
   templateUrl: './user.component.html',
   styleUrl: './user.component.css'
 })
-export class UserComponent {
+export class UserComponent implements OnInit {
 
   edit: boolean = false;
   selectedUser: string = '';
@@ -35,16 +36,27 @@ export class UserComponent {
       isActive: [null, Validators.required],
       workingSchedule: this.fb.array([]),
     });
+  }
 
-    this.orgService.getOrganizations().subscribe((response: any) => {
-      this.orgs = response.items;
+  ngOnInit(): void {
+
+    // Suscribirse a la lista de servicios reactiva
+    this.userService.users$.subscribe((data) => {
+      this.users = data;
+    });
+
+    this.userService.getUsers().subscribe();
+
+    this.orgService.getOrganizations().subscribe((data: any) => {
+      this.orgs = data.items;
     });
 
     this.loadEmployees();
+
   }
 
   get scheduleControls() {
-    return this.userForm.get('schedule') as FormArray;
+    return this.userForm.get('workingSchedule') as FormArray;
   }
 
   addSchedule() {
@@ -68,49 +80,9 @@ export class UserComponent {
     this.userForm.patchValue({ isActive: status });
   }
 
-  onSubmit() {
-    const userData = this.userForm.value;
-    console.log('userData:', userData);
-    if (this.edit) {
-      const userIndex = this.users.findIndex(user => user.id === this.selectedUser);
-      if (userIndex !== -1) {
-      this.users[userIndex] = { ...userData, id: this.selectedUser };
-      this.userService.updateEmployee(this.users[userIndex]).subscribe(
-        (res) => {
-        console.log('Empleado actualizado:', res);
-        },
-        (err) => {
-        console.error('Error al actualizar el empleado:', err);
-        }
-      );
-      }
-      this.edit = false;
-    } else {
-      this.userService.createEmployee(userData).subscribe(
-      (res: any) => {
-        console.log('Nuevo empleado añadida:', res);
-        this.users.push(res);
-      },
-      (err) => {
-        console.error('Error al añadir el empleado:', err);
-      }
-      );
-    }
-    this.userForm.reset();
-    this.scheduleControls.clear();
-    this.addSchedule();
-    this.showForm = false;
-  }
-
-  toggleForm(): void {
-    this.showForm = !this.showForm;
-    this.userForm.reset();
-    this.edit = false;
-    
-  }
 
   loadEmployees() {
-    this.userService.getEmployees().subscribe({
+    this.userService.getUsers().subscribe({
       next: (response: any) => {
         this.users = response.items;
         console.log('Empleados cargados:', this.users);
@@ -121,45 +93,45 @@ export class UserComponent {
     });
   }
   
-  deleteUser(id: string) {
-      this.userService.deleteEmployee(id).subscribe(
-        (res) => {
-          console.log('Empleado eliminado:', res);
-          this.users = this.users.filter(org => org.id !== id);
-        },
-        (err) => {
-          console.error('Error al eliminar el empleado:', err);
-        }
-      );
+ 
+  toggleForm() {
+      this.showForm = !this.showForm;
+      this.edit = false;
+      this.userForm.reset();
     }
   
-  updateUser(user: User) {
-    this.edit = true;
-    this.selectedUser = user.id;
-    let schedules: any[] = [];
-
-    if (this.scheduleControls && user.workingSchedule) {
-      schedules = user.workingSchedule.map((control: any) =>({
-        dayOfWeek: control.dayOfWeek,
-        startTime: control.startTime,
-        endTime: control.endTime
-      }));
+    onSubmit() {
+      if (this.userForm.valid) {
+        console.log('Formulario válido:', this.userForm.value);
+        if (this.edit) {
+          this.userForm.patchValue({ employeeId: this.userForm.value.id });
+          this.userService.updateUser(this.userForm.value).subscribe((data: any) => {
+            console.log('User actualizado:', data);
+          });
+          this.edit = false;
+          this.showForm = false;
+        } else {
+          this.userService.createUser(this.userForm.value).subscribe((data: any) => {
+            console.log('User creado:', data);
+          });
+          this.showForm = false;
+        }
+      } else {
+        alert('Por favor corrige los errores antes de enviar el formulario.');
+      }
     }
-
-
-    this.userForm.patchValue({
-        name: user.name,
-        email: user.email,
-        phoneNumber: user.phoneNumber,
-        role: user.role,
-        isActive: user.isActive,
-        organizationId: this.orgService.getOrganization(user.organizationId),
-        workingSchedule: schedules
-    });
-
-    console.log(this.orgService.getOrganization(user.organizationId));
-
-    this.showForm = true;
-  }
+  
+    deleteUser(id: string) {
+      this.userService.deleteUser(id).subscribe((data: any) => {
+        console.log('User eliminado:', data);
+      });
+    }
+  
+    updateUser(user: User) {
+      this.edit = true;
+      this.showForm = true;
+      this.userForm.patchValue(user);
+    }
+    
 
 }

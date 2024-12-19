@@ -63,16 +63,12 @@ export class ServiceComponent {
     });
 
     // Cargar empleados
-    this.userService.getEmployees().subscribe((data: any) => {
+    this.userService.getUsers().subscribe((data: any) => {
       this.employees = data.items || [];
     });
 
     // Cargar los servicios inicialmente
-    this.service.getServices().subscribe(
-      (data) => {
-        console.log('Servicios:', data);
-      }
-    );
+    this.service.getServices().subscribe();
   }
 
 

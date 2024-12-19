@@ -1,7 +1,7 @@
 import { Timetable } from "./timetable";
 
 export interface User {
-    id: string;
+    employeeId: string;
     name: string;
     email: string;
     phoneNumber: string;

@@ -88,23 +88,25 @@
       </div>
   
       <h4>Horarios</h4>
-        <div formArrayName="workingSchedule">
-            <div *ngFor="let i = index" [formGroupName]="i">
+      <div formArrayName="workingSchedule">
+        <div *ngFor="let schedule of scheduleControls.controls; let i = index" [formGroupName]="i">
             <label>Día de la Semana:</label>
-            <select formControlName="DayOfWeek">
-                <option *ngFor="let day of days; let j = index" [value]="j">
-                  {{ day }}
-                </option>
+            <select formControlName="dayOfWeek">
+              <option *ngFor="let day of days; let j = index" [value]="j">
+                {{ day }}
+              </option>
             </select>
+      
             <label>Inicio:</label>
-            <input type="time" formControlName="StartTime" />
+            <input type="time" formControlName="startTime" />
+      
             <label>Fin:</label>
-            <input type="time" formControlName="EndTime" />
-            <button type="button" (click)="removeSchedule(i)">Eliminar</button>
-            </div>
+            <input type="time" formControlName="endTime" />
+      
+          <button type="button" (click)="removeSchedule(i)">Eliminar</button>
         </div>
-
-      <!-- Submit -->
+      </div>
+      
       <button type="button" (click)="addSchedule()">Añadir Horario</button>
       <button type="submit" [disabled]="userForm.invalid">Guardar Usuario</button>
   </form>
@@ -131,12 +133,17 @@
         <td>{{ user.isActive ? 'Active' : 'Inactive' }}</td>
         <td>{{ user.merchantId }}</td>
         <td>
-          
+          <ul>
+            <li *ngFor="let schedule of user.workingSchedule">
+              
+              {{ days[schedule] }}: {{ schedule.startTime }} - {{ schedule.endTime }}
+            </li>
+          </ul>
           
         </td>
         <td>
           <button class="btn btn-primary btn-sm" (click)="updateUser(user)">Update</button>
-          <button class="btn btn-danger btn-sm" (click)="deleteUser(user.id)">Delete</button>
+          <button class="btn btn-danger btn-sm" (click)="deleteUser(user.employeeId)">Delete</button>
         </td>
       </tr>
     </tbody>
