@@ -1,137 +1,134 @@
 <button (click)="toggleForm()" class="btn btn-primary">
-    {{ showForm ? 'Cancel' : 'Create User' }}
+  {{ showForm ? 'Cancel' : 'Create User' }}
 </button>
 
 <div *ngIf="showForm" class="form-container">
-    <h3>New User</h3>
-    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="user-form">
-        <!-- Nombre -->
-        <div class="form-group">
-        <label for="name">Nombre</label>
-        <input
-            id="name"
-            type="text"
-            class="form-control"
-            formControlName="name"
-            placeholder="Ingrese el nombre"
-        />
-        <div *ngIf="userForm.get('name')?.touched && userForm.get('name')?.invalid" class="error">
-            El nombre es obligatorio y debe tener al menos 3 caracteres.
-        </div>
-        </div>
-    
-        <div class="form-group">
-            <label for="business">Negocio</label>
-            <select
-              id="business"
-              class="form-control"
-              formControlName="business"
-            >
-              <option value="" disabled selected>Seleccione un negocio</option>
-              <option *ngFor="let org of orgs" [value]="org.id">
-                {{ org.displayName }}
-              </option>
-            </select>
-            <div *ngIf="userForm.get('business')?.touched && userForm.get('business')?.invalid" class="error">
-              El negocio es obligatorio.
-            </div>
-        </div>
-    
-        <!-- Correo -->
-        <div class="form-group">
-        <label for="email">Correo</label>
-        <input
-            id="email"
-            type="email"
-            class="form-control"
-            formControlName="email"
-            placeholder="Ingrese el correo"
-        />
-        <div *ngIf="userForm.get('email')?.touched && userForm.get('email')?.invalid" class="error">
-            Debe ser un correo válido.
-        </div>
-        </div>
-    
-        <!-- Número de teléfono -->
-        <div class="form-group">
-        <label for="phone">Número de Teléfono</label>
-        <input
-            id="phone"
-            type="tel"
-            class="form-control"
-            formControlName="phone"
-            placeholder="Ingrese el teléfono"
-        />
-        <div *ngIf="userForm.get('phone')?.touched && userForm.get('phone')?.invalid" class="error">
-            El número de teléfono es obligatorio y debe tener 10 dígitos.
-        </div>
-        </div>
-    
-        <!-- Rol -->
-        <div class="form-group">
-        <label>Rol</label>
-        <div>
-            <button type="button" [class.active]="userForm.get('role')?.value === 'Empleado'" (click)="setRole('Empleado')">Empleado</button>
-            <button type="button" [class.active]="userForm.get('role')?.value === 'Owner'" (click)="setRole('Owner')">Owner</button>
-        </div>
-        </div>
-    
-        <!-- Estado -->
-        <div class="form-group">
-        <label>Estado</label>
-        <div>
-            <button type="button" [class.active]="userForm.get('status')?.value === 'Activo'" (click)="setStatus('Activo')">Activo</button>
-            <button type="button" [class.active]="userForm.get('status')?.value === 'Inactivo'" (click)="setStatus('Inactivo')">Inactivo</button>
-        </div>
-        </div>
-    
-        <!-- Horario -->
-        <div class="form-group">
-        <label>Horario</label>
-        <div formArrayName="schedule">
-            <div *ngFor="let schedule of scheduleControls.controls; let i = index" [formGroupName]="i">
-            <label>Día</label>
-            <select formControlName="day">
-                <option *ngFor="let day of days" [value]="day">{{ day }}</option>
-            </select>
-    
-            <label>Inicio</label>
-            <input type="time" formControlName="startTime" />
-    
-            <label>Fin</label>
-            <input type="time" formControlName="endTime" />
-    
-            <button type="button" (click)="removeSchedule(i)">Eliminar</button>
-            </div>
-            <button type="button" (click)="addSchedule()">Añadir Horario</button>
-        </div>
-        </div>
-    
-        <!-- Submit -->
-        <button type="submit" [disabled]="userForm.invalid">Guardar Usuario</button>
-    </form>
 
-   
+  <h3>{{ edit ? 'Update User' : 'New User' }}</h3>
+
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="user-form">
+      <!-- Nombre -->
+      <div class="form-group">
+      <label for="name">Nombre</label>
+      <input
+          id="name"
+          type="text"
+          class="form-control"
+          formControlName="name"
+          placeholder="Ingrese el nombre"
+      />
+      <div *ngIf="userForm.get('name')?.touched && userForm.get('name')?.invalid" class="error">
+          El nombre es obligatorio y debe tener al menos 3 caracteres.
+      </div>
+      </div>
+  
+      <div class="form-group">
+          <label for="organizationId">Negocio</label>
+          <select
+            id="organizationId"
+            class="form-control"
+            formControlName="organizationId"
+          >
+            <option value="" disabled selected>Seleccione un negocio</option>
+            <option *ngFor="let org of orgs" [value]="org.id">
+              {{ org.displayName }}
+            </option>
+          </select>
+          <div *ngIf="userForm.get('organizationId')?.touched && userForm.get('organizationId')?.invalid" class="error">
+            El negocio es obligatorio.
+          </div>
+      </div>
+  
+      <!-- Correo -->
+      <div class="form-group">
+      <label for="email">Correo</label>
+      <input
+          id="email"
+          type="email"
+          class="form-control"
+          formControlName="email"
+          placeholder="Ingrese el correo"
+      />
+      <div *ngIf="userForm.get('email')?.touched && userForm.get('email')?.invalid" class="error">
+          Debe ser un correo válido.
+      </div>
+      </div>
+  
+      <!-- Número de teléfono -->
+      <div class="form-group">
+      <label for="phoneNumber">Número de Teléfono</label>
+      <input
+          id="phoneNumber"
+          type="tel"
+          class="form-control"
+          formControlName="phoneNumber"
+          placeholder="Ingrese el teléfono"
+      />
+      <div *ngIf="userForm.get('phoneNumber')?.touched && userForm.get('phoneNumber')?.invalid" class="error">
+          El número de teléfono es obligatorio y debe tener 10 dígitos.
+      </div>
+      </div>
+  
+      <!-- Rol -->
+      <div class="form-group">
+      <label>Rol</label>
+      <div>
+          <button type="button" [class.active]="userForm.get('role')?.value === 'Empleado'" (click)="setRole('Empleado')">Empleado</button>
+          <button type="button" [class.active]="userForm.get('role')?.value === 'Owner'" (click)="setRole('Owner')">Owner</button>
+      </div>
+      </div>
+  
+      <!-- Estado -->
+      <div class="form-group">
+      <label>Estado</label>
+      <div>
+          <button type="button" [class.active]="userForm.get('isActive')?.value === true" (click)="setStatus(true)">Activo</button>
+          <button type="button" [class.active]="userForm.get('isActive')?.value === false" (click)="setStatus(false)">Inactivo</button>
+      </div>
+      </div>
+  
+      <h4>Horarios</h4>
+      
+      <button type="button" (click)="addSchedule()">Añadir Horario</button>
+
+      <!-- Submit -->
+      <button type="submit" [disabled]="userForm.invalid">Guardar Usuario</button>
+  </form>
 </div>
 
- <h2>Lista de Empleados</h2>
-  <table>
+
+<div class="table-container">
+  <table class="table">
+    <!-- Generar encabezados dinámicamente -->
     <thead>
       <tr>
-        <th>Nombre</th>
-        <th>Email</th>
-        <th>Teléfono</th>
-        <th>Rol</th>
-        <th>Estado</th>
+        <th *ngFor="let header of headers">{{ header }}</th>
       </tr>
     </thead>
+    <!-- Generar filas dinámicamente -->
     <tbody>
       <tr *ngFor="let user of users">
+        <td>{{ user.employeeId }}</td>
         <td>{{ user.name }}</td>
+        <td>{{ user.createTime | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
         <td>{{ user.email }}</td>
         <td>{{ user.phone }}</td>
         <td>{{ user.role }}</td>
-        <td>{{ user.status }}</td>
+        <td>{{ user.isActive ? 'Active' : 'Inactive' }}</td>
+        <td>{{ user.merchantId }}</td>
+        <td>
+          <ul>
+            <li *ngFor="let schedule of user.workingSchedule">
+              {{ days[schedule.DayOfWeek] }}: {{ schedule.StartTime }} - {{ schedule.EndTime }}
+            </li>
+          </ul>
+          
+        </td>
+        <td>
+          <button class="btn btn-primary btn-sm" (click)="updateUser(user)">Update</button>
+          <button class="btn btn-danger btn-sm" (click)="deleteUser(user.id)">Delete</button>
+        </td>
       </tr>
     </tbody>
   </table>
+</div>

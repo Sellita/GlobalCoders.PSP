@@ -1,1 +1,138 @@
-<p>tax works!</p>
+<div class="tax-container">
+    <button (click)="toggleForm()" class="btn btn-primary">
+      {{ showForm ? 'Cerrar Formulario' : 'Añadir Nueva Tasa' }}
+    </button>
+  
+    <div *ngIf="showForm" class="form-container">
+      <form [formGroup]="taxForm" (ngSubmit)="submitForm()">
+        <div class="form-group">
+          <label for="name">Nombre</label>
+          <input 
+            id="name"
+            type="text"
+            formControlName="name"
+            class="form-control"
+            [class.is-invalid]="taxForm.get('name')?.invalid && taxForm.get('name')?.touched"
+          />
+          <div *ngIf="taxForm.get('name')?.invalid && taxForm.get('name')?.touched" class="error">
+            El nombre es obligatorio.
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <label for="type">Tipo</label>
+          <select 
+            id="type"
+            formControlName="type"
+            class="form-control"
+            [class.is-invalid]="taxForm.get('type')?.invalid && taxForm.get('type')?.touched"
+          >
+            <option *ngFor="let type of taxTypes" [value]="type.value">
+              {{ type.label }}
+            </option>
+          </select>
+          <div *ngIf="taxForm.get('type')?.invalid && taxForm.get('type')?.touched" class="error">
+            El tipo de tasa es obligatorio.
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <label for="value">Valor</label>
+          <input 
+            id="value"
+            type="number"
+            formControlName="value"
+            class="form-control"
+            [class.is-invalid]="taxForm.get('value')?.invalid && taxForm.get('value')?.touched"
+          />
+          <div *ngIf="taxForm.get('value')?.invalid && taxForm.get('value')?.touched" class="error">
+            El valor debe ser un número mayor o igual a 0.
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <label for="status">Estado</label>
+          <select 
+            id="status"
+            formControlName="status"
+            class="form-control"
+            [class.is-invalid]="taxForm.get('status')?.invalid && taxForm.get('status')?.touched"
+          >
+            <option *ngFor="let state of taxStates" [value]="state.value">
+              {{ state.label }}
+            </option>
+          </select>
+          <div *ngIf="taxForm.get('status')?.invalid && taxForm.get('status')?.touched" class="error">
+            El estado es obligatorio.
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <label for="organizationId">ID de Organización</label>
+          <select 
+            id="organizationId"
+            formControlName="organizationId"
+            class="form-control"
+            [class.is-invalid]="taxForm.get('organizationId')?.invalid && taxForm.get('organizationId')?.touched"
+          >
+            <option *ngFor="let merchant of merchants" [value]="merchant.id">
+              {{ merchant.displayName }}
+            </option>
+          </select>
+          <div *ngIf="taxForm.get('organizationId')?.invalid && taxForm.get('organizationId')?.touched" class="error">
+            La organización es obligatoria.
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <label for="productId">ID de Producto</label>
+          <input 
+            id="productId"
+            type="text"
+            formControlName="productId"
+            class="form-control"
+            [class.is-invalid]="taxForm.get('productId')?.invalid && taxForm.get('productId')?.touched"
+          />
+          <div *ngIf="taxForm.get('productId')?.invalid && taxForm.get('productId')?.touched" class="error">
+            El ID de producto es obligatorio.
+          </div>
+        </div>
+  
+        <button type="submit" class="btn btn-success" [disabled]="taxForm.invalid">
+          {{ editMode ? 'Actualizar Tasa' : 'Crear Tasa' }}
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="toggleForm()">
+          Cancelar
+        </button>
+      </form>
+    </div>
+  
+    <div class="table-container">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th *ngFor="let header of headers">{{ header }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tax of taxes">
+            <td>{{ tax.id }}</td>
+            <td>{{ tax.name }}</td>
+            <td>{{ tax.type }}</td>
+            <td>{{ tax.value }}</td>
+            <td>{{ tax.status}}</td>
+            <td>{{ tax.productTypeId }}</td>
+            <td>{{ tax.productTypeName }}</td>
+            <td>{{ tax.creationDateTime }}</td>
+            <td>{{ tax.merchantId }}</td>
+            <td>{{ tax.merchantName }}</td>
+            <td>
+              <button class="btn btn-warning btn-sm" (click)="updateTax(tax)">Editar</button>
+              <button class="btn btn-danger btn-sm" (click)="deleteTax(tax.id)">Eliminar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  

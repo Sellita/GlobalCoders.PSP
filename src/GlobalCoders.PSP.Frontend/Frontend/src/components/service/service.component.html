@@ -1,1 +1,127 @@
-<p>service works!</p>
+<button (click)="toggleForm()" class="btn btn-primary">
+    {{ showForm ? 'Cancel' : 'Create Service' }}
+</button>
+
+<div *ngIf="showForm" class="form-container">
+        <h2>{{ editMode ? 'Edit Service' : 'New Service' }}</h2>
+        <form [formGroup]="serviceForm" (ngSubmit)="submitForm()">
+          <!-- Nombre del Servicio -->
+          <div class="form-group">
+            <label for="displayName">Nombre del Servicio: </label>
+            <input
+              type="text"
+              id="displayName"
+              formControlName="displayName"
+              class="form-control"
+              placeholder="Ej. Corte de Cabello Masculino"
+            />
+            <div *ngIf="serviceForm.get('displayName')?.invalid && serviceForm.get('displayName')?.touched" class="error">
+              El nombre del servicio es obligatorio.
+            </div>
+          </div>
+      
+          <!-- Descripción -->
+          <div class="form-group">
+            <label for="description">Descripción: </label>
+            <textarea
+              id="description"
+              formControlName="description"
+              class="form-control"
+              placeholder="Ej. Servicio de corte de cabello para hombre, incluye lavado y peinado básico."
+            ></textarea>
+            <div *ngIf="serviceForm.get('description')?.invalid && serviceForm.get('description')?.touched" class="error">
+              La descripción es obligatoria y no debe exceder los 200 caracteres.
+            </div>
+          </div>
+      
+          <!-- Duración -->
+          <div class="form-group">
+            <label for="durationMin">Duración (minutos): </label>
+            <input
+              type="number"
+              id="durationMin"
+              formControlName="durationMin"
+              class="form-control"
+              placeholder="Ej. 30"
+            />
+            <div *ngIf="serviceForm.get('durationMin')?.invalid && serviceForm.get('durationMin')?.touched" class="error">
+              La duración debe ser un número mayor a 0.
+            </div>
+          </div>
+      
+          <!-- Precio -->
+          <div class="form-group">
+            <label for="price">Precio ($): </label>
+            <input
+              type="number"
+              id="price"
+              formControlName="price"
+              class="form-control"
+              placeholder="Ej. 15"
+            />
+            <div *ngIf="serviceForm.get('price')?.invalid && serviceForm.get('price')?.touched" class="error">
+              El precio debe ser un valor positivo.
+            </div>
+          </div>
+      
+          <!-- Estado del Servicio -->
+          <div class="form-group">
+            <label for="serviceState">Estado del Servicio: </label>
+            <select id="serviceState" formControlName="serviceState" class="form-control">
+              <option *ngFor="let state of serviceStates" [value]="state.value">
+                {{ state.label }}
+              </option>
+            </select>
+            <div *ngIf="serviceForm.get('serviceState')?.invalid && serviceForm.get('serviceState')?.touched" class="error">
+              El estado del servicio es obligatorio.
+            </div>
+          </div>
+      
+          <!-- ID del Empleado -->
+           
+          <div class="form-group">
+            <label for="employeeId">Empleado: </label>
+            <select id="employeeId" formControlName="employeeId" class="form-control">
+              <option *ngFor="let employee of employees" [value]="employee.employeeId">
+                {{ employee.name }}
+              </option>
+            </select>
+            <div *ngIf="serviceForm.get('employeeId')?.invalid && serviceForm.get('employeeId')?.touched" class="error">
+              El ID del empleado es obligatorio.
+            </div>
+          </div>
+      
+          <!-- Botón de Enviar -->
+          <button type="submit" class="btn btn-primary" [disabled]="serviceForm.invalid">Guardar Servicio</button>
+        </form>
+</div>
+
+
+<div class="table-container">
+  <table class="table">
+    <!-- Generar encabezados dinámicamente -->
+    <thead>
+      <tr>
+        <th *ngFor="let header of headers">{{ header }}</th>
+      </tr>
+    </thead>
+    <!-- Generar filas dinámicamente -->
+    <tbody>
+      <tr *ngFor="let service of services">
+        <td>{{ service.id }}</td>
+        <td>{{ service.displayName }}</td>
+        <td>{{ service.description }}</td>
+        <td>{{ service.durationMin }}</td>
+        <td>{{ service.price }}</td>
+        <td>{{ service.serviceState }}</td>
+        <td>{{ service.employeeId }}</td>
+        <td>{{ service.employee }}</td>
+        <td>{{ service.creationDate | date: 'dd/MM/yyyy' }}</td>
+        <td>
+          <button class="btn btn-primary btn-sm" (click)="updateService(service)">Update</button>
+          <button class="btn btn-danger btn-sm" (click)="deleteService(service.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

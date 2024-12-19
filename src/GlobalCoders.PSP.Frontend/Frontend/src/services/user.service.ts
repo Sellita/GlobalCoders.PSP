@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { OnInit } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +9,7 @@ export class UserService {
   token: string = localStorage.getItem('accessToken') || '';
   headers: HttpHeaders = new HttpHeaders(
     {
-      Authorization: `Bearer ${this.token}`, // Incluye el token en el encabezado de autorización
+      Authorization: `Bearer ${this.token}`,
     }
   );
 

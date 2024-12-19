@@ -15,6 +15,9 @@ import { OnInit } from '@angular/core';
 })
 export class MerchantComponent implements OnInit {
 
+  edit: boolean = false;
+  selectedOrg: string = '';
+
   showForm: boolean = false;
   companyForm: FormGroup;
   organizations: Org[] = [];
@@ -48,7 +51,6 @@ export class MerchantComponent implements OnInit {
         console.error('Error al obtener las organizaciones:', err);
       }
     );
-    console.log('Organizaciones:', this.organizations);
     this.addWorkingSchedule();
 
   }
@@ -60,7 +62,7 @@ export class MerchantComponent implements OnInit {
   addWorkingSchedule() {
     this.workingSchedule.push(
       this.fb.group({
-        DayOfWeek: [0, Validators.required],
+        DayOfWeek: [null, Validators.required],
         StartTime: ['', Validators.required],
         EndTime: ['', Validators.required]
       })
@@ -73,23 +75,37 @@ export class MerchantComponent implements OnInit {
 
 
   submitForm() {
-    if (this.companyForm.valid) {
-      this.organizations.push({ ...this.companyForm.value });
-      this.orgService.createOrganization(this.companyForm.value).subscribe(
+
+    const orgData = this.companyForm.value;
+    if (this.edit) {
+      const orgIndex = this.organizations.findIndex(org => org.id === this.selectedOrg);
+      if (orgIndex !== -1) {
+      this.organizations[orgIndex] = { ...orgData, id: this.selectedOrg };
+      this.orgService.updateOrganization(this.organizations[orgIndex]).subscribe(
         (res) => {
-          console.log('Nueva organización añadida:', res);
+        console.log('Organización actualizada:', res);
         },
         (err) => {
-          console.error('Error al añadir la organización:', err);
+        console.error('Error al actualizar la organización:', err);
         }
       );
-
-      console.log('Nueva organización añadida:', this.companyForm.value);
-
-      this.companyForm.reset();
-      this.workingSchedule.clear();
-      this.addWorkingSchedule(); // Reinicia con un horario vacío
+      }
+      this.edit = false;
+    } else {
+      this.orgService.createOrganization(orgData).subscribe(
+      (res: any) => {
+        console.log('Nueva organización añadida:', res);
+        this.organizations.push(res);
+      },
+      (err) => {
+        console.error('Error al añadir la organización:', err);
+      }
+      );
     }
+    this.companyForm.reset();
+    this.workingSchedule.clear();
+    this.addWorkingSchedule();
+    this.showForm = false;
   }
 
   deleteOrg(id: string) {
@@ -105,7 +121,25 @@ export class MerchantComponent implements OnInit {
   }
 
   updateOrg(org: Org) {
-    this.orgService.updateOrganization(org);
+    this.edit = true;
+    this.selectedOrg = org.id;
+
+    this.companyForm.patchValue({
+        displayName: org.displayName,
+        legalName: org.legalName,
+        address: org.address,
+        email: org.email,
+        mainPhoneNumber: org.mainPhoneNumber,
+        secondaryPhoneNumber: org.secondaryPhoneNumber,
+        workingSchedule: org.workingSchedule.map((schedule: any) => ({
+            DayOfWeek: schedule.dayOfWeek,
+            StartTime: schedule.startTime,
+            EndTime: schedule.endTime,
+        }))
+    });
+
+    this.showForm = true;
+
   }
 
   toggleForm(): void {

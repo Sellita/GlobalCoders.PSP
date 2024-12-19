@@ -9,7 +9,9 @@
     font-size: 12px;
 }
 
-
+button {
+    cursor: pointer;
+}
 
 button.active {
     background-color: #007bff;
@@ -19,5 +21,28 @@ button.active {
 button:not(.active) {
     background-color: #f8f9fa;
     color: black;
+}
+
+
+.table-container {
+    margin: 20px;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.table th,
+.table td {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+}
+
+.table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
 }
   
