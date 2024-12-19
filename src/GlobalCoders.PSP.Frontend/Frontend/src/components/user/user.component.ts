@@ -23,7 +23,7 @@ export class UserComponent implements OnInit {
   userForm: FormGroup;
   users: any[] = [];
   orgs: any[] = [];
-  headers = ["ID","Name","Creation Time",  "Email", "Phone Number", "Role", "Status", "Merchant", "Working Schedule", "Actions"];
+  headers = ["ID","Name","Creation Time",  "Email", "Phone Number", "Role", "Status", "MerchantId", "Working Schedule", "Actions"];
   days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
   constructor(private fb: FormBuilder, private orgService: OrgService, private userService: UserService) {
