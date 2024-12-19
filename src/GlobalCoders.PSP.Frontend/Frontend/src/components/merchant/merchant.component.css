@@ -25,6 +25,12 @@
     border: 1px solid #ddd;
 }
 
+li {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
 .table th {
     background-color: #f4f4f4;
     font-weight: bold;

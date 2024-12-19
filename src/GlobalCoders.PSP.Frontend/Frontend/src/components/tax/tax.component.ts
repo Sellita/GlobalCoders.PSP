@@ -7,6 +7,8 @@ import { TaxService } from '../../services/tax.service';
 import { OrgService } from '../../services/org.service';
 import { Tax } from '../../models/tax';
 import { Org } from '../../models/org';
+import { ProductType } from '../../models/product-type';
+import { ProductTypeService } from '../../services/product-type.service';
 
 @Component({
   selector: 'app-tax',
@@ -21,6 +23,7 @@ export class TaxComponent {
   merchants: any[] = [];
   showForm: boolean = false;
   taxForm: FormGroup;
+  productsTypes: ProductType[] = [];
   taxes: Tax[] = [];
 
   taxTypes = [
@@ -50,7 +53,8 @@ export class TaxComponent {
     constructor(
       private taxService: TaxService,
       private fb: FormBuilder,
-      private orgService: OrgService
+      private orgService: OrgService,
+      private productTypeService: ProductTypeService
     ) {
       this.taxForm = this.fb.group({
         name: ['', Validators.required],
@@ -69,9 +73,14 @@ export class TaxComponent {
         this.taxes = data;
       });
   
-      // Cargar empleados
+      // Cargar merchants
       this.orgService.getOrganizations().subscribe((data: any) => {
         this.merchants = data.items || [];
+      });
+
+      // Cargar tipos de productos
+      this.productTypeService.getProductsTypes().subscribe((data: any) => {
+        this.productsTypes = data.items || [];
       });
   
       // Cargar los servicios inicialmente

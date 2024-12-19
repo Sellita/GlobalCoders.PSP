@@ -89,7 +89,7 @@
   
       <h4>Horarios</h4>
         <div formArrayName="workingSchedule">
-            <div *ngFor="let schedule of scheduleControls.controls; let i = index" [formGroupName]="i">
+            <div *ngFor="let i = index" [formGroupName]="i">
             <label>Día de la Semana:</label>
             <select formControlName="DayOfWeek">
                 <option *ngFor="let day of days; let j = index" [value]="j">
@@ -131,11 +131,7 @@
         <td>{{ user.isActive ? 'Active' : 'Inactive' }}</td>
         <td>{{ user.merchantId }}</td>
         <td>
-          <ul>
-            <li *ngFor="let schedule of user.workingSchedule">
-              {{ days[schedule.DayOfWeek] }}: {{ schedule.StartTime }} - {{ schedule.EndTime }}
-            </li>
-          </ul>
+          
           
         </td>
         <td>

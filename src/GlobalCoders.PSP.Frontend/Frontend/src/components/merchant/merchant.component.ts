@@ -51,21 +51,12 @@ export class MerchantComponent implements OnInit {
   ngOnInit(): void {
 
     // Suscribirse a la lista de servicios reactiva
-    this.orgService.organizations$.subscribe((data) => {
+    this.orgService.organizations$.subscribe((data: any) => {
       this.orgs = data;
     });
 
     // Cargar los servicios inicialmente
-    this.orgService.getOrganizations().subscribe(
-      (data: any) => {
-        data.items.forEach((org: Org) => {
-          this.orgService.getOrganization(org.id).subscribe((data: any) => {
-            this.orgs.push(data);
-            console.log('organización cargada:', data);
-          });
-        });
-      }
-    );
+    this.orgService.getOrganizations().subscribe();
   }
 
   get workingSchedule(): FormArray {

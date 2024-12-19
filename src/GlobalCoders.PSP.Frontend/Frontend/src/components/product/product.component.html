@@ -1,1 +1,159 @@
-<p>product works!</p>
+<button (click)="toggleForm()" class="btn btn-primary">
+    {{ showForm ? 'Cancel' : 'Create Product' }}
+</button>
+
+<div *ngIf="showForm" class="form-container">
+
+        <h2>{{ editMode ? 'Edit Product' : 'New Product' }}</h2>
+
+        <form [formGroup]="productForm" (ngSubmit)="submitForm()">
+          <!-- Nombre del Servicio -->
+          <div class="form-group">
+            <label for="displayName">Nombre del producto: </label>
+            <input
+              type="text"
+              id="displayName"
+              formControlName="displayName"
+              class="form-control"
+              placeholder=""
+            />
+            <div *ngIf="productForm.get('displayName')?.invalid && productForm.get('displayName')?.touched" class="error">
+              El nombre del producto es obligatorio.
+            </div>
+          </div>
+      
+          <!-- Descripción -->
+          <div class="form-group">
+            <label for="description">Descripción: </label>
+            <textarea
+              id="description"
+              formControlName="description"
+              class="form-control"
+              placeholder=""
+            ></textarea>
+            <div *ngIf="productForm.get('description')?.invalid && productForm.get('description')?.touched" class="error">
+              La descripción es obligatoria y no debe exceder los 200 caracteres.
+            </div>
+          </div>
+      
+          <!-- Stock -->
+          <div class="form-group">
+            <label for="stock">Stock: </label>
+            <input
+              type="number"
+              id="stock"
+              formControlName="stock"
+              class="form-control"
+              placeholder=""
+            />
+            <div *ngIf="productForm.get('stock')?.invalid && productForm.get('stock')?.touched" class="error">
+              La duración debe ser un número mayor a 0.
+            </div>
+          </div>
+      
+          <!-- Precio -->
+          <div class="form-group">
+            <label for="price">Precio ($): </label>
+            <input
+              type="number"
+              id="price"
+              formControlName="price"
+              class="form-control"
+              placeholder=""
+            />
+            <div *ngIf="productForm.get('price')?.invalid && productForm.get('price')?.touched" class="error">
+              El precio debe ser un valor positivo.
+            </div>
+          </div>
+      
+          <!-- Estado del Producto -->
+          <div class="form-group">
+            <label for="productState">Product Status: </label>
+            <select id="productState" formControlName="productState" class="form-control">
+                <option *ngFor="let state of productStates" [value]="state.value">
+                {{ state.label }}
+              </option>
+            </select>
+            <div *ngIf="productForm.get('productState')?.invalid && productForm.get('productState')?.touched" class="error">
+              El estado del servicio es obligatorio.
+            </div>
+          </div>
+      
+          <!-- Merchant -->
+          <div class="form-group">
+            <label for="merchantId">Merchant: </label>
+            <select id="merchantId" formControlName="merchantId" class="form-control">
+              <option *ngFor="let org of merchants" [value]="org.id">
+                {{ org.displayName }}
+              </option>
+            </select>
+            <div *ngIf="productForm.get('merchantId')?.invalid && productForm.get('merchantId')?.touched" class="error">
+              El ID de la organización es obligatorio.
+            </div>
+          </div>
+
+        <!-- Category -->
+        <div class="form-group">
+            <label for="productTypeId">Type: </label>
+            <select id="productTypeId" formControlName="productTypeId" class="form-control">
+              <option *ngFor="let type of productsTypes" [value]="type.id">
+                {{ type.displayName }}
+              </option>
+            </select>
+            <div *ngIf="productForm.get('productTypeId')?.invalid && productForm.get('productTypeId')?.touched" class="error">
+              El tipo de producto es obligatorio.
+            </div>
+        </div>
+
+        <!-- Tax 
+        <div class="form-group">
+            <label for="taxName">Tax: </label>
+            <select id="taxName" formControlName="taxName" class="form-control">
+              <option *ngFor="let tax of taxes" [value]="tax.id">
+                {{ tax.displayName }}
+              </option>
+            </select>
+            <div *ngIf="productForm.get('taxName')?.invalid && productForm.get('taxName')?.touched" class="error">
+              La tasa del producto es obligatorio.
+            </div>
+        </div>
+        -->
+      
+          <!-- Botón de Enviar -->
+          <button type="submit" class="btn btn-primary" [disabled]="productForm.invalid">Guardar Servicio</button>
+        </form>
+</div>
+
+
+<div class="table-container">
+  <table class="table">
+    <!-- Generar encabezados dinámicamente -->
+    <thead>
+      <tr>
+        <th *ngFor="let header of headers">{{ header }}</th>
+      </tr>
+    </thead>
+    <!-- Generar filas dinámicamente -->
+    <tbody>
+      <tr *ngFor="let product of products">
+        <td>{{ product.id }}</td>
+        <td>{{ product.displayName }}</td>
+        <td>{{ product.description }}</td>
+        <td>{{ product.stock }}</td>
+        <td>{{ product.taxName }}</td>
+        <td>{{ product.taxValue }}</td>
+        <td>{{ product.categoryId }}</td>
+        <td>{{ product.category }}</td>
+        <td>{{ product.price }}</td>
+        <td>{{ product.productState === 1 ? 'Active' : 'Inactive' }}</td>
+        <td>{{ product.merchantId }}</td>
+        <td>{{ product.merchant }}</td>
+        <td>{{ product.creationDate | date: 'dd/MM/yyyy' }}</td>
+        <td>
+          <button class="btn btn-primary btn-sm" (click)="updateService(product)">Update</button>
+          <button class="btn btn-danger btn-sm" (click)="deleteService(product.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

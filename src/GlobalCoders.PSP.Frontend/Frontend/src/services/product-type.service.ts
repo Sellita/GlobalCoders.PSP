@@ -5,14 +5,15 @@ import { Product } from '../models/product';
 import { BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { ProductType } from '../models/product-type';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProductService {
+export class ProductTypeService {
 
-  private productSubject = new BehaviorSubject<Product[]>([]);
-  products$ = this.productSubject.asObservable();
+  private productTypeSubject = new BehaviorSubject<Product[]>([]);
+  productsType$ = this.productTypeSubject.asObservable();
 
   token: string = localStorage.getItem('accessToken') || '';
   headers: HttpHeaders = new HttpHeaders(
@@ -23,26 +24,26 @@ export class ProductService {
 
   constructor(private http: HttpClient) { }
 
-  getProducts(): Observable<any> {
+  getProductsTypes(): Observable<any> {
     const body = {
       page: 1,
       itemsPerPage: 100,
     };
     return this.http
-      .post('http://localhost:9001/Product/All', body, { headers: this.headers })
+      .post('http://localhost:9001/ProductType/All', body, { headers: this.headers })
       .pipe(
         tap((response: any) => {
-          const products = response.items || [];
-          this.productSubject.next(products);
+          const productsTypes = response.items || [];
+          this.productTypeSubject.next(productsTypes);
         })
       );
   }
 
 
   // Crear un servicio y sincronizar con el BehaviorSubject
-  createProduct(product: any): Observable<any> {
+  createProductType(productType: any): Observable<any> {
     return this.http
-      .post('http://localhost:9001/Product/Create', product, {
+      .post('http://localhost:9001/ProductType/Create', productType, {
         headers: this.headers,
       })
       .pipe(
@@ -53,9 +54,9 @@ export class ProductService {
   }
 
   // Actualizar un servicio y sincronizar con el BehaviorSubject
-  updateProduct(product: any): Observable<any> {
+  updateProductType(productType: any): Observable<any> {
     return this.http
-      .put('http://localhost:9001/Product/Update', product, {
+      .put('http://localhost:9001/ProductType/Update', productType, {
         headers: this.headers,
       })
       .pipe(
@@ -66,9 +67,9 @@ export class ProductService {
   }
 
   // Eliminar un servicio y sincronizar con el BehaviorSubject
-  deleteProduct(id: string): Observable<any> {
+  deleteProductType(id: string): Observable<any> {
     return this.http
-      .delete(`http://localhost:9001/Product/Delete/${id}`, {
+      .delete(`http://localhost:9001/ProductType/Delete/${id}`, {
         headers: this.headers,
       })
       .pipe(
@@ -79,15 +80,14 @@ export class ProductService {
   }
 
   // Obtener un servicio específico
-  getProduct(id: string): Observable<Product> {
-    return this.http.get<Product>(`http://localhost:9001/Product/Id/${id}`, {
+  getProduct(id: string): Observable<ProductType> {
+    return this.http.get<ProductType>(`http://localhost:9001/ProductType/Id/${id}`, {
       headers: this.headers,
     });
   }
 
   private refreshServices() {
-    this.getProducts().subscribe();
+    this.getProductsTypes().subscribe();
   }
-
 
 }

@@ -4,9 +4,12 @@
     </button>
   
     <div *ngIf="showForm" class="form-container">
+
+      <h2>{{ editMode ? 'Edit Tax' : 'New Tax' }}</h2>
+
       <form [formGroup]="taxForm" (ngSubmit)="submitForm()">
         <div class="form-group">
-          <label for="name">Nombre</label>
+          <label for="name">Nombre: </label>
           <input 
             id="name"
             type="text"
@@ -20,7 +23,7 @@
         </div>
   
         <div class="form-group">
-          <label for="type">Tipo</label>
+          <label for="type">Tipo: </label>
           <select 
             id="type"
             formControlName="type"
@@ -37,7 +40,7 @@
         </div>
   
         <div class="form-group">
-          <label for="value">Valor</label>
+          <label for="value">Valor: </label>
           <input 
             id="value"
             type="number"
@@ -51,7 +54,7 @@
         </div>
   
         <div class="form-group">
-          <label for="status">Estado</label>
+          <label for="status">Estado: </label>
           <select 
             id="status"
             formControlName="status"
@@ -68,7 +71,7 @@
         </div>
   
         <div class="form-group">
-          <label for="organizationId">ID de Organización</label>
+          <label for="organizationId">Merchant: </label>
           <select 
             id="organizationId"
             formControlName="organizationId"
@@ -85,16 +88,19 @@
         </div>
   
         <div class="form-group">
-          <label for="productId">ID de Producto</label>
-          <input 
+          <label for="productId">Tipo de Producto</label>
+          <select 
             id="productId"
-            type="text"
             formControlName="productId"
             class="form-control"
             [class.is-invalid]="taxForm.get('productId')?.invalid && taxForm.get('productId')?.touched"
-          />
+          >
+            <option *ngFor="let productType of productsTypes" [value]="productType.id">
+              {{ productType.displayName }}
+            </option>
+          </select>
           <div *ngIf="taxForm.get('productId')?.invalid && taxForm.get('productId')?.touched" class="error">
-            El ID de producto es obligatorio.
+            El tipo de producto es obligatorio.
           </div>
         </div>
   
@@ -118,9 +124,9 @@
           <tr *ngFor="let tax of taxes">
             <td>{{ tax.id }}</td>
             <td>{{ tax.name }}</td>
-            <td>{{ tax.type }}</td>
+            <td>{{ tax.type? "Value" : "Percentaje"}}</td>
             <td>{{ tax.value }}</td>
-            <td>{{ tax.status}}</td>
+            <td>{{ tax.status ? 'Active' : 'Inactive' }}</td>
             <td>{{ tax.productTypeId }}</td>
             <td>{{ tax.productTypeName }}</td>
             <td>{{ tax.creationDateTime }}</td>
