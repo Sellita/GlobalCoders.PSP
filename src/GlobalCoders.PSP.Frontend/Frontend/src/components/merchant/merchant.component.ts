@@ -50,6 +50,11 @@ export class MerchantComponent implements OnInit {
 
   ngOnInit(): void {
 
+    // Suscribirse a la lista de servicios reactiva
+    this.orgService.organizations$.subscribe((data) => {
+      this.orgs = data;
+    });
+
     // Cargar los servicios inicialmente
     this.orgService.getOrganizations().subscribe(
       (data: any) => {
