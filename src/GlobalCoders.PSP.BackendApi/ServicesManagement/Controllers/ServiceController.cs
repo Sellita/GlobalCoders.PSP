@@ -158,10 +158,10 @@ public class ServiceController : BaseApiController
         return Problem("Failed to update Service");
     }
     
-    [HttpDelete("[action]/{organizationId}")]
-    public async Task<IActionResult> Delete(Guid organizationId)
+    [HttpDelete("[action]/{serviceId}")]
+    public async Task<IActionResult> Delete(Guid serviceId)
     {
-        var result = await _servicesService.DeleteAsync(organizationId);
+        var result = await _servicesService.DeleteAsync(serviceId);
 
         if (result)
         {
