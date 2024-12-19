@@ -62,6 +62,18 @@ public class OrdersService : IOrdersService
     }
     public async Task<(bool, string)> UpdateAsync(OrderEntity updateModel)
     {
+        var employee =  (await _employeeService.GetAsync(updateModel.EmployeeId, CancellationToken.None));
+       
+        if(employee == null)
+        {
+            return (false, "emloyee not found");
+        }
+        
+        if(employee.MerchantId != updateModel.MerchantId)
+        {
+            return (false, "Wrong merchant for emloyee");
+        }
+        
         var order = await _ordersRepository.GetAsync(updateModel.Id);
         
         if (order == null)
@@ -74,7 +86,10 @@ public class OrdersService : IOrdersService
             return (false, "Order can be updated only in open status");
         }
         
+        await _ordersRepository.ClearDiscountsAsync(order.Id);
+        
         updateModel.Status = order.Status;
+        updateModel.CreatedAt = order.CreatedAt;
         
         return (await _ordersRepository.UpdateAsync(updateModel), "Failed to update order");
     }

@@ -73,6 +73,7 @@ public sealed class BackendContext : BaseDbContext
     public DbSet<OrderEntity> Orders => Set<OrderEntity>();
     public DbSet<OrderProductEntity> OrderProducts => Set<OrderProductEntity>();
     public DbSet<OrderPaymentsEntity> OrderPayments => Set<OrderPaymentsEntity>();
+    public DbSet<OrderDiscountsEntity> OrderDiscountsEntity => Set<OrderDiscountsEntity>();
     
     // Tax Managemet
     public DbSet<TaxEntity> Tax => Set<TaxEntity>();

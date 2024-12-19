@@ -246,7 +246,7 @@ public class OrdersController : BaseApiController
     [HttpPost("[action]")]
     public async Task<ActionResult<PaymentInfo>> MakePayment(OrderMakePaymentRequestModel orderMakePaymentRequest, CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid || orderMakePaymentRequest.Amount <= 0)
         {
             return ValidationProblem();
         }

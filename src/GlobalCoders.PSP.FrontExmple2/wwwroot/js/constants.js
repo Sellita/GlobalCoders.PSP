@@ -19,3 +19,25 @@ const productStates = [
         value: 2,
         label: "Inactive"
     }];
+
+const orderStates = [
+    {
+        value: 1,
+        label: "Open"
+    },
+    {
+        value: 2,
+        label: "Closed"
+    },
+    {
+        value: 3,
+        label: "Paid"
+    },
+    {
+        value: 4,
+        label: "Cancelled"
+    },
+    {
+        value: 5,
+        label: "Refunded"
+    }];

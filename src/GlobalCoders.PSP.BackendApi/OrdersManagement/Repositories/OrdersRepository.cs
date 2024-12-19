@@ -162,6 +162,7 @@ public class OrdersRepository : IOrdersRepository
 
     public async Task<Guid?> AddPayment(OrderPaymentsEntity create)
     {
+        
         await using var context = await _contextFactory.CreateDbContextAsync();
         
         await context.OrderPayments.AddAsync(create);
@@ -229,5 +230,17 @@ public class OrdersRepository : IOrdersRepository
         var result = await context.SaveChangesAsync();
         
         return result > 0;
+    }
+
+    public async Task ClearDiscountsAsync(Guid orderId)
+    {
+        await using var context = await _contextFactory.CreateDbContextAsync();
+
+        var discounts = context.OrderDiscountsEntity.Where(x=>x.OrderDiscountId == orderId).ToList();
+        
+        context.OrderDiscountsEntity.RemoveRange(discounts);
+        
+        await context.SaveChangesAsync();
+        
     }
 }

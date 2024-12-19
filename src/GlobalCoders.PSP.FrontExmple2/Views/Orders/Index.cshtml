@@ -1,0 +1,43 @@
+@section Styles
+{
+    <link rel="stylesheet" href="~/lib/datatables.net-bs5/dataTables.bootstrap5.min.css"/>
+    <link rel="stylesheet" href="~/lib/datatables.net-buttons-bs5/buttons.bootstrap5.min.css"/>
+    <link rel="stylesheet" href="~/lib/sweetalert2/dist/sweetalert2.min.css"/>
+}
+
+@section LibScripts
+{
+    <partial name="_ValidationScriptsPartial"/>
+
+    <script type="text/javascript" src="lib/datatables.net/dataTables.js"></script>
+    <script type="text/javascript" src="lib/datatables.net-bs5/dataTables.bootstrap5.min.js"></script>
+    <script type="text/javascript" src="lib/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="lib/datatables.net-buttons-bs5/buttons.bootstrap5.min.js"></script>
+    <script type="text/javascript" src="lib/sweetalert2/dist/sweetalert2.min.js"></script>
+}
+
+@section Scripts
+{
+    <script src="~/js/helpers.js" asp-append-version="true"></script>
+    <script src="~/js/orders/index.js" asp-append-version="true"></script>
+}
+
+<div class="container-fluid">
+    <div class="orders">
+        <table id="orders-data-table" class="table align-middle" aria-hidden="true">
+            <caption></caption>
+            <thead>
+            <tr>
+                <th scope="col" class="desktop tablet">Id</th>
+                <th scope="col" class="desktop tablet">Client</th>
+                <th scope="col" class="desktop tablet">Date</th>
+                <th scope="col" class="desktop tablet">Merchant</th>
+                <th scope="col" class="desktop tablet">Status</th>
+                <th scope="col" data-orderable="false" class="desktop tablet">Actions</th>
+            </tr>
+            </thead>
+            <tfoot>
+            </tfoot>
+        </table>
+    </div>
+</div>

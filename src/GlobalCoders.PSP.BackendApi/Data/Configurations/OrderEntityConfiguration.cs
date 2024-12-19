@@ -18,6 +18,12 @@ public class OrderProductsEntityConfiguration : IEntityTypeConfiguration<OrderEn
             .HasMany(x => x.OrderPayments)
             .WithOne()
             .HasForeignKey(x => x.OrderId)
+            .IsRequired(false);   
+        
+        builder
+            .HasMany(x => x.OrderDiscounts)
+            .WithOne()
+            .HasForeignKey(x => x.OrderDiscountId)
             .IsRequired(false);
         
         builder.HasQueryFilter(u => !u.IsDeleted);

@@ -17,4 +17,5 @@ public interface IOrdersRepository
     Task<bool> UpdatePaymentSessionIdAsync(Guid paymentPaymentId, string id);
     Task<bool> ConfirmPaymentAsync(Guid orderId, string sessionId);
     Task<bool> RemovePaymentAsync(Guid orderId, string sessionId);
+    Task ClearDiscountsAsync(Guid orderId);
 }
