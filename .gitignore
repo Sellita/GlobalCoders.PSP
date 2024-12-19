@@ -527,4 +527,4 @@ FodyWeavers.xsd
 .idea/
 .idea/*
 
-.env
+docker/.env
