@@ -218,6 +218,7 @@
       <AdditionalFiles Include="Views\Discount\Index.cshtml" />
       <AdditionalFiles Include="Views\Inventory\Index.cshtml" />
       <AdditionalFiles Include="Views\ProductType\Index.cshtml" />
+      <AdditionalFiles Include="Views\Success\Index.cshtml" />
     </ItemGroup>
   
 </Project>

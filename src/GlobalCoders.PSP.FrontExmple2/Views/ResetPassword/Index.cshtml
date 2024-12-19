@@ -1,0 +1,42 @@
+﻿@{
+    ViewData["Title"] = "Reset Password";
+}
+
+@section Scripts
+{
+<script src="~/js/helpers.js" asp-append-version="true"></script>
+<script src="~/js/resetPassword/site.js" asp-append-version="true"></script>
+}
+
+<div class="text-center">
+
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <label for="username">Email address</label>
+                <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email" value="@ViewBag.Email">
+            </div>
+        </div>    
+        <div class="col-12">
+            <div class="form-group">
+                <label for="resetCode">Reset code address</label>
+                <input type="email" class="form-control" id="resetCode" aria-describedby="emailHelp"  value="@ViewBag.ResetCode">
+            </div>
+        </div>
+        <div class="col-4">
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" placeholder="Password">
+            </div>
+        </div>
+        <div class="col-4">
+            <button type="button" class="btn btn-primary" id="resetButton">Reset</button>
+        </div>
+    </div>
+    
+    <br/>
+    <div class="row">
+        <div class="col-12">Is success: <span id="authorization-info"></span></div>
+    </div>
+</div>
